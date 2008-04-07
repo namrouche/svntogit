@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<project name="org.esup.ecm" default="deploy" basedir=".">
+
+  <!-- From the pom.xml -->
+  <property name="name" value="esup-ecm-config"/>
+  <property name="version" value="1.0-SNAPSHOT"/>
+
+  <!-- Create a build.properties file from build.properties.sample
+       if you wish to override the JBoss paths -->
+  <property file="build.properties"/>
+  <property name="jboss.home" value="/opt/jboss"/>
+  <property name="jboss.config" value="default"/>
+
+  <property name="javac.debug" value="true"/>
+  <property name="javac.deprecation" value="false"/>
+
+
+  <!-- Boilerplate configuration -->
+
+  <property name="build.dir" value="target"/>
+  <property name="deploy.dir" value="${jboss.home}/server/${jboss.config}/deploy"/>
+  <property name="nuxeo.ear" value="nuxeo.ear"/>
+
+  <condition property="osfamily-unix">
+    <os family="unix"/>
+  </condition>
+  <condition property="osfamily-windows">
+    <os family="windows"/>
+  </condition>
+
+  <target name="deploy" depends="install,copy" description="Build and copy to JBoss"/>
+
+  <target name="install" depends="install-unix,install-windows" description="Build"/>
+  <target name="install-unix" if="osfamily-unix">
+    <exec executable="mvn" failonerror="true">
+      <arg value="install" />
+      <arg value="-Dmaven.test.skip=true" />
+    </exec>
+  </target>
+  <target name="install-windows" if="osfamily-windows">
+    <exec executable="cmd" failonerror="true">
+      <arg value="/c" />
+      <arg value="mvn.bat" />
+      <arg value="install" />
+      <arg value="-Dmaven.test.skip=true" />
+    </exec>
+  </target>
+
+  <target name="copy" description="Copy files to JBoss">
+    <copy todir="${deploy.dir}/${nuxeo.ear}/plugins/"
+          file="${build.dir}/${name}-1.0-SNAPSHOT.jar"
+          overwrite="true"/>
+    <!-- Could copy other files to .../config too -->
+  </target>
+
+  <target name="web" description="Copy web files to a live JBoss">
+    <copy todir="${deploy.dir}/${nuxeo.ear}/nuxeo.war"
+          overwrite="true">
+      <fileset dir="src/main/resources/nuxeo.war/"/>
+    </copy>
+  </target>
+
+</project>

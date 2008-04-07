@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<component name="org.esup.ecm.login">
+
+   <require>org.nuxeo.ecm.platform.ui.web.auth.defaultConfig</require>
+   <require>org.nuxeo.ecm.platform.login.Cas2SSO</require>
+
+   <!--  configure you CAS server parameters -->
+
+   <extension
+      target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+      point="authenticators">
+      <authenticationPlugin
+              name="CAS2_AUTH">
+       <loginModulePlugin>Trusting_LM</loginModulePlugin>
+       <parameters>
+         <parameter name="ticketKey">ticket</parameter>
+         <parameter name="appURL">http://esup-ecm.univ.fr/nuxeo/nxstartup.faces</parameter>
+         <parameter name="serviceLoginURL">https://sso-cas.univ.fr/login</parameter>
+         <parameter name="serviceValidateURL">https://sso-cas.univ.fr/serviceValidate</parameter>
+         <parameter name="serviceKey">service</parameter>
+         <parameter name="logoutURL">https://sso-cas.univ.fr/logout?service=http://esup-ecm.univ.fr/nuxeo</parameter>
+       </parameters>
+      </authenticationPlugin>
+  </extension>
+
+
+   <!-- Include CAS2 into authentication chain -->
+    <extension
+      target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+      point="chain">
+    <authenticationChain>
+      <plugins>
+        <plugin>CAS2_AUTH</plugin>
+        <plugin>BASIC_AUTH</plugin>
+      </plugins>
+    </authenticationChain>
+  </extension>
+
+
+</component>

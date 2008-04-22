@@ -97,7 +97,7 @@
     </copy>
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>
     <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jbossweb-tomcat55.sar/server.xml" overwrite="yes"/>
-    <subant target="deploy" buildpath="esup-ecm-config-plugin"/>
+    <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
   </target>
 
 

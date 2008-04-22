@@ -82,10 +82,10 @@
       <rdnAttribute>uid</rdnAttribute>
 
       <fieldMapping name="username">uid</fieldMapping>
-      <fieldMapping name="firstName">givenName</fieldMapping>
-      <fieldMapping name="lastName">sn</fieldMapping>
-      <fieldMapping name="company">ur1composante</fieldMapping>
-      <fieldMapping name="email">mail</fieldMapping>
+      <fieldMapping name="firstName">@ldapFirstName@</fieldMapping>
+      <fieldMapping name="lastName">@ldapLastName@</fieldMapping>
+      <fieldMapping name="company">@ldapCompagny@</fieldMapping>
+      <fieldMapping name="email">@ldapEmail@</fieldMapping>
        
       <references>
 

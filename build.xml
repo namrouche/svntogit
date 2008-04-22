@@ -82,10 +82,14 @@
 	     token="@jdbcUrl@" value="${db.jcr.url}" />
 
     <!-- LDAP -->
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml"
-	     token="@ldapSearchBaseDn@" value="${ldap.searchBaseDn}" />
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml"
-	     token="@ldapUrl@" value="${ldap.url}" />
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml">
+      <replacefilter token="@ldapSearchBaseDn@" value="${ldap.searchBaseDn}" />
+      <replacefilter token="@ldapUrl@" value="${ldap.url}" />
+      <replacefilter token="@ldapFirstName@" value="${ldap.firstName}" />
+      <replacefilter token="@ldapLastName@" value="${ldap.lastName}" />
+      <replacefilter token="@ldapCompagny@" value="${ldap.company}" />
+      <replacefilter token="@ldapEmail@" value="${ldap.email}" />
+    </replace>
     
   </target>
 

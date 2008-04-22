@@ -15,11 +15,11 @@
        <loginModulePlugin>Trusting_LM</loginModulePlugin>
        <parameters>
          <parameter name="ticketKey">ticket</parameter>
-         <parameter name="appURL">http://esup-ecm.univ.fr/nuxeo/nxstartup.faces</parameter>
-         <parameter name="serviceLoginURL">https://sso-cas.univ.fr/login</parameter>
-         <parameter name="serviceValidateURL">https://sso-cas.univ.fr/serviceValidate</parameter>
+         <parameter name="appURL">@nuxeo-url@/nxstartup.faces</parameter>
+         <parameter name="serviceLoginURL">@sso-cas-url@/login</parameter>
+         <parameter name="serviceValidateURL">@sso-cas-url@/serviceValidate</parameter>
          <parameter name="serviceKey">service</parameter>
-         <parameter name="logoutURL">https://sso-cas.univ.fr/logout?service=http://esup-ecm.univ.fr/nuxeo</parameter>
+         <parameter name="logoutURL">@sso-cas-url@/logout?service=http://esup-ecm.univ.fr/nuxeo</parameter>
        </parameters>
       </authenticationPlugin>
   </extension>

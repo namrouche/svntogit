@@ -1,6 +1,11 @@
 <project name="esup-ecm-config" default="deploy">
 
-  
+
+  <taskdef 
+      resource="net/sf/antcontrib/antlib.xml" 
+      classpath="ant-utils/ant-contrib-1.0.jar"/>
+
+
   <target name="prepare">
     <mkdir  dir="build"/>
   </target>
@@ -16,7 +21,7 @@
       <fileset dir="datasources"/>
       <fileset dir="esup-ecm-config-plugin"/>
     </copy>
-
+  </target>
 
   <target name="replace.token.config" depends="copy.src.build">
 
@@ -35,9 +40,15 @@
 
     <echo message="Mise a jour des fichiers lies au plugin de configuration" />
 
+    <!-- build.properties -->
+    <replace file="build/esup-ecm-config-plugin/build.properties" 
+	     token="@nuxeo-dir@" value="${nuxeo.dir}" />
+
     <!-- CAS -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-cas2-contrib.xml" 
 	     token="@sso-cas-url@" value="${cas.url}" />
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-cas2-contrib.xml" 
+	     token="@nuxeo-url@" value="${nuxeo.url}" />
 
     <!-- LDAP -->
 
@@ -52,7 +63,6 @@
     <subant target="deploy" buildpath="esup-ecm-config-plugin"/>
   </target>
 
-  </target>
 
 </project>
 

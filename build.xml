@@ -79,7 +79,7 @@
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
 	     token="@jdbcDriver@" value="${db.driver}" />
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
-	     token="@jdbcUrl@" value="${db.url}" />
+	     token="@jdbcUrl@" value="${db.jcr.url}" />
 
     <!-- LDAP -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml"

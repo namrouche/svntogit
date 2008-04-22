@@ -8,6 +8,9 @@
 
   <target name="prepare">
     <mkdir  dir="build"/>
+    <mkdir  dir="build/datasources"/>
+    <mkdir  dir="build/jboss"/>
+    <mkdir  dir="build/esup-ecm-config-plugin"/>
   </target>
 
   <target name="clean">
@@ -17,10 +20,14 @@
 
 
   <target name="copy.src.build" depends="prepare">
-    <copy todir="build" overwrite="yes">
+    <copy todir="build/datasources" overwrite="yes">
       <fileset dir="datasources"/>
+    </copy>
+    <copy todir="build/jboss" overwrite="yes">
       <fileset dir="jboss"/>
-      <fileset dir="esup-ecm-config-plugin"/>
+    </copy>
+     <copy todir="build/esup-ecm-config-plugin" overwrite="yes">
+     <fileset dir="esup-ecm-config-plugin"/>
     </copy>
   </target>
 
@@ -29,27 +36,28 @@
 
     <echo message="Mise a jour des fichiers lies aux base de donnees usuelles (autres que JCR)" />
 
-    <replace file="build/datasources/*.xml"
-	     token="@jdbcUser@" value="${db.user}" />
-    <replace file="build/datasources/*.xml"
-	     token="@jdbcPassword@" value="${db.password}" />
-    <replace file="build/datasources/*.xml"
-	     token="@jdbcDriver@" value="${db.driver}" />
-    <replace file="build/datasources/*.xml"
-	     token="@jdbcUrl@" value="${db.url}" />
-      
+    <replace dir="build/datasources" includes="*.xml">
+      <replacefilter 
+	  token="@jdbcUser@" value="${db.user}" />
+      <replacefilter 
+	  token="@jdbcPassword@" value="${db.password}" />
+      <replacefilter 
+	  token="@jdbcDriver@" value="${db.driver}" />
+      <replacefilter 
+	  token="@jdbcUrl@" value="${db.url}" />
+    </replace>
 
     <echo message="Mise a jour des fichiers lies au plugin de configuration" />
 
     <!-- tools -->
-    <replace file="build/jboss/jbossctl"
-             token="@jbossUser@" value="${jboss.user}" />
-    <replace file="build/jboss/jbossctl"
-             token="@jbossHome@" value="${jboss.home}" />
-    <replace file="build/jboss/server.xml"
-             token="@tomcatPortHttp@" value="${tomcat.port.http}" />
-    <replace file="build/jboss/server.xml"
-             token="@tomcatPortJk@" value="${tomcat.port.jk}" />
+    <replace file="build/jboss/jbossctl">
+      <replacefilter token="@jbossUser@" value="${jboss.user}" />
+      <replacefilter token="@jbossHome@" value="${jboss.home}" />
+    </replace>
+    <replace file="build/jboss/server.xml">
+      <replacefilter token="@tomcatPortHttp@" value="${tomcat.port.http}" />
+      <replacefilter token="@tomcatPortJk@" value="${tomcat.port.jk}" />
+    </replace>
   	
   	
   	<!-- build.properties -->
@@ -93,4 +101,5 @@
 
 
 </project>
+
 

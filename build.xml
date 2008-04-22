@@ -103,16 +103,31 @@
 
   
   <target name="deploy" depends="replace.token.config">
+
+    <!-- impossible de configurer cela dynamiquement via un plugin -->
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources" overwrite="yes">
       <fileset dir="build/datasources"/>
-      <fileset dir="build/esup-ecm-config-plugin"/>
     </copy>
+
+    <!-- requis pour jenia - impossible de configurer cela dynamiquement via un plugin -->
+    <copy file="datasources/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
+
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>
     <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jbossweb-tomcat55.sar/server.xml" overwrite="yes"/>
+
+    <!-- librairies supplementaires [driver postgres] -->
     <copy todir="${nuxeo.dir}/server/default/lib"  overwrite="yes">
       <fileset dir="lib"/>
     </copy>
+
+    <!-- plugins addons nuxeo supplementaires [sso-cas] --> 
+    <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins"  overwrite="yes">
+      <fileset dir="nuxeo-addons"/>
+    </copy>
+
+    <!-- deploiement du plugin de configuration -->
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
+
   </target>
 
 

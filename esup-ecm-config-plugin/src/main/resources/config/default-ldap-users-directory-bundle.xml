@@ -20,7 +20,7 @@
     -->
     <server name="default">
 
-      <ldapUrl>ldap://ldap.univ.fr:389</ldapUrl>
+      <ldapUrl>@ldapUrl@</ldapUrl>
       <!-- Optional servers from the same cluster for failover
         and load balancing:
 
@@ -52,7 +52,7 @@
       <idField>username</idField>
       <passwordField>password</passwordField>
 
-      <searchBaseDn>ou=People,dc=univ,dc=fr</searchBaseDn>
+      <searchBaseDn>@ldapSearchBaseDn@</searchBaseDn>
       <searchClass>person</searchClass>
       <!-- To additionally restricte entries you can add an
         arbitrary search filter such as the following:
@@ -74,7 +74,7 @@
       <!-- maximum number of cached entries before global invalidation -->
       <cacheMaxSize>1000</cacheMaxSize>
 
-      <creationBaseDn>ou=people,dc=example,dc=com</creationBaseDn>
+      <creationBaseDn>@ldapSearchBaseDn@</creationBaseDn>
       <creationClass>top</creationClass>
       <creationClass>person</creationClass>
       <creationClass>organizationalPerson</creationClass>

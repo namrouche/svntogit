@@ -12,7 +12,7 @@
 
   <target name="clean">
     <delete  dir="build"/>
-
+    <delete  dir="esup-ecm-config-plugin/target"/>
   </target>
 
 
@@ -61,7 +61,11 @@
 	     token="@jdbcUrl@" value="${db.url}" />
 
     <!-- LDAP -->
-
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml"
+	     token="@ldapSearchBaseDn@" value="${ldap.searchBaseDn}" />
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml"
+	     token="@ldapUrl@" value="${ldap.url}" />
+    
   </target>
 
   

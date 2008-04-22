@@ -83,14 +83,22 @@
 
     <!-- LDAP -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml">
-      <replacefilter token="@ldapSearchBaseDn@" value="${ldap.searchBaseDn}" />
       <replacefilter token="@ldapUrl@" value="${ldap.url}" />
-      <replacefilter token="@ldapFirstName@" value="${ldap.firstName}" />
-      <replacefilter token="@ldapLastName@" value="${ldap.lastName}" />
-      <replacefilter token="@ldapCompagny@" value="${ldap.company}" />
-      <replacefilter token="@ldapEmail@" value="${ldap.email}" />
+      <replacefilter token="@ldapSearchBaseDn@" value="${ldap.user.searchBaseDn}" />
+      <replacefilter token="@ldapFirstName@" value="${ldap.user.firstName}" />
+      <replacefilter token="@ldapLastName@" value="${ldap.user.lastName}" />
+      <replacefilter token="@ldapCompagny@" value="${ldap.user.company}" />
+      <replacefilter token="@ldapEmail@" value="${ldap.user.email}" />
     </replace>
-    
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-groups-directory-bundle.xml">
+      <replacefilter token="@ldapSearchBaseDn@" value="${ldap.group.searchBaseDn}" />
+    </replace>
+
+    <!-- Administrator ID -->
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-virtual-groups-bundle.xml">
+      <replacefilter token="@defaultAdministratorId@" value="${ldap.user.defaultAdministratorId}" />
+    </replace>
+
   </target>
 
   

@@ -21,7 +21,7 @@
       <schema>group</schema>
       <idField>groupname</idField>
 
-      <searchBaseDn>ou=groups,dc=univ,dc=fr</searchBaseDn>
+      <searchBaseDn>@ldapSearchBaseDn@</searchBaseDn>
       <searchFilter>(|(objectClass=groupOfUniqueNames)(objectClass=groupOfURLs))</searchFilter>
       <searchScope>subtree</searchScope>
 
@@ -34,7 +34,7 @@
       <!-- maximum number of cached entries before global invalidation -->
       <cacheMaxSize>1000</cacheMaxSize>
 
-      <creationBaseDn>ou=groups,dc=univ,dc=fr</creationBaseDn>
+      <creationBaseDn>@ldapSearchBaseDn@</creationBaseDn>
       <creationClass>top</creationClass>
       <creationClass>groupOfUniqueNames</creationClass>
       <rdnAttribute>cn</rdnAttribute>

@@ -1,8 +1,0 @@
-# Example for Windows
-jboss.home=C:/Program Files/JBoss
-
-# Example for Unix
-#jboss.home=/opt/jboss
-
-# Which JBoss server config to use
-jboss.config=default

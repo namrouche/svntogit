@@ -16,7 +16,7 @@
   </target>
 
 
-  <target name="copy.src.build">
+  <target name="copy.src.build" depends="prepare">
     <copy todir="build" overwrite="yes">
       <fileset dir="datasources"/>
       <fileset dir="esup-ecm-config-plugin"/>
@@ -50,12 +50,22 @@
     <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-cas2-contrib.xml" 
 	     token="@nuxeo-url@" value="${nuxeo.url}" />
 
+    <!-- JCR DB -->
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
+	     token="@jdbcUser@" value="${db.user}" />
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
+	     token="@jdbcPassword@" value="${db.password}" />
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
+	     token="@jdbcDriver@" value="${db.driver}" />
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
+	     token="@jdbcUrl@" value="${db.url}" />
+
     <!-- LDAP -->
 
   </target>
 
   
-  <target name="deploy">
+  <target name="deploy" depends="replace.token.config">
     <copy todir="" overwrite="yes">
       <fileset dir="datasources"/>
       <fileset dir="esup-ecm-config-plugin"/>

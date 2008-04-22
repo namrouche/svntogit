@@ -3,12 +3,10 @@
 <datasources>
   <local-tx-datasource>
     <jndi-name>nxaudit-logs</jndi-name>
-    <connection-url>
-      jdbc:hsqldb:${jboss.server.data.dir}${/}hypersonic${/}nxaudit-logs
-    </connection-url>
-    <driver-class>org.hsqldb.jdbcDriver</driver-class>
-    <user-name>sa</user-name>
-    <password></password>
+    <connection-url>@jdbcUrl@</connection-url>
+    <driver-class>@jdbcDriver@</driver-class>
+    <user-name>@jdbcUser@</user-name>
+    <password>@jdbcPassword@</password>
   </local-tx-datasource>
 
   <mbean code="org.jboss.jdbc.HypersonicDatabase"

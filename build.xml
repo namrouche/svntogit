@@ -1,5 +1,6 @@
 <project name="esup-ecm-config" default="deploy">
 
+  <property file="build.properties"/>
 
   <taskdef 
       resource="net/sf/antcontrib/antlib.xml" 
@@ -90,11 +91,11 @@
 
   
   <target name="deploy" depends="replace.token.config">
-    <copy todir="" overwrite="yes">
-      <fileset dir="datasources"/>
-      <fileset dir="esup-ecm-config-plugin"/>
+    <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources" overwrite="yes">
+      <fileset dir="build/datasources"/>
+      <fileset dir="build/esup-ecm-config-plugin"/>
     </copy>
-    <copy file="build/jboss/jbossctl" tofile="${nuxeo.dir}/bin" overwrite="yes"/>
+    <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>
     <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jbossweb-tomcat55.sar/server.xml" overwrite="yes"/>
     <subant target="deploy" buildpath="esup-ecm-config-plugin"/>
   </target>

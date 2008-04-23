@@ -19,7 +19,7 @@
          <parameter name="serviceLoginURL">@sso-cas-url@/login</parameter>
          <parameter name="serviceValidateURL">@sso-cas-url@/serviceValidate</parameter>
          <parameter name="serviceKey">service</parameter>
-         <parameter name="logoutURL">@sso-cas-url@/logout?service=http://esup-ecm.univ.fr/nuxeo</parameter>
+         <parameter name="logoutURL">@sso-cas-url@/logout?service=@nuxeo-url@</parameter>
        </parameters>
       </authenticationPlugin>
   </extension>

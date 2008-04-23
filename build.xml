@@ -26,6 +26,10 @@
     <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="packages/${nuxeo-ep.file}" verbose="false"/>
   </target>
 
+  <target name="deploy.nuxeo" depends="prepare">
+    <unzip src="packages/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}" />
+  </target>
+
   <target name="clean">
     <delete  dir="build"/>
     <delete  dir="packages"/>
@@ -107,7 +111,7 @@
   </target>
 
   
-  <target name="deploy" depends="replace.token.config">
+  <target name="deploy.plugin" depends="replace.token.config">
 
     <!-- impossible de configurer cela dynamiquement via un plugin -->
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources" overwrite="yes">
@@ -138,6 +142,8 @@
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
 
   </target>
+
+  <target name="deploy" depends="deploy.nuxeo,deploy.plugin" />
 
     <target name="buildzip" depends="prepare">
 	    <echo message="Construction de ${esup-ecm.zip.file} ...."/>

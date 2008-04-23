@@ -1,6 +1,7 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
+  <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.4.GA-1.zip" />
 
   <taskdef 
       resource="net/sf/antcontrib/antlib.xml" 
@@ -12,6 +13,12 @@
     <mkdir  dir="build/datasources"/>
     <mkdir  dir="build/jboss"/>
     <mkdir  dir="build/esup-ecm-config-plugin"/>
+  	<available file="build/${nuxeo-ep.file}" property="nuxeo-ep.file.present" />
+  	<antcall target="get.nuxeo-ep.file" />
+  </target>
+  	
+  <target name="get.nuxeo-ep.file" unless="nuxeo-ep.file.present">
+    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="build/${nuxeo-ep.file}" verbose="true"/>
   </target>
 
   <target name="clean">

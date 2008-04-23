@@ -4,33 +4,32 @@
   <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.4.GA-1.zip"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA"/>
   <property name="jboss.home" value="${nuxeo.dir}"/>
+  <property name="esup-ecm.zip.file" value="esup-ecm-0.1.zip" />
 
   <taskdef 
       resource="net/sf/antcontrib/antlib.xml" 
       classpath="ant-utils/ant-contrib-1.0.jar"/>
-
 
   <target name="prepare">
     <mkdir  dir="build"/>
     <mkdir  dir="build/datasources"/>
     <mkdir  dir="build/jboss"/>
     <mkdir  dir="build/esup-ecm-config-plugin"/>
-  	<available file="build/${nuxeo-ep.file}" property="nuxeo-ep.file.present" />
+    <mkdir  dir="packages"/>
+    <available file="packages/${nuxeo-ep.file}" property="nuxeo-ep.file.present" />
   	<antcall target="get.nuxeo-ep.file" />
   </target>
   	
   <target name="get.nuxeo-ep.file" unless="nuxeo-ep.file.present">
-    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="build/${nuxeo-ep.file}" verbose="false"/>
+    <echo message="Téléchargement de ${nuxeo-ep.file} dans le répertoire packages."/>
+    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
+    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="packages/${nuxeo-ep.file}" verbose="false"/>
   </target>
 
   <target name="clean">
     <delete  dir="build"/>
+    <delete  dir="packages"/>
     <delete  dir="esup-ecm-config-plugin/target"/>
-  </target>
-
-
-  <target name="deploy.nuxeo" depends="prepare">
-    <unzip src="build/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}" /> 
   </target>
 
 
@@ -116,7 +115,7 @@
   </target>
 
   
-  <target name="deploy.plugin" depends="replace.token.config">
+  <target name="deploy" depends="replace.token.config">
 
     <!-- impossible de configurer cela dynamiquement via un plugin -->
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources" overwrite="yes">
@@ -146,7 +145,20 @@
 
   </target>
 
-  <target name="deploy" depends="deploy.nuxeo,deploy.plugin" />
+    <target name="buildzip" depends="prepare">
+	    <echo message="Construction de ${esup-ecm.zip.file} ...."/>
+	    <delete file="packages/${esup-ecm.zip.file}"/>
+	    <zip destfile="packages/${esup-ecm.zip.file}">
+	       <zipfileset dir="">
+	       	<include name="**/*"/>
+            <exclude name="**/.*"/>
+            <exclude name="**/build/**"/>
+            <exclude name="**/bin/**"/>
+            <exclude name="packages/${esup-ecm.zip.file}"/>
+	       	<exclude name="build.properties"/>
+	       </zipfileset>
+	    </zip>
+    </target>
 
 </project>
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//UR1//DTD docbookAllegeEsup//FR"
+"http://www.esup-portail.org/consortium/espace/docbook/xxe/dtd/docbook_allege_esup.dtd">
+<article lang="FR">
+  <title>ESUP-ECM - Guide d'installation</title>
+
+  <articleinfo>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="media/logo.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+
+    <abstract>
+      <para>ESUP-ECM est l'outil de gestion de documents du projet
+      ESUP-Portail</para>
+    </abstract>
+
+    <author>
+      <firstname>L'équipe projet ESUP-ECM</firstname>
+
+      <surname></surname>
+
+      <affiliation>
+        <orgname><ulink url="http://esup-portail.org">esup-portail.org</ulink>
+        project</orgname>
+      </affiliation>
+    </author>
+  </articleinfo>
+
+  <section>
+    <title>Important note</title>
+
+    <para>Because of uPortal limitation before 2.6.1 release in session
+    objects management esup-lecture may produce null pointer exceptions
+    randomly. For this esup-lecture, since 0.9.0 release has a full support of
+    servlet mode. Please see “Servlet mode” section for more
+    information.</para>
+  </section>
+</article>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//UR1//DTD docbookAllegeEsup//FR"
+"http://www.esup-portail.org/consortium/espace/docbook/xxe/dtd/docbook_allege_esup.dtd">
+<article lang="FR">
+  <title>ESUP-ECM</title>
+
+  <articleinfo>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="media/logo.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+
+    <abstract>
+      <para>ESUP-ECM est l'outil de gestion de documents du projet
+      ESUP-Portail</para>
+    </abstract>
+
+    <author>
+      <firstname>L'équipe projet ESUP-ECM</firstname>
+
+      <surname></surname>
+
+      <affiliation>
+        <orgname><ulink url="http://esup-portail.org">esup-portail.org</ulink>
+        project</orgname>
+      </affiliation>
+    </author>
+  </articleinfo>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>ESUP-ECM est l'outil de gestion de documents du projet <ulink
+    url="http://esup-portail.org">esup-portail.org</ulink>.</para>
+
+    <para>ECM signifie Enterprise Content Management.</para>
+
+    <para>Ce projet est bâti sur le produit nuxeo (cf. <ulink
+    url="http://www.nuxeo.com">www.nuxeo.com</ulink> et <ulink
+    url="http://www.nuxeo.org">www.nuxeo.org</ulink>).</para>
+
+    <section>
+      <title>Liens utiles</title>
+
+      <itemizedlist>
+        <listitem>
+          <para><ulink url="http://sourcesup.cru.fr/projects/esup-ecm/">Site
+          du projet</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink
+          url="http://sourcesup.cru.fr/tracker/?atid=1797&amp;group_id=430&amp;func=browse">Bug
+          tracker</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink
+          url="http://sourcesup.cru.fr/tracker/?atid=1800&amp;group_id=430&amp;func=browse">Feature
+          requests</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink
+          url="http://sourcesup.cru.fr/frs/?group_id=430">Télécharger</ulink></para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>Documentation</title>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><ulink url="InstallationGuide.html">Installation
+          guide</ulink></para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+</article>

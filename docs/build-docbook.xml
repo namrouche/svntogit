@@ -4,25 +4,21 @@
 
 <!-- ==================== Properties =================================== -->
 
-	<property name="pages.root.dir" value="docs"/>
+	<property name="pages.root.dir" value="."/>
 	<property name="pages.xml" value="${pages.root.dir}/xml"/>
 	<property name="pages.html" value="${pages.root.dir}/main"/>
 	<property name="media.xml" value="${pages.xml}/media"/>
 	<property name="media.html" value="${pages.html}/media"/>
 
-	<property name="lib.dir" value="lib-docbook"/>
+	<property name="lib.dir" value="${pages.root.dir}/lib-docbook"/>
 
-	<property name="xsl.dir" value="xsl-docbook"/>
+	<property name="xsl.dir" value="${pages.root.dir}/xsl-docbook"/>
 	<property name="xsl.file" value="docbookEsup.xsl"/>
 	<property name="url.xsl" value="http://www.esup-portail.org/consortium/espace/docbook/xsl"/>
 
 	<property name="url.lib" value="http://www.esup-portail.org/consortium/espace/docbook/lib"/>
 	<property name="lib.file.1" value="saxon.jar"/>
 	<property name="lib.file.2" value="saxon-jdom.jar"/>
-
-
-
-
 
 
 <!-- ==================== Prepare Target ================================== -->

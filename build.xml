@@ -72,7 +72,8 @@
     <!-- tools -->
     <replace file="build/jboss/jbossctl">
       <replacefilter token="@jbossUser@" value="${jboss.user}" />
-      <replacefilter token="@jbossHome@" value="${jboss.home}" />
+        <replacefilter token="@jbossHome@" value="${jboss.home}" />
+        <replacefilter token="@jdkHome@" value="${jdk.home}" />
     </replace>
     <replace file="build/jboss/server.xml">
       <replacefilter token="@tomcatPortHttp@" value="${tomcat.port.http}" />

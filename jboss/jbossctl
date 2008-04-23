@@ -79,7 +79,9 @@ if [ -z "$JBOSS_USER" -o `id -nu` = "$JBOSS_USER" ]; then
   SU=""
 else
   SU="su - $JBOSS_USER -c "
+  chown -R "$JBOSS_USER" "$JBOSS_HOME"
 fi
+chmod u+x "$JBOSS_HOME"/bin/*.sh "$JBOSS_HOME/bin/jbossctl"
 
 if [ -z "`echo $PATH | grep $JAVA_HOME/bin`" ]; then
   export PATH=$JAVA_HOME/bin:$PATH

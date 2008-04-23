@@ -8,6 +8,31 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>ejb</packaging>
 
+  <repositories>
+    <repository>
+        <id>nuxeo_central</id>
+        <name>nuxeo1</name>
+        <url>http://archiva.nuxeo.org/archiva/repository/central</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>nuxeo_release</id>
+        <name>nuxeo2</name>
+        <url>http://archiva.nuxeo.org/archiva/repository/nuxeo_release</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+  </repositories>
+
   <properties>
     <!-- Select the nuxeo 5 ecm version -->
 

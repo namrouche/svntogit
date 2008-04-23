@@ -36,7 +36,9 @@
       <arg value="install" />
       <arg value="-Dmaven.test.skip=true" />
       <!-- Vincent : Ajout du -o pour eviter la reconnection au serveur maven nuxeo (long)-->
+<!-- Raymond : Ne fonctionne pas sur un poste "vierge"   	
       <arg value="-o" />
+-->      
     </exec>
   </target>
   <target name="install-windows" if="osfamily-windows">

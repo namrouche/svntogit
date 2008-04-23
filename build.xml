@@ -4,7 +4,7 @@
   <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.4.GA-1.zip"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA"/>
   <property name="jboss.home" value="${nuxeo.dir}"/>
-  <property name="esup-ecm.zip.file" value="esup-ecm-0.1.zip" />
+  <property name="esup-ecm.file" value="esup-ecm-0.1" />
 
   <taskdef 
       resource="net/sf/antcontrib/antlib.xml" 
@@ -147,15 +147,15 @@
   <target name="deploy" depends="deploy.nuxeo,deploy.plugin" />
 
     <target name="buildzip" depends="prepare">
-	    <echo message="Construction de ${esup-ecm.zip.file} ...."/>
-	    <delete file="packages/${esup-ecm.zip.file}"/>
-	    <zip destfile="packages/${esup-ecm.zip.file}">
-	       <zipfileset dir="">
+	    <echo message="Construction de ${esup-ecm.file}.zip ...."/>
+	    <delete file="packages/${esup-ecm.file}.zip"/>
+	    <zip destfile="packages/${esup-ecm.file}.zip" >
+	       <zipfileset dir="" prefix="${esup-ecm.file}">
 	       	<include name="**/*"/>
             <exclude name="**/.*"/>
             <exclude name="**/build/**"/>
             <exclude name="**/bin/**"/>
-            <exclude name="packages/${esup-ecm.zip.file}"/>
+            <exclude name="packages/${esup-ecm.file}.zip"/>
 	       	<exclude name="build.properties"/>
 	       </zipfileset>
 	    </zip>

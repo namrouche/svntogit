@@ -47,8 +47,18 @@
     exemple <command>jboss</command>) qui sera utilisé pour faire faire
     tourner JBOSS.</para>
 
-    <para>On s’attend également à ce que ant soit présent sur la
-    machine.</para>
+    <caution>
+      <para>l'utilisateur jboss doit avoir un <command>JAVA_HOME</command>,
+      pointant vers un JDK en version 5, positionné dans son
+      <command>.basrc</command> (ex : <command>export
+      JAVA_HOME=/opt/jdk1.5.0</command>)</para>
+    </caution>
+
+    <para>On s’attend également à ce que <emphasis>ant</emphasis> et
+    <emphasis>maven</emphasis> soient présents sur la machine. De plus maven
+    doit être présent dans le path (exemple, si besoin, de positionnement du
+    path <command>export
+    PATH=$PATH:/opt/apache-ant-1.7/bin:/opt/apache-maven-2.0.9/bin</command>)</para>
 
     <para>De même ESUP-ECM nécessite une base de données transactionnelle avec
     un mécanisme de sauvegarde en ligne. Pour cette raison, cette version de
@@ -111,7 +121,17 @@
         </listitem>
 
         <listitem>
+          <para>Positionner <command>JAVA_HOME</command> (ex : <command>export
+          JAVA_HOME=/opt/jdk1.5.0</command>)</para>
+        </listitem>
+
+        <listitem>
           <para>Lancer la commande <command>ant deploy</command></para>
+        </listitem>
+
+        <listitem>
+          <para>Lancer le serveur par <command>sh ./jbossctl
+          start</command></para>
         </listitem>
 
         <listitem>

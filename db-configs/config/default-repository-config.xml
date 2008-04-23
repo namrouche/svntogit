@@ -66,7 +66,7 @@
 
 	<PersistenceManager class="org.apache.jackrabbit.core.state.db.SimpleDbPersistenceManager">
             <param name="driver" value="@jdbcDriver@"/>
-            <param name="url" value="@jdbcUrl@"/>
+            <param name="url" value="@jdbcJcrUrl@"/>
             <param name="user" value="@jdbcUser@"/>
             <param name="password" value="@jdbcPassword@"/>
             <param name="schema" value="postgresql"/>
@@ -103,7 +103,7 @@
           -->
           <PersistenceManager class="org.apache.jackrabbit.core.state.db.SimpleDbPersistenceManager">
             <param name="driver" value="@jdbcDriver@"/>
-            <param name="url" value="@jdbcUrl@"/>
+            <param name="url" value="@jdbcJcrUrl@"/>
             <param name="user" value="@jdbcUser@"/>
             <param name="password" value="@jdbcPassword@"/>
             <param name="schema" value="postgresql"/>

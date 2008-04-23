@@ -12,7 +12,7 @@
 
   <target name="prepare">
     <mkdir  dir="build"/>
-    <mkdir  dir="build/datasources"/>
+    <mkdir  dir="build"/>
     <mkdir  dir="build/jboss"/>
     <mkdir  dir="build/esup-ecm-config-plugin"/>
     <mkdir  dir="packages"/>
@@ -34,8 +34,8 @@
 
 
   <target name="copy.src.build" depends="prepare">
-    <copy todir="build/datasources" overwrite="yes">
-      <fileset dir="datasources"/>
+    <copy todir="build" overwrite="yes">
+      <fileset dir="db-configs"/>
     </copy>
     <copy todir="build/jboss" overwrite="yes">
       <fileset dir="jboss"/>
@@ -50,7 +50,7 @@
 
     <echo message="Mise a jour des fichiers lies aux base de donnees usuelles (autres que JCR)" />
 
-    <replace dir="build/datasources" includes="*.xml">
+    <replace dir="build" includes="config/*.xml,datasources/*.xml">
       <replacefilter 
 	  token="@jdbcUser@" value="${db.user}" />
       <replacefilter 
@@ -59,6 +59,8 @@
 	  token="@jdbcDriver@" value="${db.driver}" />
       <replacefilter 
 	  token="@jdbcUrl@" value="${db.url}" />
+      <replacefilter 
+	  token="@jdbcJcrUrl@" value="${db.jcr.url}" />
     </replace>
 
     <echo message="Mise a jour des fichiers lies au plugin de configuration" />
@@ -83,16 +85,6 @@
 	     token="@sso-cas-url@" value="${cas.url}" />
     <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-cas2-contrib.xml" 
 	     token="@nuxeo-url@" value="${nuxeo.url}" />
-
-    <!-- JCR DB -->
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
-	     token="@jdbcUser@" value="${db.user}" />
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
-	     token="@jdbcPassword@" value="${db.password}" />
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
-	     token="@jdbcDriver@" value="${db.driver}" />
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-repository-config.xml"
-	     token="@jdbcUrl@" value="${db.jcr.url}" />
 
     <!-- LDAP -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml">
@@ -123,7 +115,9 @@
     </copy>
 
     <!-- requis pour jenia - impossible de configurer cela dynamiquement via un plugin -->
-    <copy file="datasources/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
+    <copy file="build/config/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
+    <!-- JCR - impossible de configurer cela dynamiquement via un plugin (depuis la 5.1.4) -->
+    <copy file="build/config/default-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
 
   	<!-- configuration jboss -->
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>

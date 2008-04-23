@@ -112,6 +112,7 @@
     <!-- requis pour jenia - impossible de configurer cela dynamiquement via un plugin -->
     <copy file="datasources/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
 
+  	<!-- configuration jboss -->
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>
     <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jbossweb-tomcat55.sar/server.xml" overwrite="yes"/>
 
@@ -120,10 +121,11 @@
       <fileset dir="lib"/>
     </copy>
 
-    <!-- plugins addons nuxeo supplementaires [sso-cas] --> 
+    <!-- plugins addons nuxeo supplementaires --> 
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins"  overwrite="yes">
       <fileset dir="nuxeo-addons"/>
     </copy>
+  	
 
     <!-- deploiement du plugin de configuration -->
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>

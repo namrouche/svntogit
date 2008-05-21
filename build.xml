@@ -2,6 +2,7 @@
 
   <property file="build.properties"/>
   <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.4.GA-1.zip"/>
+  <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.1.4.zip"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA"/>
   <property name="jboss.home" value="${nuxeo.dir}"/>
   <property name="esup-ecm.file" value="esup-ecm-0.1" />
@@ -16,18 +17,28 @@
     <mkdir  dir="build/jboss"/>
     <mkdir  dir="build/esup-ecm-config-plugin"/>
     <mkdir  dir="packages"/>
+  	<mkdir dir="${nuxeo.dir.parent}/nuxeo-shell"/>
     <available file="packages/${nuxeo-ep.file}" property="nuxeo-ep.file.present" />
-  	<antcall target="get.nuxeo-ep.file" />
+    <available file="packages/${nuxeo-nxshell.file}" property="nuxeo-nxshell.file.present" />
+    <antcall target="get.nuxeo-ep.file" />
+    <antcall target="get.nuxeo-nxshell.file" />
   </target>
   	
-  <target name="get.nuxeo-ep.file" unless="nuxeo-ep.file.present">
-    <echo message="Téléchargement de ${nuxeo-ep.file} dans le répertoire packages."/>
-    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
-    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="packages/${nuxeo-ep.file}" verbose="false"/>
-  </target>
+	  <target name="get.nuxeo-ep.file" unless="nuxeo-ep.file.present">
+	    <echo message="Téléchargement de ${nuxeo-ep.file} dans le répertoire packages."/>
+	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
+	    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="packages/${nuxeo-ep.file}" verbose="false"/>
+	  </target>
+
+	  <target name="get.nuxeo-nxshell.file" unless="nuxeo-nxshell.file.present">
+	    <echo message="Téléchargement de ${nuxeo-nxshell.file} dans le répertoire packages."/>
+	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
+	    <get src=" http://download.nuxeo.org/nuxeo-shell/${nuxeo-nxshell.file}" dest="packages/${nuxeo-nxshell.file}" verbose="false"/>
+	  </target>
 
   <target name="deploy.nuxeo" depends="prepare">
-    <unzip src="packages/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}" />
+    <unzip src="packages/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}"/>
+    <unzip src="packages/${nuxeo-nxshell.file}" dest="${nuxeo.dir.parent}/nuxeo-shell" />
   </target>
 
   <target name="clean">
@@ -138,7 +149,6 @@
       <fileset dir="nuxeo-addons"/>
     </copy>
   	
-
     <!-- deploiement du plugin de configuration -->
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
 

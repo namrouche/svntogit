@@ -5,7 +5,7 @@
   <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.1.4.zip"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA"/>
   <property name="jboss.home" value="${nuxeo.dir}"/>
-  <property name="esup-ecm.file" value="esup-ecm-0.1" />
+  <property name="esup-ecm.file" value="esup-ecm-0.2" />
 
   <taskdef 
       resource="net/sf/antcontrib/antlib.xml" 
@@ -97,9 +97,9 @@
 	     token="@nuxeo-dir@" value="${nuxeo.dir}" />
 
     <!-- CAS -->
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-cas2-contrib.xml" 
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-contrib.xml" 
 	     token="@sso-cas-url@" value="${cas.url}" />
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-cas2-contrib.xml" 
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-contrib.xml" 
 	     token="@nuxeo-url@" value="${nuxeo.url}" />
 
     <!-- LDAP -->

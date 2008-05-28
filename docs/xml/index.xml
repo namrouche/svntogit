@@ -74,8 +74,12 @@
 
     <para><itemizedlist>
         <listitem>
-          <para><ulink url="InstallationGuide.html">Installation
-          guide</ulink></para>
+          <para><ulink
+          url="InstallationGuide.html">Installation</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink url="Exploitation.html">Exploitation</ulink></para>
         </listitem>
       </itemizedlist></para>
   </section>

@@ -447,13 +447,4 @@
       </itemizedlist>
     </section>
   </section>
-
-  <section>
-    <title>Exploitation</title>
-
-    <para>Le script <command>jbossctl</command>, présent dans
-    <command>&lt;nuxeo.dir.parent&gt;/nuxeo-5.1.4.GA-RB/bin</command> permet
-    d’interagir avec le service. Lancer <command>jbossctl</command> sans
-    arguments pour avoir la liste des possibilités.</para>
-  </section>
 </article>

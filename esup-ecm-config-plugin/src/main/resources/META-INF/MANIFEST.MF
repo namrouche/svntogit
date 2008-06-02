@@ -8,6 +8,8 @@ Provide-Package: org.esup.ecm
 Require-Bundle: org.nuxeo.runtime,
  org.nuxeo.ecm.core.api,
  org.nuxeo.ecm.core,
- org.nuxeo.ecm.webapp.core
-Nuxeo-Component: OSGI-INF/login-cas2-contrib.xml
+ org.nuxeo.ecm.webapp.core,
+ org.nuxeo.ecm.platform.login.anonymous,
+ org.nuxeo.ecm.platform.login.cas2
+Nuxeo-Component: OSGI-INF/login-contrib.xml
 

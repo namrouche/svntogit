@@ -40,6 +40,7 @@
 				<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
 				<plugin>BASIC_AUTH</plugin>
 				<plugin>ANONYMOUS_AUTH</plugin>
+				<!--plugin>FORM_AUTH</plugin-->
 				<plugin>CAS2_AUTH</plugin>
 			</plugins>
 		</authenticationChain>
@@ -50,7 +51,7 @@
 		point="userManager">
 		<userManager>
 			<users>
-				<anonymousUser id="Invite">
+				<anonymousUser id="invite">
 					<property name="firstName">Invite</property>
 					<property name="lastName">Anonyme</property>
 				</anonymousUser>

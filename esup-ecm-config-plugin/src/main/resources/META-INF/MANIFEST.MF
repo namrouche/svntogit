@@ -11,5 +11,8 @@ Require-Bundle: org.nuxeo.runtime,
  org.nuxeo.ecm.webapp.core,
  org.nuxeo.ecm.platform.login.anonymous,
  org.nuxeo.ecm.platform.login.cas2
-Nuxeo-Component: OSGI-INF/login-contrib.xml
+Nuxeo-Component: OSGI-INF/login-contrib.xml,
+ OSGI-INF/esup-theme-contrib.xml,
+ OSGI-INF/rennes1-theme-contrib.xml,
+ OSGI-INF/ori-theme-contrib.xml
 

@@ -22,7 +22,7 @@
       <idField>groupname</idField>
 
       <searchBaseDn>@ldapSearchBaseDn@</searchBaseDn>
-      <searchFilter>(|(objectClass=groupOfUniqueNames)(objectClass=groupOfNames)(objectClass=groupOfURLs))</searchFilter>
+      <searchFilter>(|(objectClass=groupOfNames)(objectClass=groupOfURLs))</searchFilter>
       <searchScope>subtree</searchScope>
 
       <readOnly>false</readOnly>
@@ -55,7 +55,7 @@
 
         <ldapReference field="members" directory="userDirectory"
           forceDnConsistencyCheck="false"
-          staticAttributeId="uniqueMember"
+          staticAttributeId="member"
           dynamicAttributeId="memberURL" />
 
         <ldapReference field="subGroups" directory="groupDirectory"

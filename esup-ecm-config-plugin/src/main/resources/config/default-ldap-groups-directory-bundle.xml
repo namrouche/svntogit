@@ -22,7 +22,7 @@
       <idField>groupname</idField>
 
       <searchBaseDn>@ldapSearchBaseDn@</searchBaseDn>
-      <searchFilter>(|(objectClass=groupOfUniqueNames)(objectClass=groupOfURLs))</searchFilter>
+      <searchFilter>(|(objectClass=groupOfUniqueNames)(objectClass=groupOfNames)(objectClass=groupOfURLs))</searchFilter>
       <searchScope>subtree</searchScope>
 
       <readOnly>false</readOnly>

@@ -2,7 +2,9 @@
 
   <property file="build.properties"/>
   <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.4.GA-1.zip"/>
+  <property name="nuxeo-ep-unziped.file" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
   <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.1.4.zip"/>
+  <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA"/>
   <property name="jboss.home" value="${nuxeo.dir}"/>
   <property name="esup-ecm.file" value="esup-ecm-0.2" />
@@ -20,6 +22,8 @@
   	<mkdir dir="${nuxeo.dir.parent}/nuxeo-shell"/>
     <available file="packages/${nuxeo-ep.file}" property="nuxeo-ep.file.present" />
     <available file="packages/${nuxeo-nxshell.file}" property="nuxeo-nxshell.file.present" />
+    <available file="${nuxeo-ep-unziped.file}" property="nuxeo-ep.unziped" />
+    <available file="${nuxeo-nxshell-unziped.file}" property="nuxeo-nxshell.unziped" />
     <antcall target="get.nuxeo-ep.file" />
     <antcall target="get.nuxeo-nxshell.file" />
   </target>
@@ -37,11 +41,19 @@
 	  </target>
 
   <target name="deploy.nuxeo" depends="prepare">
-    <unzip src="packages/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}"/>
-    <unzip src="packages/${nuxeo-nxshell.file}" dest="${nuxeo.dir.parent}/nuxeo-shell" />
+  	<antcall target="deploy.nuxeo.ep" />
+  	<antcall target="deploy.nuxeo.nxshell" />
   </target>
+	
+	<target name="deploy.nuxeo.ep" unless="nuxeo-ep-unziped.file">
+	    <unzip src="packages/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}" />
+	</target>
 
-  <target name="clean">
+	<target name="deploy.nuxeo.nxshell" unless="nuxeo-nxshell-unziped.file">
+	    <unzip src="packages/${nuxeo-nxshell.file}" dest="${nuxeo.dir.parent}/nuxeo-shell" />
+	</target>
+
+	<target name="clean">
     <delete  dir="build"/>
     <delete  dir="packages"/>
     <delete  dir="esup-ecm-config-plugin/target"/>

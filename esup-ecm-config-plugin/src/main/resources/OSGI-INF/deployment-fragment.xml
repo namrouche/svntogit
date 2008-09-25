@@ -9,7 +9,8 @@
     </module>
 
   </extension>
-
+  
+  
   <install>
 
     <!--  Unzip the war template -->
@@ -22,7 +23,9 @@
     <delete path="esup-ecm-config.tmp"/>
     <mkdir path="esup-ecm-config.tmp"/>
 
-    <unzip from="${bundle.fileName}" to="esup-ecm-config.tmp"/>
+    <unzip from="${bundle.fileName}" to="esup-ecm-config.tmp">
+      <include>**/*.properties</include>
+    </unzip>
 
     <append from="esup-ecm-config.tmp/OSGI-INF/l10n/messages_en.properties"
       to="nuxeo.war/WEB-INF/classes/messages_en.properties"

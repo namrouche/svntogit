@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 1
 Bundle-Name: esup-ecm-config project
 Bundle-SymbolicName: org.esup.ecm;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Vendor: Esup
+Bundle-Vendor: Nuxeo
 Provide-Package: org.esup.ecm
 Require-Bundle: org.nuxeo.runtime,
  org.nuxeo.ecm.core.api,

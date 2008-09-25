@@ -1,0 +1,28 @@
+<component name="org.esup.ecm.actions">
+
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+    point="actions">
+
+    <action id="TAB_FILES_VIEW" enabled="false"/>
+
+    <action id="TAB_FILES_EDIT" enabled="false"/>
+
+    <action id="TAB_PUBLISH" label="ori.action.publish.content" link="/incl/tabs/ori_document_publish.xhtml"/>
+
+	<action id="TAB_RELATIONS" enabled="false"/>
+
+	<action id="TAB_CONTENT_REVIEW" enabled="false"/>
+
+    <action id="TAB_MY_SUBSCRIPTIONS" enabled="false"/>
+
+    <action id="TAB_MANAGE_SUBSCRIPTIONS" enabled="false"/>
+
+	<action id="TAB_CONTENT_ARCHIVE" enabled="false"/>
+
+	<action id="view_comments" enabled="false"/>
+
+	<action id="DOCUMENT_LOCK" enabled="false"/>
+
+	</extension>
+
+</component>

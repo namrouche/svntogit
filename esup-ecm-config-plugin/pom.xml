@@ -1,151 +1,112 @@
 <?xml version="1.0"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.esup.ecm</groupId>
-  <artifactId>esup-ecm-config</artifactId>
-  <name>esup-ecm-config project</name>
-  <description>esup-ecm-config project description</description>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>ejb</packaging>
 
-  <repositories>
-    <repository>
-        <id>nuxeo_central</id>
-        <name>nuxeo1</name>
-        <url>http://archiva.nuxeo.org/archiva/repository/central</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>nuxeo_release</id>
-        <name>nuxeo2</name>
-        <url>http://archiva.nuxeo.org/archiva/repository/nuxeo_release</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-  </repositories>
+	<parent>
+		<groupId>org.nuxeo.ecm.platform</groupId>
+		<artifactId>nuxeo-platform-parent</artifactId>
+		<version>5.1.4</version>
+	</parent>
 
-  <properties>
-    <!-- Select the nuxeo 5 ecm version -->
+	<groupId>org.esup.ecm</groupId>
+	<artifactId>esup-ecm-config</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>esup-ecm-config project</name>
+	<description>esup-ecm-config project description</description>
 
-    <!-- Nuxeo RC 5.1.RC version -->
-    <jboss.version>4.0.4.GA</jboss.version>
-    <nuxeo-ecm-core.version>1.3.2</nuxeo-ecm-core.version>
-    <nuxeo-ecm.version>5.1.0</nuxeo-ecm.version>
 
-    <!-- Nuxeo SNAPSHOT 5.1 update each day
-    <jboss.version>4.0.4.GA</jboss.version>
-    <nuxeo-ecm-core.version>1.4-SNAPSHOT</nuxeo-ecm-core.version>
-    <nuxeo-ecm.version>5.1-SNAPSHOT</nuxeo-ecm.version>
-    -->
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test*.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.0.2</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-ejb-plugin</artifactId>
-          <version>2.1</version>
-          <configuration>
-            <ejbVersion>3.0</ejbVersion>
-            <archive>
-              <manifestFile>
-                src/main/resources/META-INF/MANIFEST.MF
-              </manifestFile>
-            </archive>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+	<repositories>
+		<repository>
+			<id>nuxeo_release</id>
+			<url>
+				http://archiva.nuxeo.org/archiva/repository/nuxeo_release
+			</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core</artifactId>
-      <version>${nuxeo-ecm-core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.core</groupId>
-      <artifactId>nuxeo-core-api</artifactId>
-      <version>${nuxeo-ecm-core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-ui-web</artifactId>
-      <version>${nuxeo-ecm.version}</version>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-webapp-core</artifactId>
-      <version>${nuxeo-ecm.version}</version>
       <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-jcr-connector-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-workflow-jbpm-document-handlers</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-notification-core</artifactId>
+      <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-notification-facade</artifactId>
+      <type>ejb</type>
+    </dependency>           
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-filemanager-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-publishing-web</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-j2ee</artifactId>
-      <version>${jboss.version}</version>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.faces</groupId>
+      <artifactId>jsf-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-seam</artifactId>
       <scope>provided</scope>
-      <version>1.1.5</version>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-annotations-ejb3</artifactId>
       <scope>provided</scope>
-      <version>3.0-RC8</version>
     </dependency>
     <dependency>
-      <groupId>javax.ejb</groupId>
-      <artifactId>ejb</artifactId>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-j2ee</artifactId>
       <scope>provided</scope>
-      <version>3.0-RC8</version>
     </dependency>
-  </dependencies>
+    </dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>
+							src/main/resources/META-INF/MANIFEST.MF
+						</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

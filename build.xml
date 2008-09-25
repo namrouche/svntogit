@@ -22,7 +22,7 @@
   	<mkdir dir="${nuxeo.dir.parent}/nuxeo-shell"/>
     <available file="packages/${nuxeo-ep.file}" property="nuxeo-ep.file.present" />
     <available file="packages/${nuxeo-nxshell.file}" property="nuxeo-nxshell.file.present" />
-    <available file="${nuxeo-ep-unziped.file}" property="nuxeo-ep.unziped" />
+    <available file="${nuxeo-ep-unziped.file}" property="nuxeo-ep.unziped.file.present" />
     <available file="${nuxeo-nxshell-unziped.file}" property="nuxeo-nxshell.unziped" />
     <antcall target="get.nuxeo-ep.file" />
     <antcall target="get.nuxeo-nxshell.file" />
@@ -45,7 +45,7 @@
   	<antcall target="deploy.nuxeo.nxshell" />
   </target>
 	
-	<target name="deploy.nuxeo.ep" unless="nuxeo-ep-unziped.file">
+	<target name="deploy.nuxeo.ep" unless="nuxeo-ep.unziped.file.present">
 	    <unzip src="packages/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}" />
 	</target>
 

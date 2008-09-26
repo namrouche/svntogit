@@ -7,7 +7,7 @@
 
     <action id="TAB_FILES_EDIT" enabled="false"/>
 
-    <action id="TAB_PUBLISH" label="ori.action.publish.content" link="/incl/tabs/ori_document_publish.xhtml"/>
+    <action id="TAB_PUBLISH" label="esup.action.publish.content" link="/incl/tabs/esup_document_publish.xhtml"/>
 
 	<action id="TAB_RELATIONS" enabled="false"/>
 

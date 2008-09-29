@@ -10,6 +10,17 @@
 
   <script type="text/javascript"  src="#{baseURL}scripts/PublishingTableSelections.js"></script>
 
+  <!-- XXX: the /nuxeo/ prefix should be dynamically looked up -->
+  <script language="javascript">
+    function popupPublish(publishFormId, url) {
+      popup = window.open(url, '_blank', 'toolbar=0, scrollbars=1, location=0, statusbar=0, menubar=0, resizable=1, dependent=1, width=712, height=480');
+      if(!popup.opener) {
+        popup.opener = window;
+      }
+      return false;
+    }
+  </script>
+
 <h:outputText value="#{messages['label.publish.noversions.available']}"
   rendered="#{!documentVersioning.uidDataAvailable}"/>
 
@@ -66,6 +77,12 @@
       </h:column>
       
     </h:dataTable>
+
+    <nxu:methodResult name="url"
+		      value="#{restHelper.addCurrentConversationParameters('/nuxeo/esup_publish_document_popup.faces')}">
+      <input type="button" value="publier" class="button"
+	     onclick="javascript:popupPublish(this.form.id, '#{url}');" />
+    </nxu:methodResult>
 
     </t:dataList>
   </h:form>

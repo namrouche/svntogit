@@ -13,6 +13,68 @@
 <h:outputText value="#{messages['label.publish.noversions.available']}"
   rendered="#{!documentVersioning.uidDataAvailable}"/>
 
+
+<nxu:methodResult value="#{esupPublishActions.getVersionsSelectModel()}" name="versions">
+  <h:form >
+<t:dataList var="versionItem" value="${versions}"
+	    layout="unorderedList"> 					
+        Version <h:outputText value="#{versionItem[0]}" />
+
+    <h:dataTable var="proxySection" value="${versionItem[1]}"
+      class="dataOutput" rowClasses="dataRowEven,dataRowOdd">
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Publiée dans" />
+        </f:facet>
+        <h:outputText value="#{proxySection[1].title}" />
+      </h:column>
+
+      <h:column>
+
+        <f:facet name="header">
+          <h:outputText value="Titre" />
+        </f:facet>
+
+	<h:outputText value="#{proxySection[0].title}}" />
+	
+      </h:column>
+
+      <h:column>
+
+        <f:facet name="header">
+          <h:outputText value="le" />
+        </f:facet>
+
+	
+	<h:outputText value="#{proxySection[2]['dc:modified']}">
+	  <f:convertDateTime pattern="#{nxu:basicDateFormater()}" />
+	</h:outputText>
+	
+      </h:column>
+
+
+      <!--  Actions for the published document  -->
+      <h:column >
+	<f:facet name="header">
+	  <h:outputText value="Action" />
+	</f:facet>
+	<h:commandLink value="#{messages['command.document.unpublish']}"
+		       action="#{esupPublishActions.unPublishDocument}"
+		       immediate="true">
+	  <f:param name="unPublishSectionRef" value="#{proxySection[1].ref}" />
+	</h:commandLink>
+      </h:column>
+      
+    </h:dataTable>
+
+    </t:dataList>
+  </h:form>
+ </nxu:methodResult>
+ 
+ 
+ 
+ 
+ 
 <nxu:methodResult value="#{esupPublishActions.getSectionsModel()}" name="documents">
 <f:subview
   rendered="#{documents != null and documentVersioning.uidDataAvailable}">

@@ -43,18 +43,4 @@
 </extension>
 
 
-  <!-- application settings -->
-  <extension target="org.nuxeo.theme.services.ThemeService"
-    point="applications">
-
-    <application root="/nuxeo">
-
-      <view id="/esup_publish_document_popup.xhtml">
-        <theme>default/popup</theme>
-      </view>
-      
-   </application>
-      
- </extension>
-
 </component>

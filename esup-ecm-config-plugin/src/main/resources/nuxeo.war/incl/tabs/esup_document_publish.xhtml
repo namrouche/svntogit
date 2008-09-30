@@ -6,20 +6,10 @@
   xmlns:t="http://myfaces.apache.org/tomahawk"
   xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
   xmlns:nxd="http://nuxeo.org/nxweb/document"
-  xmlns:nxu="http://nuxeo.org/nxweb/util">
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:nxh="http://nuxeo.org/nxweb/html">
 
   <script type="text/javascript"  src="#{baseURL}scripts/PublishingTableSelections.js"></script>
-
-  <!-- XXX: the /nuxeo/ prefix should be dynamically looked up -->
-  <script language="javascript">
-    function popupPublish(publishFormId, url) {
-      popup = window.open(url, '_blank', 'toolbar=0, scrollbars=1, location=0, statusbar=0, menubar=0, resizable=1, dependent=1, width=712, height=480');
-      if(!popup.opener) {
-        popup.opener = window;
-      }
-      return false;
-    }
-  </script>
 
 <h:outputText value="#{messages['label.publish.noversions.available']}"
   rendered="#{!documentVersioning.uidDataAvailable}"/>
@@ -31,7 +21,7 @@
 	    layout="unorderedList"> 					
         Version <h:outputText value="#{versionItem[0]}" />
 
-    <h:dataTable var="proxySection" value="${versionItem[1]}"
+    <h:dataTable var="proxySection" value="${versionItem[1][1]}"
       class="dataOutput" rowClasses="dataRowEven,dataRowOdd">
       <h:column>
         <f:facet name="header">
@@ -78,11 +68,82 @@
       
     </h:dataTable>
 
-    <nxu:methodResult name="url"
-		      value="#{restHelper.addCurrentConversationParameters('/nuxeo/esup_publish_document_popup.faces')}">
       <input type="button" value="publier" class="button"
-	     onclick="javascript:popupPublish(this.form.id, '#{url}');" />
+	     onclick="javascript:alert('TODO : cacher/afficher le bloc qui suit en popup ...');" />
+
+
+      
+      <nxu:methodResult value="#{esupPublishActions.getSectionsModel()}" name="documents">
+<f:subview
+  rendered="#{documents != null and documentVersioning.uidDataAvailable}">
+  
+    <h:outputText value="#{messages['label.sections.not.defined']}"
+      rendered="#{documents.rowCount == 0}" />
+    <nxu:methodResult value="#{currentDocument.parentRef.toString()}" name="parentRef">
+    <nxu:dataTable id="dataTable" value="#{documents.rows}" var="row"
+      rowClasses="dataRowEven,dataRowOdd" styleClass="dataOutput"
+      rendered="#{documents.rowCount > 0}">
+      <nxu:methodResult value="#{row.data.document.ref.toString()}" name="sectionRef">
+      <!-- id and selection -->
+      <nxu:column styleClass="iconColumn" rendered="true">
+        <!-- XXX AT: select all buggy right now -->
+        <f:facet name="header">
+          <h:selectBooleanCheckbox rendered="false"
+            onclilck="selectDataTablePage('#{documents.name}', this.checked)">
+          </h:selectBooleanCheckbox>
+        </f:facet>
+        <h:selectBooleanCheckbox value="#{row.selected}"
+            onclick="selectSectionForPublish('#{row.data.document.ref}', this.checked)"
+            rendered="#{sectionRef!=parentRef}">
+<!-- oncomplete="enableCheckBoxesIn('#{documents.name}:dataTable')"> -->
+        </h:selectBooleanCheckbox>
+      </nxu:column>
+      <!--  Title -->
+      <nxu:column>
+        <f:facet name="header">
+          <h:outputText value="#{messages['label.publish.header.title']}" />
+        </f:facet>
+        <h:outputText value="#{row.data.treeLabel}" escape="false"/>
+      </nxu:column>
+
     </nxu:methodResult>
+    </nxu:dataTable>
+    </nxu:methodResult>
+
+<script type="text/javascript">
+function confirmDeleteDocuments() {
+    return confirm("#{messages['label.documents.confirmDeleteDocuments']}");
+}
+</script>
+
+  <f:subview rendered="#{!empty publishActions.actionsForPublishDocument}">
+    <table class="dataInput" border="0">
+      <tr>
+        <td class="labelColumn">
+          <h:outputText value="#{messages['label.comment']}"/>
+        </td>
+        <td class="fieldColumn">
+          <h:inputTextarea rows="3" cols="30" value="#{publishActions.comment}" id="comment"/>
+        </td>
+      </tr>
+    </table>
+  </f:subview>
+
+
+  <div id="selection_buttons">
+      <h:commandLink value="Publier"
+		     action="#{esupPublishActions.publishVersion}" 
+		     immediate="true">
+        <f:param value="${versionItem[1][0].ref}" name="versionSelectedRef" />
+     </h:commandLink>
+
+  </div>
+  <div style="clear:both"></div>
+
+
+</f:subview>
+</nxu:methodResult>
+      
 
     </t:dataList>
   </h:form>

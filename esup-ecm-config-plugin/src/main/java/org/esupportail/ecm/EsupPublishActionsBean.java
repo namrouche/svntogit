@@ -1,6 +1,7 @@
 package org.esupportail.ecm;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.facet.VersioningDocument;
+import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
@@ -53,6 +55,9 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     
     @RequestParameter
     private String versionSelectedRef;
+    
+    @RequestParameter  
+    private String versionLabel;
     
 
     public List getVersionsSelectModel() throws ClientException {
@@ -142,8 +147,12 @@ public class EsupPublishActionsBean extends PublishActionsBean {
             boolean moderation = !isAlreadyPublishedInSection(docToPublish,
                     section.getDocument());
 
+            VersionModel versionModel = new VersionModelImpl();
+
+            versionModel.setCreated(Calendar.getInstance());
+            versionModel.setDescription("");
+            versionModel.setLabel(versionLabel);
             
-            VersionModel versionModel =  documentManager.getVersionsForDocument(docToPublish.getRef()).get(0);
             DocumentModel proxy = documentManager.createProxy(section.getDocument().getRef(), docToPublish.getRef(), versionModel, true);
 
             if (moderation && !isReviewer(proxy)) {

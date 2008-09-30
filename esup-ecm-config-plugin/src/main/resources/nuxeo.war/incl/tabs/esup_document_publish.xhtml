@@ -9,7 +9,7 @@
   xmlns:nxu="http://nuxeo.org/nxweb/util"
   xmlns:nxh="http://nuxeo.org/nxweb/html">
 
-  <script type="text/javascript"  src="#{baseURL}scripts/PublishingTableSelections.js"></script>
+  <script type="text/javascript"  src="#{baseURL}scripts/EsupPublishingTableSelections.js"></script>
 
 <h:outputText value="#{messages['label.publish.noversions.available']}"
   rendered="#{!documentVersioning.uidDataAvailable}"/>
@@ -135,6 +135,7 @@ function confirmDeleteDocuments() {
 		     action="#{esupPublishActions.publishVersion}" 
 		     immediate="true">
         <f:param value="${versionItem[1][0].ref}" name="versionSelectedRef" />
+        <f:param value="${versionItem[0]}" name="versionLabel" />
      </h:commandLink>
 
   </div>

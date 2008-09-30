@@ -165,6 +165,12 @@
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
 
   </target>
+	
+  <target name="web" description="Copy web files to a live JBoss">
+    <copy todir="${jboss.home}/server/default/deploy/nuxeo.ear/nuxeo.war" overwrite="true">
+      <fileset dir="${basedir}/esup-ecm-config-plugin/src/main/resources/nuxeo.war/" />
+    </copy>
+  </target>
 
   <target name="deploy" depends="deploy.nuxeo,deploy.plugin" />
 

@@ -3,6 +3,8 @@ package org.esupportail.ecm;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -106,7 +108,11 @@ public class EsupPublishActionsBean extends PublishActionsBean {
         
        List versionsDocList = new ArrayList();
         
-       for(String key: versionsDoc.keySet()) {
+       List<String> labels = new ArrayList<String>(versionsDoc.keySet());
+       Collections.sort(labels);
+       Collections.reverse(labels);
+       
+       for(String key: labels) {
     	   List v = new ArrayList();
     	   v.add(key);
     	   v.add(versionsDoc.get(key));

@@ -1,12 +1,17 @@
 package org.esupportail.ecm;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +21,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.RequestParameter;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.WebRemote;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -52,17 +58,18 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     
     @In(create = true)
     protected transient VersioningManager versioningManager;
-    
+  
     @RequestParameter
-    private String versionSelectedRef;
+    private String proxySelectedRef;
     
     @RequestParameter  
-    private String versionLabel;
+    private String versionModelLabel;
+    
     
 
     public List getVersionsSelectModel() throws ClientException {
 		
-    	
+    	Set a = new HashSet();
     	Map<String, List> versionsDoc = new HashMap<String, List>();
     	
 		DocumentModel doc = navigationContext.getCurrentDocument();
@@ -79,6 +86,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
                 	List values = new ArrayList();
                 	values.add(tempDoc);
                 	values.add(new ArrayList());
+                	values.add(model.getLabel());
                 	versionsDoc.put(versionLabel, values);
                 }
                 
@@ -111,12 +119,12 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     
     
     /*
-     * Called by action ESUP_DOCUMENT_PUBLISH.
+     * Called by  esup_document_publish.xhtml
      */
     public String publishVersion() throws ClientException {
-        DocumentModel docToPublish = documentManager.getDocument(new IdRef(versionSelectedRef));
-
-        
+    	
+    	DocumentModel docToPublish = navigationContext.getCurrentDocument();
+    	
         if (documentManager.getLock(docToPublish.getRef()) != null) {
             facesMessages.add(FacesMessage.SEVERITY_WARN,
                     resourcesAccessor.getMessages().get(
@@ -151,10 +159,18 @@ public class EsupPublishActionsBean extends PublishActionsBean {
 
             versionModel.setCreated(Calendar.getInstance());
             versionModel.setDescription("");
-            versionModel.setLabel(versionLabel);
+            versionModel.setLabel(versionModelLabel);
             
-            DocumentModel proxy = documentManager.createProxy(section.getDocument().getRef(), docToPublish.getRef(), versionModel, true);
-
+            DocumentModel proxy = documentManager.createProxy(section.getDocument().getRef(), docToPublish.getRef(), versionModel, false);
+            
+            Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL,
+                    locale);
+            proxy.setProperty("dublincore", "dc:issued",
+                    dateFormat.getCalendar());
+            
+            documentManager.save();
+            
             if (moderation && !isReviewer(proxy)) {
                 forModeration.add(proxy);
             }
@@ -194,9 +210,40 @@ public class EsupPublishActionsBean extends PublishActionsBean {
         }
 
         setSectionsModel(null);
-
+        setSelectedSections(null);
+        
         return null;
     }
 
+    
+    /*
+     * Called by document_publish.xhtml
+     */
+    public String unPublishProxy() throws ClientException {
+
+    	DocumentModel proxyToUnpublish = documentManager.getDocument(new IdRef(proxySelectedRef));
+    
+    	unPublishDocument(proxyToUnpublish);
+    	facesMessages.add(FacesMessage.SEVERITY_INFO,
+                                resourcesAccessor.getMessages().get(
+                                        "document_unpublished"),
+                                resourcesAccessor.getMessages().get(
+                                		proxyToUnpublish.getType()));
+    	
+    	setSectionsModel(null);
+        setSelectedSections(null);
+        
+        return null;
+    }
+    
+    
+    /*
+     * Called by Seam remoting.
+     */
+    @WebRemote
+    public String processRemoteSelectRowEvent(String docRef, Boolean selection)
+            throws ClientException {
+    	return super.processRemoteSelectRowEvent(docRef, selection);
+    }
     
 }

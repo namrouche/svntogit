@@ -3,7 +3,6 @@ package org.esupportail.ecm;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +34,8 @@ import org.nuxeo.ecm.core.api.facet.VersioningDocument;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
+import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
+import org.nuxeo.ecm.platform.ui.web.model.SelectDataModelRow;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
 
 /**
@@ -215,8 +216,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
             }
         }
 
-        setSectionsModel(null);
-        setSelectedSections(null);
+        initSelectedSections();
         
         return null;
     }
@@ -236,12 +236,31 @@ public class EsupPublishActionsBean extends PublishActionsBean {
                                 resourcesAccessor.getMessages().get(
                                 		proxyToUnpublish.getType()));
     	
-    	setSectionsModel(null);
-        setSelectedSections(null);
+    	initSelectedSections();
         
         return null;
     }
     
+    
+    
+    
+    public SelectDataModel getSimpleSectionsModel() throws ClientException {
+    	SelectDataModel selectDataModels = getSectionsModel();
+    	return selectDataModels;
+    }
+
+    /*
+     * Called by Seam remoting.
+     */
+    @WebRemote
+    public String initSelectedSections() throws ClientException {
+    	List<SelectDataModelRow> sections = getSectionsModel().getRows();
+    	 for (SelectDataModelRow d : sections) {
+            	 d.setSelected(false);
+         }
+    	this.setSelectedSections(null);
+        return "OK";
+    }
     
     /*
      * Called by Seam remoting.

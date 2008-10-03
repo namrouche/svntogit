@@ -1,75 +1,20 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:c="http://java.sun.com/jstl/core"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
-  xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
-  xmlns:nxd="http://nuxeo.org/nxweb/document"
-  xmlns:nxu="http://nuxeo.org/nxweb/util"
-  xmlns:nxh="http://nuxeo.org/nxweb/html">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:nxd="http://nuxeo.org/nxweb/document"
+	xmlns:nxu="http://nuxeo.org/nxweb/util"
+	xmlns:nxh="http://nuxeo.org/nxweb/html">
 
-  <script type="text/javascript"  src="#{baseURL}scripts/EsupPublishingTableSelections.js"></script>
-
-
-
-<script type="text/javascript">
-function toggle(div_id) {
-	var el = document.getElementById(div_id);
-	if ( el.style.display == 'none' ) {el.style.display = 'block';}
-	else {el.style.display = 'none';}
-}
-function blanket_size(popUpDivVar) {
-	if (typeof window.innerWidth != 'undefined') {
-		viewportheight = window.innerHeight;
-	} else {
-		viewportheight = document.documentElement.clientHeight;
-	}
-	if ((viewportheight > document.body.parentNode.scrollHeight) &amp;&amp; (viewportheight > document.body.parentNode.clientHeight)) {
-		blanket_height = viewportheight;
-	} else {
-		if (document.body.parentNode.clientHeight > document.body.parentNode.scrollHeight) {
-			blanket_height = document.body.parentNode.clientHeight;
-		} else {
-			blanket_height = document.body.parentNode.scrollHeight;
-		}
-	}
-	var blanket = document.getElementById('blanket');
-	blanket.style.height = blanket_height + 'px';
-	var popUpDiv = document.getElementById(popUpDivVar);
-	popUpDiv_height=blanket_height/2-150; //150 is half popup's height
-	popUpDiv.style.top = popUpDiv_height + 'px';
-}
-function window_pos(popUpDivVar) {
-	if (typeof window.innerWidth != 'undefined') {
-		viewportwidth = window.innerHeight;
-	} else {
-		viewportwidth = document.documentElement.clientHeight;
-	}
-	if ((viewportwidth > document.body.parentNode.scrollWidth) &amp;&amp; (viewportwidth > document.body.parentNode.clientWidth)) {
-		window_width = viewportwidth;
-	} else {
-		if (document.body.parentNode.clientWidth > document.body.parentNode.scrollWidth) {
-			window_width = document.body.parentNode.clientWidth;
-		} else {
-			window_width = document.body.parentNode.scrollWidth;
-		}
-	}
-	var popUpDiv = document.getElementById(popUpDivVar);
-	window_width=window_width/2-150;//150 is half popup's width
-	popUpDiv.style.left = window_width + 'px';
-}
-function popup(windowname) {
-	blanket_size(windowname);
-	window_pos(windowname);
-	toggle('blanket');
-	toggle(windowname);		
-}
-</script>
-
+	
+<script type="text/javascript" src="#{baseURL}scripts/EsupPopupCss.js"></script>
+	
+<script type="text/javascript" src="#{baseURL}scripts/EsupPublishingTableSelections.js"></script> 
 
 <style type="text/css">
-
 #blanket {
 background-color:#111;
 opacity: 0.65;
@@ -88,173 +33,161 @@ height:300px;
 z-index: 9002;
 border: 5px solid #aaa;
 }
-
 </style>
 
-<div id="blanket" style="display:none;"></div>
-
-
+<div id="blanket" style="display: none;"></div>
 
 
 <h:outputText value="#{messages['label.publish.noversions.available']}"
-  rendered="#{!documentVersioning.uidDataAvailable}"/>
-
-
-<nxu:methodResult value="#{esupPublishActions.getVersionsSelectModel()}" name="versions">
-  <h:form >
-
-<t:dataList var="versionItem" value="${versions}"
-	    layout="none"> 					
-
-   <div class="foldableBox">
-        
-  <h3 class="unfolded">
-        <a href="#nogo" onclick="return toggleBox(this)">
-	    Version <h:outputText value="#{versionItem[0]}" /> 
-        </a>
-      </h3>
-      <div class="boxBody">
-
-    <h:dataTable var="proxySection" value="${versionItem[1][1]}"
-      rowClasses="dataRowEven,dataRowOdd"  styleClass="dataList">
-      <h:column>
-        <f:facet name="header">
-	  <h:outputText value="Publiée dans"/>
-        </f:facet>
-        <h:outputText value="#{proxySection[1].title}" />
-      </h:column>
-
-      <h:column>
-
-        <f:facet name="header">
-          <h:outputText value="Titre" />
-        </f:facet>
-
-	<h:outputText value="#{proxySection[0].title}" />
+	rendered="#{!documentVersioning.uidDataAvailable}" /> 
 	
-      </h:column>
+<nxu:methodResult
+		value="#{esupPublishActions.getVersionsSelectModel()}" name="versions">
 
-      <h:column>
+	<h:form>
 
-        <f:facet name="header">
-          <h:outputText value="le" />
-        </f:facet>
+		<t:dataList var="versionItem" value="${versions}" layout="none">
 
-	
-	<h:outputText value="#{proxySection[2]['dc:issued']}">
-	  <f:convertDateTime pattern="#{nxu:basicDateFormater()}" />
-	</h:outputText>
-	
-      </h:column>
+			<div class="foldableBox">
+
+			<h3 class="unfolded"><a href="#nogo"
+				onclick="return toggleBox(this)"> Version <h:outputText
+				value="#{versionItem[0]}" /> </a></h3>
+
+			<div class="boxBody"><h:dataTable var="proxySection"
+				value="${versionItem[1][1]}" rowClasses="dataRowEven,dataRowOdd"
+				styleClass="dataList">
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Publiée dans" />
+					</f:facet>
+					<h:outputText value="#{proxySection[1].title}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Titre" />
+					</f:facet>
+					<h:outputText value="#{proxySection[0].title}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="le" />
+					</f:facet>
+					<h:outputText value="#{proxySection[2]['dc:issued']}">
+						<f:convertDateTime pattern="#{nxu:basicDateFormater()}" />
+					</h:outputText>
+				</h:column>
 
 
-      <!--  Actions for the published document  -->
-      <h:column >
-	<f:facet name="header">
-	  <h:outputText value="Action" />
-	</f:facet>
-	<h:commandLink value="#{messages['command.document.unpublish']}"
-		       action="#{esupPublishActions.unPublishProxy}"
-		       immediate="true">
-	  <f:param name="proxySelectedRef" value="#{proxySection[0].ref}" />
-	</h:commandLink>
-      </h:column>
-      
-    </h:dataTable>
+				<!--  Actions for the published document  -->
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Action" />
+					</f:facet>
+					<h:commandLink value="#{messages['command.document.unpublish']}"
+						action="#{esupPublishActions.unPublishProxy}" immediate="true">
+						<f:param name="proxySelectedRef" value="#{proxySection[0].ref}" />
+					</h:commandLink>
+				</h:column>
+
+			</h:dataTable> <input type="button" value="publier" class="button"
+				onclick="popupForPublishing('publish_#{versionItem[0]}');" />
 
 
-      <input type="button" value="publier" class="button"
-	     onclick="javascript:popup('publish_#{versionItem[0]}');" />
+			<div id="publish_#{versionItem[0]}" style="display: none"
+				class="popUpDiv"><nxu:methodResult
+				value="#{esupPublishActions.getSimpleSectionsModel()}" name="documents">
 
+				<f:subview
+					rendered="#{documents != null and documentVersioning.uidDataAvailable}">
 
-<div id="publish_#{versionItem[0]}" style="display:none" class="popUpDiv">
-      <nxu:methodResult value="#{esupPublishActions.getSectionsModel()}" name="documents">
-<f:subview
-  rendered="#{documents != null and documentVersioning.uidDataAvailable}">
-  
-    <h:outputText value="#{messages['label.sections.not.defined']}"
-      rendered="#{documents.rowCount == 0}" />
-    <nxu:methodResult value="#{currentDocument.parentRef.toString()}" name="parentRef">
-    <nxu:dataTable id="dataTable" value="#{documents.rows}" var="row"
-      rowClasses="dataRowEven,dataRowOdd" styleClass="dataOutput"
-      rendered="#{documents.rowCount > 0}">
-      <nxu:methodResult value="#{row.data.document.ref.toString()}" name="sectionRef">
-      <!-- id and selection -->
-      <nxu:column styleClass="iconColumn" rendered="true">
-        <!-- XXX AT: select all buggy right now -->
-        <f:facet name="header">
-          <h:selectBooleanCheckbox rendered="false"
-            onclilck="selectDataTablePage('#{documents.name}', this.checked)">
-          </h:selectBooleanCheckbox>
-        </f:facet>
-        <h:selectBooleanCheckbox value="#{row.selected}"
-            onclick="selectSectionForPublish('#{row.data.document.ref}', this.checked)"
-            rendered="#{sectionRef!=parentRef}">
-<!-- oncomplete="enableCheckBoxesIn('#{documents.name}:dataTable')"> -->
-        </h:selectBooleanCheckbox>
-      </nxu:column>
-      <!--  Title -->
-      <nxu:column>
-        <f:facet name="header">
-          <h:outputText value="#{messages['label.publish.header.title']}" />
-        </f:facet>
-        <h:outputText value="#{row.data.treeLabel}" escape="false"/>
-      </nxu:column>
+					<h:outputText value="#{messages['label.sections.not.defined']}"
+						rendered="#{documents.rowCount == 0}" />
+					<nxu:methodResult value="#{currentDocument.parentRef.toString()}"
+						name="parentRef">
+						<nxu:dataTable id="dataTable" value="#{documents.rows}" var="row"
+							rowClasses="dataRowEven,dataRowOdd" styleClass="dataOutput"
+							rendered="#{documents.rowCount > 0}">
+							<nxu:methodResult value="#{row.data.document.ref.toString()}"
+								name="sectionRef">
+								<!-- id and selection -->
+								<nxu:column styleClass="iconColumn" rendered="true">
+									<!-- XXX AT: select all buggy right now -->
+									<f:facet name="header">
+										<h:selectBooleanCheckbox rendered="false"
+											onclick="selectDataTablePage('#{documents.name}', this.checked)">
+										</h:selectBooleanCheckbox>
+									</f:facet>
+									<h:selectBooleanCheckbox 
+										onclick="selectSectionForPublish('#{row.data.document.ref}', this.checked)"
+										rendered="#{sectionRef!=parentRef}">
+										<!-- oncomplete="enableCheckBoxesIn('#{documents.name}:dataTable')"> -->
+									</h:selectBooleanCheckbox>
+								</nxu:column>
+								<!--  Title -->
+								<nxu:column>
+									<f:facet name="header">
+										<h:outputText
+											value="#{messages['label.publish.header.title']}" />
+									</f:facet>
+									<h:outputText value="#{row.data.treeLabel}" escape="false" />
+								</nxu:column>
 
-    </nxu:methodResult>
-    </nxu:dataTable>
-    </nxu:methodResult>
+							</nxu:methodResult>
+						</nxu:dataTable>
+					</nxu:methodResult>
 
-<script type="text/javascript">
+					<script type="text/javascript">
 function confirmDeleteDocuments() {
     return confirm("#{messages['label.documents.confirmDeleteDocuments']}");
 }
 </script>
 
-  <f:subview rendered="#{!empty publishActions.actionsForPublishDocument}">
-    <table class="dataInput" border="0">
-      <tr>
-        <td class="labelColumn">
-          <h:outputText value="#{messages['label.comment']}"/>
-        </td>
-        <td class="fieldColumn">
-          <h:inputTextarea rows="3" cols="30" value="#{publishActions.comment}" id="comment"/>
-        </td>
-      </tr>
-    </table>
-  </f:subview>
+					<f:subview
+						rendered="#{!empty publishActions.actionsForPublishDocument}">
+						<table class="dataInput" border="0">
+							<tr>
+								<td class="labelColumn"><h:outputText
+									value="#{messages['label.comment']}" /></td>
+								<td class="fieldColumn"><h:inputTextarea rows="3" cols="30"
+									value="#{publishActions.comment}" id="comment" /></td>
+							</tr>
+						</table>
+					</f:subview>
 
 
-  <div id="selection_buttons">
-      <h:commandLink value="Publier"
-		     action="#{esupPublishActions.publishVersion}" 
-		     immediate="true">
-        <f:param value="${versionItem[1][0].ref}" name="versionSelectedRef" />
-        <f:param value="${versionItem[1][2]}" name="versionModelLabel" />
-     </h:commandLink>
-
-  <input type="button" value="annuler" class="button"
-	 onclick="javascript:popup('publish_#{versionItem[0]}');" />
-  </div>
-
-  
-  <div style="clear:both"></div>
+					<div id="selection_buttons">
+					
+						<h:commandLink value="Publier" action="#{esupPublishActions.publishVersion}" immediate="true">
+							<f:param value="${versionItem[1][0].ref}" name="versionSelectedRef" />
+							<f:param value="${versionItem[1][2]}" name="versionModelLabel" />
+						</h:commandLink> 
+					
+						<input type="button" value="annuler" class="button"
+							onclick="esup_popup('publish_#{versionItem[0]}');" />
+							
+					</div>
 
 
-</f:subview>
+					<div style="clear: both"></div>
+
+
+				</f:subview>
+
+			</nxu:methodResult></div>
+
+			</div>
+
+			</div>
+
+		</t:dataList>
+
+	</h:form>
+
 </nxu:methodResult>
-</div>
 
-</div>
-
-  </div>
-
-    </t:dataList>
-
-  </h:form>
- </nxu:methodResult>
- 
- 
- 
 </div>
 

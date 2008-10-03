@@ -1,0 +1,50 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout">
+
+<h:form enctype="multipart/form-data" id="esup_document_version">
+
+  <ui:include src="/incl/document_versioning.xhtml" />
+
+  <p class="buttonsGadget">
+    <h:commandButton type="submit" value="#{messages['command.save']}"
+      styleClass="button"
+      action="#{documentActions.updateDocument}" />
+  </p>
+
+</h:form>
+
+
+   <h:panelGroup rendered="#{currentDocument.versionable}">
+    <h3><h:outputText value="#{messages['title.version']}" /></h3>
+
+    <h:form rendered="${not empty versionList}">
+    <h:dataTable var="versionItem" value="#{versionList}"
+      class="dataOutput" rowClasses="dataRowEven,dataRowOdd">
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="#{messages['label.version']}" />
+        </f:facet>
+        <h:outputText value="#{versionItem.description}" />
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="#{messages['label.action']}" />
+        </f:facet>
+
+      <ui:include src="/incl/document_history_buttons.xhtml" />
+
+      </h:column>
+    </h:dataTable>
+    </h:form>
+
+    <p><h:outputText rendered="${empty versionList}"
+      value="#{messages['label.noversion']}"/></p>
+   </h:panelGroup>
+
+
+</div>

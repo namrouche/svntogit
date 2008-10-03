@@ -18,6 +18,8 @@
 
 <div id="blanket" style="display: none;"></div>
 
+    <p><h:outputText rendered="${empty versionList}"
+      value="#{messages['label.noversion']}"/></p>
 
 <h:outputText value="#{messages['label.publish.noversions.available']}"
 	rendered="#{!documentVersioning.uidDataAvailable}" /> 

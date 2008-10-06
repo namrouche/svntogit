@@ -1,0 +1,25 @@
+<component name="org.esup.versioning.rules">
+
+  <extension
+    target="org.nuxeo.ecm.platform.versioning.service.VersioningService"
+    point="rules">
+    
+     <versioningRuleEdit name="sampleEditRuleAnyState" action="ask_user"
+      lifecycleState="*">
+      <includeDocType>File</includeDocType>
+      <includeDocType>Note</includeDocType>
+      <option value="inc_minor" />
+      <option value="inc_major" />
+    </versioningRuleEdit>
+    
+        
+    <versioningRuleEdit name="sampleEditRuleProject" action="ask_user"
+      lifecycleState="project">
+      <option value="inc_minor"  default="true"/>
+      <option value="inc_major" />
+    </versioningRuleEdit>
+    
+
+</extension>
+
+</component>

@@ -15,9 +15,11 @@
 
 <h:form id="document_view">
 
+<!--
   <a4j:outputPanel >
     <ui:include src="/incl/lock_details.xhtml" />
   </a4j:outputPanel>
+-->
 
   <h:panelGrid rendered="#{deleteActions.trashManagementEnabled}">
     <ui:include src="/incl/trash_details.xhtml" />
@@ -117,6 +119,21 @@
     value="#{messages['label.workflow.currentLifeCycleState']}" />
   <h:outputText value="${messages[currentDocument.currentLifeCycleState]}" />
 </h:panelGrid>
+
+<nxu:methodResult name="versionable" value="#{currentDocument.hasFacet('Versionable')}">
+<h3><h:outputText
+  value="#{messages['label.versioning.documentVersioning']}"
+  rendered="#{versionable}"/></h3>
+<h:panelGrid columns="2" styleClass="dataInput"
+  columnClasses="labelColumn, fieldColumn"
+  rendered="#{versionable}">
+  <h:outputText value="#{messages['label.versioning.currentVersion']}"
+    rendered="#{documentVersioning.uidInfoAvailable}"/>
+  <h:panelGroup>
+    <nxh:outputText value="#{documentVersioning.getVersionLabel(currentDocument)}" />
+  </h:panelGroup>
+</h:panelGrid>
+</nxu:methodResult>
 
 <ui:include src="/incl/document_publishing_actions.xhtml" />
 

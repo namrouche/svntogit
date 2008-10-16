@@ -59,4 +59,15 @@
 		</userManager>
 	</extension>
 
+  <extension
+    target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+    point="authenticators">
+    <authenticationPlugin name="ANONYMOUS_AUTH" enabled="true"
+      class="org.nuxeo.ecm.platform.ui.web.auth.anonymous.AnonymousAuthenticator">
+      <parameters>
+        <parameter name="SkipUrlRetrieveIdentity_Dav">dav</parameter>
+      </parameters>
+    </authenticationPlugin>
+  </extension>
+  
 </component>

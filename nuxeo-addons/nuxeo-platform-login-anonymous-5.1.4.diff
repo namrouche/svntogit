@@ -1,0 +1,110 @@
+Index: src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java
+===================================================================
+--- src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java	(révision 32535)
++++ src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java	(copie de travail)
+@@ -20,6 +20,7 @@
+ package org.nuxeo.ecm.platform.ui.web.auth.anonymous;
+ 
+ import java.security.Principal;
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Map;
+ 
+@@ -42,10 +43,14 @@
+         NuxeoAuthenticationPluginLogoutExtension {
+ 
+     public static String BLOCK_ANONYMOUS_LOGIN_KEY = "org.nuxeo.ecm.platform.ui.web.auth.anonymous.block";
++    
++    protected static final String SKIP_URL_RETRIEVE_IDENTITY_KEY = "SkipUrlRetrieveIdentity";
+ 
+     protected boolean initialized;
+ 
+     protected String anonymousLogin;
++    
++    protected List<String> skipRetrieveIdentityURLs;
+ 
+     // Called by JSP page
+     public static boolean isAnonymousRequest(HttpServletRequest httpRequest) {
+@@ -56,6 +61,23 @@
+         return false;
+     }
+ 
++    protected static String getRequestedPage(HttpServletRequest httpRequest) {
++        String requestURI = httpRequest.getRequestURI();
++        String context = httpRequest.getContextPath() + '/';
++
++        return requestURI.substring(context.length());
++    }
++    
++    protected boolean bypassRetrieveIdentity(HttpServletRequest httpRequest) {
++        String requestPage = getRequestedPage(httpRequest);
++        for (String prefix : skipRetrieveIdentityURLs) {
++            if (requestPage.startsWith(prefix)) {
++                return true;
++            }
++        }
++        return false;
++    }
++    
+     public UserIdentificationInfo handleRetrieveIdentity(
+             HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+         if (!initialized) {
+@@ -70,18 +92,25 @@
+             return null;
+         }
+         HttpSession session = httpRequest.getSession(false);
++        
+         if (session != null
+-                && Boolean.TRUE.equals(session.getAttribute(BLOCK_ANONYMOUS_LOGIN_KEY))) {
+-            // next logout will clear the session anyway !!
+-            // session.setAttribute(BLOCK_ANONYMOUS_LOGIN_KEY, false);
++                && Boolean.TRUE.equals(session.getAttribute(BLOCK_ANONYMOUS_LOGIN_KEY)) || bypassRetrieveIdentity(httpRequest)) {
++            // next logout will clear the session anyway 
++            //session.setAttribute(BLOCK_ANONYMOUS_LOGIN_KEY, false);
+             return null;
+         }
+         return new UserIdentificationInfo(anonymousLogin, anonymousLogin);
+     }
+ 
+     public void initPlugin(Map<String, String> parameters) {
++    	skipRetrieveIdentityURLs = new ArrayList<String>();
++    	for (String key : parameters.keySet()) {
++            if (key.startsWith(SKIP_URL_RETRIEVE_IDENTITY_KEY)) {
++                skipRetrieveIdentityURLs.add(parameters.get(key));
++            }
++        }
++    	
+     }
+-
+     // Dummy methods
+ 
+     public Boolean needLoginPrompt(HttpServletRequest httpRequest) {
+Index: src/main/resources/META-INF/MANIFEST.MF
+===================================================================
+--- src/main/resources/META-INF/MANIFEST.MF	(révision 32535)
++++ src/main/resources/META-INF/MANIFEST.MF	(copie de travail)
+@@ -3,7 +3,8 @@
+ Bundle-Name: Nuxeo Anonymous Login Module extension
+ Bundle-SymbolicName: org.nuxeo.ecm.platform.login.anonymous;singleton:=true
+ Bundle-Version: 1.0.0
+-Require-Bundle: org.nuxeo.ecm.platform.login
++Require-Bundle: org.nuxeo.ecm.platform.login,
++ org.nuxeo.ecm.platform.ui
+ Nuxeo-Component: OSGI-INF/login-anonymous-service-contrib.xml,
+  OSGI-INF/actions-contrib.xml
+ Nuxeo-RequiredBy: org.nuxeo.ecm.war
+Index: src/main/resources/META-INF/ejb-jar.xml
+===================================================================
+--- src/main/resources/META-INF/ejb-jar.xml	(révision 32535)
++++ src/main/resources/META-INF/ejb-jar.xml	(copie de travail)
+@@ -9,9 +9,7 @@
+ 
+     <interceptor-binding>
+       <ejb-name>*</ejb-name>
+-      <interceptor-class>
+-        org.nuxeo.ecm.platform.ui.web.shield.NuxeoErrorInterceptor
+-      </interceptor-class>
++      <interceptor-class>org.nuxeo.ecm.platform.ui.web.shield.NuxeoErrorInterceptor</interceptor-class>
+     </interceptor-binding>
+ 
+   </assembly-descriptor>

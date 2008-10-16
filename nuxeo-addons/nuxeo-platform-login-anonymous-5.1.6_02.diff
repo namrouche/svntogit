@@ -1,7 +1,6 @@
-Index: src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java
-===================================================================
---- src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java	(révision 32535)
-+++ src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java	(copie de travail)
+diff -r a662b58add55 nuxeo-platform-login-anonymous/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java
+--- a/nuxeo-platform-login-anonymous/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java	Tue Oct 07 18:47:39 2008 +0200
++++ b/nuxeo-platform-login-anonymous/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthenticator.java	Thu Oct 16 17:27:04 2008 +0200
 @@ -20,6 +20,7 @@
  package org.nuxeo.ecm.platform.ui.web.auth.anonymous;
  
@@ -79,32 +78,3 @@ Index: src/main/java/org/nuxeo/ecm/platform/ui/web/auth/anonymous/AnonymousAuthe
      // Dummy methods
  
      public Boolean needLoginPrompt(HttpServletRequest httpRequest) {
-Index: src/main/resources/META-INF/MANIFEST.MF
-===================================================================
---- src/main/resources/META-INF/MANIFEST.MF	(révision 32535)
-+++ src/main/resources/META-INF/MANIFEST.MF	(copie de travail)
-@@ -3,7 +3,8 @@
- Bundle-Name: Nuxeo Anonymous Login Module extension
- Bundle-SymbolicName: org.nuxeo.ecm.platform.login.anonymous;singleton:=true
- Bundle-Version: 1.0.0
--Require-Bundle: org.nuxeo.ecm.platform.login
-+Require-Bundle: org.nuxeo.ecm.platform.login,
-+ org.nuxeo.ecm.platform.ui
- Nuxeo-Component: OSGI-INF/login-anonymous-service-contrib.xml,
-  OSGI-INF/actions-contrib.xml
- Nuxeo-RequiredBy: org.nuxeo.ecm.war
-Index: src/main/resources/META-INF/ejb-jar.xml
-===================================================================
---- src/main/resources/META-INF/ejb-jar.xml	(révision 32535)
-+++ src/main/resources/META-INF/ejb-jar.xml	(copie de travail)
-@@ -9,9 +9,7 @@
- 
-     <interceptor-binding>
-       <ejb-name>*</ejb-name>
--      <interceptor-class>
--        org.nuxeo.ecm.platform.ui.web.shield.NuxeoErrorInterceptor
--      </interceptor-class>
-+      <interceptor-class>org.nuxeo.ecm.platform.ui.web.shield.NuxeoErrorInterceptor</interceptor-class>
-     </interceptor-binding>
- 
-   </assembly-descriptor>

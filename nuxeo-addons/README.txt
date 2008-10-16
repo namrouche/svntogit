@@ -1,16 +1,17 @@
-Plugins compilés via mvn install à partir des distributions ci-dessous.
+Plugins compilés via mvn install à partir des distributions mercurial,
+branche 5.1.6 
+cf http://hg.nuxeo.org/addons
 
 CAS :
- * http://svn.nuxeo.org/nuxeo/nuxeo-addons/nuxeo-platform-login-cas2/tags/5.1.4
-WebDAV : 
- * http://svn.nuxeo.org/nuxeo/nuxeo-addons/nuxeo-platform-webdav-server/tags/5.1.4
+ * nuxeo-platform-login-cas2 tag release-5.1.6_02
 Accès anonyme : 
- *
- http://svn.nuxeo.org/nuxeo/nuxeo-addons/nuxeo-platform-login-anonymous/tags/5.1.4/  avec modification préalable de  src/main/resources/META-INF/ejb-jar.xml
-[cf http://www.nuxeo.org/discussions/thread.jspa?messageID=4864 ]
+ * nuxeo-platform-login-anonymous tag release-5.1.6_02
+WebDAV : 
+ * nuxeo-platform-webdav-server tag release-5.1.6 
+
 
 AVEC 
 pour nuxeo-platform-webdav-server et nuxeo-platform-login-anonymous l'applciation des patchs :
-* nuxeo-platform-webdav-server-5.1.4.diff
-* nuxeo-platform-login-anonymous-5.1.4.diff
+* nuxeo-platform-webdav-server-5.1.6.diff
+* nuxeo-platform-login-anonymous-5.1.6_02.diff
 

@@ -1,11 +1,11 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
-  <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.4.GA-1.zip"/>
-  <property name="nuxeo-ep-unziped.file" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
-  <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.1.4.zip"/>
+  <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.6.GA-2.zip"/>
+  <property name="nuxeo-ep-unziped.file" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.6.GA/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
+  <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.1.6.zip"/>
   <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
-  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.4.GA"/>
+  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.6.GA"/>
   <property name="jboss.home" value="${nuxeo.dir}"/>
   <property name="esup-ecm.file" value="esup-ecm-0.2" />
 
@@ -37,7 +37,7 @@
 	  <target name="get.nuxeo-nxshell.file" unless="nuxeo-nxshell.file.present">
 	    <echo message="Téléchargement de ${nuxeo-nxshell.file} dans le répertoire packages."/>
 	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
-	    <get src=" http://download.nuxeo.org/nuxeo-shell/${nuxeo-nxshell.file}" dest="packages/${nuxeo-nxshell.file}" verbose="false"/>
+	    <get src="http://download.nuxeo.org/nuxeo-shell/${nuxeo-nxshell.file}" dest="packages/${nuxeo-nxshell.file}" verbose="false"/>
 	  </target>
 
   <target name="deploy.nuxeo" depends="prepare">

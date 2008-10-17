@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<component name="org.esup.ecm.core.ecmTypes">
+
+  <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
+
+    <type id="VFolder" coretype="VFolder">
+      <subtypes>
+        <type>File</type>
+        <type>VFolder</type>
+      </subtypes>
+      <label>VFolder document</label>
+      <icon>/icons/folder.gif</icon>
+      <default-view>view_documents</default-view>
+      <layout>
+
+        <widget jsfcomponent="h:inputText"
+          schemaname="dublincore" fieldname="title"
+          required="true"/>
+
+        <widget jsfcomponent="h:inputTextarea"
+          schemaname="dublincore" fieldname="description"/>
+
+        <widget jsfcomponent="h:inputText"
+          schemaname="file" fieldname="filename"/>
+
+        <widget jsfcomponent="t:inputFileUpload"
+          schemaname="file" fieldname="content"/>
+
+      </layout>
+    </type>
+
+    <!-- register Sample as allowed child of Folder -->
+    <type id="Folder" coretype="Folder">
+      <subtypes>
+        <type>VFolder</type>
+      </subtypes>
+      <deniedSubtypes>
+        <type>Note</type>
+      </deniedSubtypes>
+    </type>
+
+    <type id="Workspace" coretype="Workspace">
+      <deniedSubtypes>
+        <type>Forum</type>
+      </deniedSubtypes>
+    </type>
+
+  </extension>
+</component>

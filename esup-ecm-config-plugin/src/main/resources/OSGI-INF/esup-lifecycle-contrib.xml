@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<component name="org.esup.ecm.lifecycle">
+
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="lifecycle">
+
+    <lifecycle name="sample" lifecyclemanager="jcrlifecyclemanager"
+      initial="project">
+
+      <states>
+        <state name="project">
+          <transitions>
+            <transition>validate</transition>
+          </transitions>
+        </state>
+        <state name="valid">
+          <transitions>
+            <transition>back_to_project</transition>
+            <transition>make_obsolete</transition>
+          </transitions>
+        </state>
+        <state name="obsolete">
+        </state>
+      </states>
+
+      <transitions>
+        <transition name="validate"
+          destinationState="valid">
+          <description>Validate</description>
+        </transition>
+        <transition name="back_to_project" destinationState="project">
+          <description>Back to project</description>
+        </transition>
+        <transition name="make_obsolete" destinationState="obsolete">
+          <description>Make obsolete</description>
+        </transition>
+      </transitions>
+    </lifecycle>
+  </extension>
+
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="types">
+    <types>
+      <type name="VFolder">sample</type>
+    </types>
+  </extension>
+
+</component>

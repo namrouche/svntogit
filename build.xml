@@ -109,9 +109,9 @@
 	     token="@nuxeo-dir@" value="${nuxeo.dir}" />
 
     <!-- CAS -->
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-contrib.xml" 
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-login-contrib.xml" 
 	     token="@sso-cas-url@" value="${cas.url}" />
-    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/login-contrib.xml" 
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-login-contrib.xml" 
 	     token="@nuxeo-url@" value="${nuxeo.url}" />
 
     <!-- LDAP -->

@@ -1,0 +1,7 @@
+<component name="org.esup.ecm.core.index">
+  <extension
+    target="org.nuxeo.ecm.core.search.service.SearchServiceImpl"
+    point="indexableDocType">
+    <indexableDocType indexAllSchemas="true" name="VFolder" />
+  </extension>
+</component>

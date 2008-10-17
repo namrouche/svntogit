@@ -8,6 +8,7 @@
       lifecycleState="*">
       <includeDocType>File</includeDocType>
       <includeDocType>Note</includeDocType>
+      <!-- <includeDocType>VFolder</includeDocType> -->
       <option value="inc_minor" />
       <option value="inc_major" />
     </versioningRuleEdit>

@@ -25,6 +25,3 @@ Nuxeo-Component: OSGI-INF/esup-login-contrib.xml,
  OSGI-INF/esup-actions-contrib.xml,
  OSGI-INF/esup-versions-contrib.xml
 
-
- 
-

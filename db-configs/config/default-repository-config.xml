@@ -69,7 +69,7 @@
             <param name="url" value="@jdbcJcrUrl@"/>
             <param name="user" value="@jdbcUser@"/>
             <param name="password" value="@jdbcPassword@"/>
-            <param name="schema" value="postgresql"/>
+            <param name="schema" value="@jdbcSchema@"/>
             <param name="schemaObjectPrefix" value="jcr_${wsp.name}_"/>
             <param name="externalBLOBs" value="false"/>
           </PersistenceManager>
@@ -106,7 +106,7 @@
             <param name="url" value="@jdbcJcrUrl@"/>
             <param name="user" value="@jdbcUser@"/>
             <param name="password" value="@jdbcPassword@"/>
-            <param name="schema" value="postgresql"/>
+            <param name="schema" value="@jdbcSchema@"/>
             <param name="schemaObjectPrefix" value="jcr_ver_"/>
             <param name="externalBLOBs" value="false"/>
           </PersistenceManager>

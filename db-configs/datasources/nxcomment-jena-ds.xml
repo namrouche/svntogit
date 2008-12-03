@@ -4,7 +4,7 @@
   <local-tx-datasource>
     <jndi-name>comment-relations</jndi-name>
     <connection-url>
-      @jdbcUrl@
+      @jdbcJenaUrl@
     </connection-url>
     <driver-class>@jdbcDriver@</driver-class>
     <user-name>@jdbcUser@</user-name>

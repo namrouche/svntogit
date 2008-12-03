@@ -4,8 +4,9 @@
   <local-tx-datasource>
     <jndi-name>nxrelations-default-jena</jndi-name>
     <connection-url>
-      @jdbcUrl@
+      @jdbcJenaUrl@
     </connection-url>
+
     <driver-class>@jdbcDriver@</driver-class>
     <user-name>@jdbcUser@</user-name>
     <password>@jdbcPassword@</password>

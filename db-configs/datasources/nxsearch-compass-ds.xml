@@ -7,7 +7,7 @@ easy live edition. It is NOT used in the default app. -->
   <local-tx-datasource>
     <jndi-name>nxsearch-compass</jndi-name>
     <connection-url>
-      @jdbcUrl@
+      @jdbcCompassUrl@
     </connection-url>
     <driver-class>@jdbcDriver@</driver-class>
     <user-name>@jdbcUser@</user-name>

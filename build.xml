@@ -7,9 +7,15 @@
   <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.6.GA"/>
   <property name="jboss.home" value="${nuxeo.dir}"/>
-  <property name="esup-ecm.file" value="esup-ecm-0.3" />
+  <property name="esup-ecm.file" value="${esup-ecm.version}" />
   <condition property="isMysql" value="true">
-        <equals arg1="${db.type}}" arg2="MySQL"/>
+        <equals arg1="${db.type}" arg2="MySQL"/>
+  </condition>
+  <condition property="isPosGresSql" value="true">
+        <equals arg1="${rep.type}" arg2="PostgreSQL"/>
+  </condition>
+  <condition property="isSqlStorage" value="true">
+        <equals arg1="${rep.type}" arg2="sql"/>
   </condition>
 
   <taskdef 
@@ -75,7 +81,7 @@
     </copy>
   </target>
 
-  <!-- particularités mysql pour Jena et Compass -->
+  <!-- specificities mysql for Jena and Compass -->
   <target name="replace.token.config.mysql" if="isMysql" >
 
    <echo message="Mise a jour des fichiers lies a mysql" />
@@ -109,8 +115,22 @@
           token="@jdbcCompassUrl@" value="${db.url}" />
       <replacefilter
           token="@jdbcSchema@" value="${db.schema}" />
-      <replacefilter
+          
+     <!-- JCR  -->
+     <replacefilter
           token="@jdbcJcrUrl@" value="${db.jcr.url}" />
+          
+      <!-- Sql Storage -->
+      <replacefilter
+          token="@sqlStorageServer@" value="${db.sql.server}" />
+      <replacefilter
+          token="@sqlStoragePort@" value="${db.sql.port}" />
+      <replacefilter
+          token="@sqlStorageDb@" value="${db.sql.db}" />
+      <replacefilter
+          token="@sqlStorageUser@" value="${db.sql.user}" />
+      <replacefilter
+          token="@sqlStoragePassword@" value="${db.sql.password}" />
     </replace>
 
     <echo message="Mise a jour des fichiers lies au plugin de configuration" />
@@ -157,6 +177,36 @@
 
   </target>
 
+  <!-- Installation Repository JCR -->
+  <target name="deploy.jcr.storage" if="isSqlStorage">
+  </target>
+  
+  <!-- Installation Repository sqlStorage -->
+  <target name="deploy.sql.storage" depends="deploy.sql.storage.config.postgresql,deploy.sql.storage.config.mysql" if="isSqlStorage">
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-mysql-ds.xml"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-versioning-config.xml"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jcr*"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jca*"/>
+         <copy file="build/config/sql-storage-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
+        <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system" overwrite="yes">
+          <fileset dir="nuxeo-core-storage-sql" />
+        </copy>
+  </target>
+  
+  <!-- Installation Repository sqlStorage avec mysql -->
+  <target name="deploy.sql.storage.config.mysql" if="isMysql" >
+   <echo message="Installation du repository sql-storage mysql" />
+    <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/repository-ds.xml"  overwrite="yes"/>
+  </target>
+  
+  <!-- Installation Repository sqlStorage avec postgresql -->
+  <target name="deploy.sql.storage.config.postgresql" if="isPosGresSql">
+   <echo message="Installation du repository sql-storage" />
+    <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/repository-ds.xml"  overwrite="yes"/>
+  </target>
+
   <target name="deploy.plugin" depends="replace.token.config">
 
     <!-- impossible de configurer cela dynamiquement via un plugin -->
@@ -166,8 +216,9 @@
 
     <!-- requis pour jenia - impossible de configurer cela dynamiquement via un plugin -->
     <copy file="build/config/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
-    <!-- JCR - impossible de configurer cela dynamiquement via un plugin (depuis la 5.1.4) -->
-    <copy file="build/config/default-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
+ 
+    <!-- configuration repository -->
+    <antcall target="deploy.sql.storage" />
 
   	<!-- configuration jboss -->
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>

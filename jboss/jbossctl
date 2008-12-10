@@ -42,13 +42,14 @@ if [ ! -d $JAVA_HOME/bin ]; then
 fi
 
 # Console Log
-LOG=$JBOSS_HOME/log/jboss.log
+LOG=@consoleLog@
 
 # Server log
-LOGF=$JBOSS_HOME/server/$CONFIG/log/server.log
+LOGF=@serverLog@
 
 # PID_FILE
 PID_FILE=$JBOSS_HOME/log/jboss.pid
+mkdir $JBOSS_HOME/log 2>/dev/null
 
 mkdir -p `dirname $LOG`
 touch $LOG

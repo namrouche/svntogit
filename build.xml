@@ -187,8 +187,8 @@
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-versioning-config.xml"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jcr*"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jca*"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jcr-connector-1.4.3.jar"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jca-1.4.3.rar"/>
          <copy file="build/config/sql-storage-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
         <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system" overwrite="yes">
           <fileset dir="nuxeo-core-storage-sql" />

@@ -81,7 +81,7 @@
     </copy>
   </target>
 
-  <!-- specificities mysql for Jena and Compass -->
+  <!-- special stuff mysql for Jena and Compass -->
   <target name="replace.token.config.mysql" if="isMysql" >
 
    <echo message="Mise a jour des fichiers lies a mysql" />
@@ -245,9 +245,9 @@
     </copy>
   </target>
 
-  <target name="deploy" depends="deploy.nuxeo,deploy.plugin" />
+  <target name="deploy" depends="deploy.nuxeo,deploy.plugin" description="Deploy" />
 
-    <target name="buildzip" depends="prepare">
+    <target name="buildzip" depends="prepare" description="Construct ${esup-ecm.file}.zip">
 	    <echo message="Construction de ${esup-ecm.file}.zip ...."/>
 	    <delete file="packages/${esup-ecm.file}.zip"/>
 	    <zip destfile="packages/${esup-ecm.file}.zip" >

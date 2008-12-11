@@ -6,13 +6,17 @@
   <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.1.6.zip"/>
   <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.6.GA"/>
+  <property name="nuxeo.core.jcr.connector" value="nuxeo-core-jcr-connector-1.4.3.jar"/>
+  <property name="nuxeo.core.jca" value="nuxeo-core-jca-1.4.3.rar"/>
+
+  
   <property name="jboss.home" value="${nuxeo.dir}"/>
   <property name="esup-ecm.file" value="${esup-ecm.version}" />
   <condition property="isMysql" value="true">
         <equals arg1="${db.type}" arg2="MySQL"/>
   </condition>
-  <condition property="isPosGresSql" value="true">
-        <equals arg1="${rep.type}" arg2="PostgreSQL"/>
+  <condition property="isPostGresSql" value="true">
+        <equals arg1="${db.type}" arg2="PostgreSQL"/>
   </condition>
   <condition property="isSqlStorage" value="true">
         <equals arg1="${rep.type}" arg2="sql"/>
@@ -41,14 +45,14 @@
   </target>
   	
 	  <target name="get.nuxeo-ep.file" unless="nuxeo-ep.file.present">
-	    <echo message="Téléchargement de ${nuxeo-ep.file} dans le répertoire packages."/>
+	    <echo message="Download ${nuxeo-ep.file} in the packages directory."/>
 	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
 	    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="packages/${nuxeo-ep.file}" verbose="false"/>
 	  </target>
 
 	  <target name="get.nuxeo-nxshell.file" unless="nuxeo-nxshell.file.present">
-	    <echo message="Téléchargement de ${nuxeo-nxshell.file} dans le répertoire packages."/>
-	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
+	    <echo message="Download ${nuxeo-nxshell.file} in the packages directory."/>
+	    <echo message="Download can last few minutes ..."/>
 	    <get src="http://download.nuxeo.org/nuxeo-shell/${nuxeo-nxshell.file}" dest="packages/${nuxeo-nxshell.file}" verbose="false"/>
 	  </target>
 
@@ -65,7 +69,7 @@
 	    <unzip src="packages/${nuxeo-nxshell.file}" dest="${nuxeo.dir.parent}/nuxeo-shell" />
 	</target>
 
-	<target name="clean">
+	<target name="clean" description="clean build">
     <delete  dir="build"/>
     <delete  dir="packages"/>
     <delete  dir="esup-ecm-config-plugin/target"/>
@@ -87,7 +91,7 @@
   <!-- special stuff mysql for Jena and Compass -->
   <target name="replace.token.config.mysql" if="isMysql" >
 
-   <echo message="Mise a jour des fichiers lies a mysql" />
+   <echo message="Update mysql files" />
 
     <replace dir="build" includes="config/*.xml,datasources/*.xml">
       <replacefilter
@@ -99,7 +103,7 @@
 
   <target name="replace.token.config" depends="copy.src.build,replace.token.config.mysql">
 
-    <echo message="Mise a jour des fichiers lies aux bases de donnees usuelles (autres que JCR)" />
+    <echo message="Update databases description files" />
 
     <replace dir="build" includes="config/*.xml,config/sql.properties,datasources/*.xml">
       <replacefilter
@@ -136,8 +140,7 @@
           token="@sqlStoragePassword@" value="${db.sql.password}" />
     </replace>
 
-    <echo message="Mise a jour des fichiers lies au plugin de configuration" />
-
+    <echo message="Update configuration plugin files" />
     <!-- tools -->
     <replace file="build/jboss/jbossctl">
       <replacefilter token="@jbossUser@" value="${jboss.user}" />
@@ -182,49 +185,50 @@
 
   </target>
 
-  <!-- Installation Repository JCR -->
+  <!-- JCR Repository -->
   <target name="deploy.jcr.storage" if="isJcrStorage">
-   <echo message="Installation du repository jcr" />
+   <echo message="Install JCR repository" />
+        <copy file="build/config/jcr-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
   </target>
   
-  <!-- Installation Repository sqlStorage -->
+  <!-- sqlStorage Repository -->
   <target name="deploy.sql.storage" depends="deploy.sql.storage.config.postgresql,deploy.sql.storage.config.mysql" if="isSqlStorage">
-   <echo message="Installation du repository sql-storage" />
+   <echo message="Install sql-storage repository" />
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-mysql-ds.xml"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-versioning-config.xml"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jcr-connector-1.4.3.jar"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-jca-1.4.3.rar"/>
-         <move file="build/config/sql-storage-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/${nuxeo.core.jcr.connector}"/>
+         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/${nuxeo.core.jca}"/>
+         <copy file="build/config/sql-storage-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
         <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system" overwrite="yes">
           <fileset dir="nuxeo-core-storage-sql" />
         </copy>
   </target>
   
-  <!-- Installation Repository sqlStorage avec mysql -->
+  <!-- sqlStorage with mysql -->
   <target name="deploy.sql.storage.config.mysql" if="isMysql" >
-   <echo message="Installation du repository sql-storage mysql" />
+   <echo message="Install sql-storage mysql" />
     <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/repository-ds.xml"  overwrite="yes"/>
   </target>
   
-  <!-- Installation Repository sqlStorage avec postgresql -->
-  <target name="deploy.sql.storage.config.postgresql" if="isPosGresSql">
-   <echo message="Installation du repository sql-storage" />
+  <!-- sqlStorage  with postgresql -->
+  <target name="deploy.sql.storage.config.postgresql" if="isPostGresSql">
+    <echo message="Install sql-storage postgresql" />
     <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/repository-ds.xml"  overwrite="yes"/>
   </target>
 
   <target name="deploy.plugin" depends="replace.token.config">
 
-    <!-- impossible de configurer cela dynamiquement via un plugin -->
+    <!-- this stuff cannot be configured with a nuxeo plugin -->
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources" overwrite="yes">
       <fileset dir="build/datasources"/>
     </copy>
 
-    <!-- requis pour jenia - impossible de configurer cela dynamiquement via un plugin -->
+    <!-- Jena database type and transaction mode -->
     <copy file="build/config/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
  
-    <!-- configuration repository -->
+    <!-- sql-storage repository backend -->
     <antcall target="deploy.sql.storage" />
 
   	<!-- configuration jboss -->
@@ -237,17 +241,17 @@
     </chmod>
     <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jbossweb-tomcat55.sar/server.xml" overwrite="yes"/>
 
-    <!-- librairies supplementaires [drivers postgres,mysql] -->
+    <!-- others librairies  [drivers postgres,mysql] -->
     <copy todir="${nuxeo.dir}/server/default/lib"  overwrite="yes">
       <fileset dir="lib"/>
     </copy>
 
-    <!-- plugins addons nuxeo supplementaires --> 
+    <!-- plugins addons --> 
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins"  overwrite="yes">
       <fileset dir="nuxeo-addons"/>
     </copy>
   	
-    <!-- deploiement du plugin de configuration -->
+    <!-- configuration plugin deploy -->
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
 
   </target>
@@ -261,7 +265,7 @@
   <target name="deploy" depends="deploy.nuxeo,deploy.plugin" description="Deploy" />
 
     <target name="buildzip" depends="prepare" description="Construct ${esup-ecm.file}.zip">
-	    <echo message="Construction de ${esup-ecm.file}.zip ...."/>
+	    <echo message="Construct ${esup-ecm.file}.zip ...."/>
 	    <delete file="packages/${esup-ecm.file}.zip"/>
 	    <zip destfile="packages/${esup-ecm.file}.zip" >
 	       <zipfileset dir="" prefix="${esup-ecm.file}">

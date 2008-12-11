@@ -274,6 +274,8 @@
             <exclude name="**/build/**"/>
             <exclude name="**/bin/**"/>
             <exclude name="packages/${esup-ecm.file}.zip"/>
+            <exclude name="packages/${nuxeo-ep.file}"/>
+            <exclude name="packages/${nuxeo-nxshell.file}"/>
 	       	<exclude name="build.properties"/>
 	       </zipfileset>
 	    </zip>

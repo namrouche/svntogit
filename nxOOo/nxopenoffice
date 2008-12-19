@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# chkconfig: 345 97 1
+# description: this shell script takes care of starting and stopping
+# openoffice server.
+
+# See how we were called.
+case "$1" in
+start)
+	echo "Starting openoffice: "
+	Xvfb :@OOoPort@ 2>/dev/null &
+	sleep 5
+	@OOoPath@/program/soffice.bin -headless "-accept=socket,host=localhost,port=8100;urp;StarOffice.Service" 2>/dev/null &
+	echo
+	;;
+stop)
+	 ps -aef|grep "program/soffice.bin" | grep -v grep|cut -c10-15 >/var/run/ooo.pid
+	 val=`head /var/run/ooo.pid`
+	 if [ -n $val ]
+	  then
+	     kill $val 2>/dev/null && echo "Shutting down openoffice: " $val
+	 fi
+	 ps -aef|grep "Xvfb" | grep -v grep|cut -c10-15 >/var/run/xvfb.pid
+	 val=`head /var/run/xvfb.pid`
+	 if [ -n $val ]
+	  then
+	     kill $val 2>/dev/null && echo "Shutting down virtual xterm: " $val
+	 fi
+	
+	echo
+;;
+restart)
+	$0 stop
+	$0 start
+;;
+status)
+	echo "Servers listening on port @OOoPort@ :"
+	netstat -na | grep :@OOoPort@ | wc -l
+	netstat -na | grep :@OOoPort@
+	echo "openoffice processes :"
+	ps -aef | grep -i program/soffice | grep -v grep
+	echo "X processes :"
+	ps -ef | grep -i xvfb | grep -v grep
+	;;
+*)
+	echo "Usage: nxopenoffice {start|stop|restart|status}\n"
+	exit 1
+	esac
+
+exit 0

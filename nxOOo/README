@@ -1,0 +1,95 @@
+To have a listening OOo running at each Jboss startup on your server
+
+1. install OOo
+2. deploy nxSkipInstallWizard.oxt
+3. deploy nxOOoAutoListen.oxt
+4. add a call to ooo.sh in jboss/bin/run.sh (modify the path to soffice accordingly with your installation)
+
+to deploy an extension
+<pathOOoInstalled>/program/unopkg add <extension.oxt>
+
+Here are some details on the element you'll find in this directory
+
+patch
+-----
+contains modification to the basic OOo install (already applied)
+- change user directory name not to overlap an existing one (bootstraprc)
+- no more FirstInstallWizard (nxSkipInstallWizard.oxt) - alternativelly, every soffice launch can use the undocumented -nofirststartwizard switch
+- listen on port 8100 - Only this extension has to be installed on a existing installation (nxOOoAutoListen.oxt)
+
+ooo.sh
+-------
+Uses Xvfb on display 77
+the -auth Xperm loads the file Xperm that has to be reachable
+
+nxOOo.tar.gz (broken)
+------------
+OOo to be uncompressed 
+will create an nxOOo-user directory in home
+--> nxOOo/program/soffice
+actually broken due to an OOo bug on 'non-installed' deployed versions
+
+create_nxOOo.sh
+---------------
+For nuxeo admins, create a new deployable OOo instance
+Please check OOo original filename
+
+Details on Deploying OOo for Nuxeo5
+-----------------------------------
+
+Some Nuxeo5 features require to setup a listening instance of OpenOffice.org on your server.
+If no graphical interface is available, a virtual frame buffer such as Xvfb is also required.
+
+<OOoInstallationPath> is the path where the OOo core is installed.
+
+* deploying the plateform independant extension
+
+The extension will setup OOo to always start in listen mode on localhost:8100 as required. The two following methods can be used
+
+- command line:
+<pathOOoInstalled>/program/unopkg add nxOOoAutoListen.oxt
+
+- using OOo Gui
+menu Tools > Extensions Manager > Add
+browse to the nxOOoAutoListen.oxt and select it
+
+if OOo has never been launched for the current user, you may also install the nxSkipInstallWizard.oxt extension.
+
+* Starting OOo at Jboss startup
+
+This is the plateform dependant part. The general procedure is to add the launching command line in the <JBoss>/bin/run.sh
+
+- if a graphical interface is available
+
+linux:
+<OOoInstallationPath>/program/soffice -headless -nofirststartwizard
+windows:
+<OOoInstallationPath>\program\soffice.exe -headless -nofirststartwizard
+MacOsX:
+XXX to be completed
+solaris:
+XXX to be completed
+
+The -nofirstwizard switch is to be used if OOo has never been launched for the current user (if nxSkipInstallWizard.oxt has not been installed)
+The -headless switch is mandatory when OOo is run has a server tool
+
+- if no graphical interface is available
+
+A virtual frame buffer has to be launched before OOo
+
+For linux a xvfb-like can be used as written in ooo.sh
+At each Jboss start, OOo will be launched in listen mode on the display 77
+
+
+Files to deliver
+----------------
+http://svn.nuxeo.org/trac/nuxeo/browser/tools/ooo-package/linux
+nxOOoAutoListen.oxt
+nxSkipInstallWizard.oxt
+Xperm
+ooo.sh 
+
+author: Laurent Godard - lgodard@nuxeo.com
+
+
+

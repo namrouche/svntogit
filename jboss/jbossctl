@@ -20,6 +20,9 @@
 #     Julien Carsique
 #
 # $Id$
+# chkconfig: 345 97 1
+# description: Nuxeo lauching service
+
 JAVA_HOME=${JAVA_HOME:-"@jdkHome@"}
 CONFIG=default
 JBOSS_USER=${JBOSS_USER:-"@jbossUser@"}

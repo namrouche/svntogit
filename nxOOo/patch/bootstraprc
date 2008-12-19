@@ -1,0 +1,8 @@
+[Bootstrap]
+BaseInstallation=$ORIGIN/..
+ProductKey=OpenOffice.org 2.2
+InstallMode=<installmode>
+UserInstallation=$SYSUSERCONFIG/nxOOo-user
+[ErrorReport]
+ErrorReportPort=80
+ErrorReportServer=

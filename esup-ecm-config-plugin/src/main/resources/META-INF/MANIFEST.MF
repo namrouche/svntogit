@@ -21,5 +21,6 @@ Require-Bundle: org.nuxeo.runtime,
 Nuxeo-Component: OSGI-INF/esup-login-contrib.xml,
  OSGI-INF/esup-theme-contrib.xml,
  OSGI-INF/esup-rennes1-theme-contrib.xml,
- OSGI-INF/esup-ori-theme-contrib.xml
+ OSGI-INF/esup-ori-theme-contrib.xml,
+ OSGI-INF/esup-actions-contrib.xml
  

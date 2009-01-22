@@ -235,6 +235,9 @@
 
     <!-- Jena database type and transaction mode -->
     <copy file="build/config/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
+
+     <!-- usual nuxeo.properties -->
+    <copy file="build/config/nuxeo.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/nuxeo.properties" overwrite="yes"/>
  
     <!-- sql-storage repository backend -->
     <antcall target="deploy.sql.storage" />

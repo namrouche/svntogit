@@ -3,7 +3,8 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:c="http://java.sun.com/jstl/core"
-  xmlns:nxl="http://nuxeo.org/nxforms/layout">
+  xmlns:nxl="http://nuxeo.org/nxforms/layout"
+  xmlns:nxh="http://nuxeo.org/nxweb/html">
 
 <h:form enctype="multipart/form-data" id="esup_document_version">
 
@@ -17,9 +18,21 @@
 
 </h:form>
 
-
    <h:panelGroup rendered="#{currentDocument.versionable}">
-    <h3><h:outputText value="#{messages['title.version']}" /></h3>
+	<h3><h:outputText
+		value="#{messages['label.versioning.currentVersion']}"/></h3>
+	<h:panelGrid columns="2" styleClass="dataInput"
+		columnClasses="labelColumn, fieldColumn">
+		<h:outputText value="#{messages['label.versioning.currentVersion']}"
+			rendered="#{documentVersioning.uidInfoAvailable}" />
+		<h:panelGroup>
+			<nxh:outputText
+				value="#{documentVersioning.getVersionLabel(currentDocument)}" />
+		</h:panelGroup>
+	</h:panelGrid>
+
+
+	<h3><h:outputText value="#{messages['title.version']}" /></h3>
 
     <h:form rendered="${not empty versionList}">
     <h:dataTable var="versionItem" value="#{versionList}"

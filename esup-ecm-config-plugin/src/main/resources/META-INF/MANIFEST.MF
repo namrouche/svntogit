@@ -15,9 +15,7 @@ Require-Bundle: org.nuxeo.runtime,
  org.nuxeo.ecm.platform.workflow.web,
  org.nuxeo.ecm.platform.notification.web,
  org.nuxeo.ecm.platform.comment.web,
- org.nuxeo.ecm.platform.forum,
- org.nuxeo.ecm.platform.audit.web,
- org.nuxeo.ecm.platform.versioning
+ org.nuxeo.ecm.platform.audit.web
 Nuxeo-Component: OSGI-INF/esup-login-contrib.xml,
  OSGI-INF/esup-theme-contrib.xml,
  OSGI-INF/esup-rennes1-theme-contrib.xml,

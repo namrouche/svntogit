@@ -190,6 +190,8 @@
   <!-- JCR Repository -->
   <target name="deploy.jcr.storage">
    <echo message="Install JCR repository" />
+        <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-mysql-ds.xml"/>
+        <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
         <copy file="build/config/jcr-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
   </target>
   

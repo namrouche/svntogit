@@ -27,9 +27,9 @@
 <nxu:methodResult
 		value="#{esupPublishActions.getVersionsSelectModel()}" name="versions">
 
-	<h:form>
+	<h:form id="SECTIONS_DOCUMENT_TREE">
 
-		<t:dataList var="versionItem" value="${versions}" layout="none">
+		<t:dataList id="versionList" var="versionItem" value="${versions}" layout="none">
 
 			<div class="foldableBox">
 
@@ -84,7 +84,7 @@
 				class="popUpDiv"><nxu:methodResult
 				value="#{esupPublishActions.getSimpleSectionsModel()}" name="documents">
 
-				<f:subview
+				<f:subview id="publishSections"
 					rendered="#{documents != null and documentVersioning.uidDataAvailable}">
 
 					<h:outputText value="#{messages['label.sections.not.defined']}"
@@ -98,10 +98,10 @@
 								name="sectionRef">
 								<!-- id and selection -->
 								<nxu:column styleClass="iconColumn" rendered="true">
-									<!-- XXX AT: select all buggy right now -->
+									<!-- call to self-made methods for multiselection -->
 									<f:facet name="header">
-										<h:selectBooleanCheckbox rendered="false"
-											onclick="selectDataTablePage('#{documents.name}', this.checked)">
+										<h:selectBooleanCheckbox rendered="true"
+											onclick="ori_selectSectionsPage('SECTIONS_DOCUMENT_TREE:versionList:0:publishSections:dataTable', this.checked)">
 										</h:selectBooleanCheckbox>
 									</f:facet>
 									<h:selectBooleanCheckbox 

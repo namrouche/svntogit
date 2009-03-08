@@ -271,4 +271,25 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     	return super.processRemoteSelectRowEvent(docRef, selection);
     }
     
+    /*
+     * Called by Seam remoting. Process multiselected sections
+     */
+    @WebRemote
+    public String processRemoteSelectedSections(Boolean selection) throws ClientException {
+    	List<SelectDataModelRow> sections = getSectionsModel().getRows();
+    	 for (SelectDataModelRow d : sections) {
+    		    DocumentModelTreeNode section = (DocumentModelTreeNode)d.getData();
+    		    
+    		    
+    		    if (selection) {
+    		    	log.warn("SECTION ADDED"+section.getDocument().getRef().toString() );
+    	            getSelectedSections().add(section);
+    	        } else {
+    	        	log.warn("SECTION REMOVED"+section.getDocument().getRef().toString() );
+    	            getSelectedSections().remove(section);
+    	        }
+         }
+        return "OK";
+    }
+    
 }

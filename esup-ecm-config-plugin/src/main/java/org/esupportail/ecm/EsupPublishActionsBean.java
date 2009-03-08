@@ -282,10 +282,10 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     		    
     		    
     		    if (selection) {
-    		    	log.warn("SECTION ADDED"+section.getDocument().getRef().toString() );
+    		    	log.debug("SECTION ADDED"+section.getDocument().getRef().toString() );
     	            getSelectedSections().add(section);
     	        } else {
-    	        	log.warn("SECTION REMOVED"+section.getDocument().getRef().toString() );
+    	        	log.debug("SECTION REMOVED"+section.getDocument().getRef().toString() );
     	            getSelectedSections().remove(section);
     	        }
          }

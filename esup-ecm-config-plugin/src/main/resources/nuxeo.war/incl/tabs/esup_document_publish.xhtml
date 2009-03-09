@@ -76,7 +76,6 @@
 							rowIndexVar="row" rowCountVar="rowCount">
 							<h:outputText value=" | " rendered="#{row!=(rowCount-1)}" />
 							<nxh:commandLink action="#{action.getLink()}">
-								<t:htmlTag value="br" rendered="#{row==(rowCount-1)}" />
 								<h:outputText value="#{messages[action.label]}" />
 								<f:param name="proxySelectedRef" value="#{proxySection[0].ref}" />
 							</nxh:commandLink>

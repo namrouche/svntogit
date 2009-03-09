@@ -40,6 +40,7 @@
     <action id="DOCUMENT_UNPUBLISH" link="#{esupPublishActions.unPublishProxy}"
       enabled="true" label="command.document.unpublish" icon="">
       <category>PUBLISHED_DOCUMENT</category>
+      <filter-id>can_unpublish</filter-id>
       <filter-id>lock_published_document</filter-id>
     </action>
     

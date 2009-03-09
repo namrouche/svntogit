@@ -37,6 +37,12 @@
     
     <action id="TAB_CONTENT_HISTORY" link="/incl/tabs/esup_document_history.xhtml"/>
     
+    <action id="DOCUMENT_UNPUBLISH" link="#{esupPublishActions.unPublishProxy}"
+      enabled="true" label="command.document.unpublish" icon="">
+      <category>PUBLISHED_DOCUMENT</category>
+      <filter-id>lock_published_document</filter-id>
+    </action>
+    
 	</extension>
 
 </component>

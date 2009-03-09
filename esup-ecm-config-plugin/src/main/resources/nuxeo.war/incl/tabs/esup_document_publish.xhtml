@@ -70,10 +70,18 @@
 					<f:facet name="header">
 						<h:outputText value="Action" />
 					</f:facet>
-					<h:commandLink value="#{messages['command.document.unpublish']}"
-						action="#{esupPublishActions.unPublishProxy}" immediate="true">
-						<f:param name="proxySelectedRef" value="#{proxySection[0].ref}" />
-					</h:commandLink>
+					<nxu:methodResult name="actions"
+						value="#{webActions.getActionsList('PUBLISHED_DOCUMENT')}">
+						<nxu:dataList layout="simple" var="action" value="#{actions}"
+							rowIndexVar="row" rowCountVar="rowCount">
+							<h:outputText value=" | " rendered="#{row!=(rowCount-1)}" />
+							<nxh:commandLink action="#{action.getLink()}">
+								<t:htmlTag value="br" rendered="#{row==(rowCount-1)}" />
+								<h:outputText value="#{messages[action.label]}" />
+								<f:param name="proxySelectedRef" value="#{proxySection[0].ref}" />
+							</nxh:commandLink>
+						</nxu:dataList>
+					</nxu:methodResult>
 				</h:column>
 
 			</h:dataTable> <input type="button" value="publier" class="button"

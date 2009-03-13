@@ -92,7 +92,7 @@
 	      <fileset dir="${java.io.tmpdir}/xpp3-tmp" />
 	    </delete>
 
-	   <unzip dest="${java.io.tmpdir}/nuxeo-platform-transform-plugins-tmp" src="${deploy.dir}/${nuxeo.ear}/platform/nuxeo-platform-transform-plugins-5.1.4.jar"/> 
+	   <unzip dest="${java.io.tmpdir}/nuxeo-platform-transform-plugins-tmp" src="${deploy.dir}/${nuxeo.ear}/system/nuxeo-platform-transform-plugins-5.1.6.jar"/> 
 	   <unzip dest="${java.io.tmpdir}/xpp3-tmp" src="${java.io.tmpdir}/nuxeo-platform-transform-plugins-tmp/xpp3-1.1.3.4.O.jar"/>
 
 	   <delete includeEmptyDirs="true" failonerror="true">
@@ -103,7 +103,7 @@
 	      <fileset dir="${java.io.tmpdir}/xpp3-tmp"/>
 	   </jar>   
 
-	   <jar destfile="${deploy.dir}/${nuxeo.ear}/platform/nuxeo-platform-transform-plugins-5.1.4.jar">
+	   <jar destfile="${deploy.dir}/${nuxeo.ear}/system/nuxeo-platform-transform-plugins-5.1.6.jar">
 	      <fileset dir="${java.io.tmpdir}/nuxeo-platform-transform-plugins-tmp"/>
 	   </jar>   
 

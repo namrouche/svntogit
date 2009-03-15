@@ -71,7 +71,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     @RequestParameter  
     private String versionModelLabel;
     
-    
+    private SelectDataModel filteredSectionsModel;
 
     public List getVersionsSelectModel() throws ClientException {
 		
@@ -268,10 +268,11 @@ public class EsupPublishActionsBean extends PublishActionsBean {
    	 			filteredSections.add(sectionModel);
    	 		}
    	 	}
-   	 	SelectDataModel filteredSectionsModel = new SelectDataModelImpl("filteredSections", filteredSections, null);
+   	 	filteredSectionsModel = new SelectDataModelImpl("filteredSections", filteredSections, null);
    	  	return filteredSectionsModel;
     }
     
+       
     /**
     protected List<String> getPublishedSectionsNames() throws ClientException{
     	DocumentModel doc = navigationContext.getCurrentDocument();
@@ -320,7 +321,13 @@ public class EsupPublishActionsBean extends PublishActionsBean {
      */
     @WebRemote
     public String processRemoteSelectedSections(Boolean selection) throws ClientException {
-    	List<SelectDataModelRow> sections = getSectionsModel().getRows();
+    	List<SelectDataModelRow> sections = null;
+    	if(filteredSectionsModel != null){
+    		sections = filteredSectionsModel.getRows();
+    	}else{
+    		sections = getSectionsModel().getRows();
+    	}
+    	 
     	 for (SelectDataModelRow d : sections) {
     		    DocumentModelTreeNode section = (DocumentModelTreeNode)d.getData();
     		    

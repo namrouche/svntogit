@@ -258,7 +258,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
    	 		boolean moderation = !isAlreadyPublishedInSection(navigationContext.getCurrentDocument(),
                 sectionModel.getDocument());
    	 		if(!moderation){
-   	 			filteredSections.add((DocumentModel)section.getData());
+   	 			filteredSections.add(sectionModel.getDocument());
    	 		}
    	 		/*
    	 		String sectionPath = ((DocumentModel)section.getData()).getPathAsString();

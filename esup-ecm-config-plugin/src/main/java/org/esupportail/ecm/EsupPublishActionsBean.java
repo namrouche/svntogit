@@ -26,14 +26,15 @@ import org.jboss.seam.annotations.WebRemote;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentModelTreeNode;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.facet.VersioningDocument;
-import org.nuxeo.ecm.core.api.impl.DocumentModelTreeNodeImpl;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
+import org.nuxeo.ecm.platform.publishing.api.PublishingInformation;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModelRow;
@@ -245,33 +246,33 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     
     
     
-    
-    public SelectDataModel getSimpleSectionsModel() throws ClientException {
+    /**
+     * Return a filtered list of sections 
+     * to avoid double items, only sections where this version is not yet published are in returned list
+     * @param versionRef
+     * @return
+     * @throws ClientException
+     */
+    public SelectDataModel getSimpleSectionsModel(DocumentRef versionRef) throws ClientException {
     	SelectDataModel selectDataModels = getSectionsModel();
     	List<SelectDataModelRow> sections = getSectionsModel().getRows();
-    	List<String> publishedSectionsNames = getPublishedSectionsNames();
-    	List<DocumentModel> filteredSections = new ArrayList<DocumentModel>();
+    	List<DocumentModelTreeNode> filteredSections = new ArrayList<DocumentModelTreeNode>();
+    	DocumentModel version = documentManager.getDocument(versionRef);
    	 	
    	 		for (SelectDataModelRow section : sections) {
    	 		DocumentModelTreeNode sectionModel = (DocumentModelTreeNode)section.getData();
    	 			
-   	 		boolean moderation = !isAlreadyPublishedInSection(navigationContext.getCurrentDocument(),
+   	 		boolean moderation = !isAlreadyPublishedInSection(version,
                 sectionModel.getDocument());
-   	 		if(!moderation){
-   	 			filteredSections.add(sectionModel.getDocument());
+   	 		if(moderation){
+   	 			filteredSections.add(sectionModel);
    	 		}
-   	 		/*
-   	 		String sectionPath = ((DocumentModel)section.getData()).getPathAsString();
-   	    	
-   	 		if( !publishedSectionsNames.contains(sectionPath) ){
-   	 			filteredSections.add((DocumentModel)section.getData());
-   	 		}
-   	 		*/
    	 	}
    	 	SelectDataModel filteredSectionsModel = new SelectDataModelImpl("filteredSections", filteredSections, null);
-   	 	return filteredSectionsModel;
+   	  	return filteredSectionsModel;
     }
     
+    /**
     protected List<String> getPublishedSectionsNames() throws ClientException{
     	DocumentModel doc = navigationContext.getCurrentDocument();
     	List<String> result = new ArrayList<String>();
@@ -290,6 +291,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
          return result;   
        
     }
+    */
 
     /*
      * Called by Seam remoting.

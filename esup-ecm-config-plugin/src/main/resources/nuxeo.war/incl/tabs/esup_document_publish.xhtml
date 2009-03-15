@@ -89,7 +89,7 @@
 
 			<div id="publish_#{versionItem[0]}" style="display: none"
 				class="popUpDiv"><nxu:methodResult
-				value="#{esupPublishActions.getSimpleSectionsModel()}" name="documents">
+				value="#{esupPublishActions.getSimpleSectionsModel(versionItem[1][0].ref)}" name="documents">
 
 				<f:subview id="publishSections"
 					rendered="#{documents != null and documentVersioning.uidDataAvailable}">

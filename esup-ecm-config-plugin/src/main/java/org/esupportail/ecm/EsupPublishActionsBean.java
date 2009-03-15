@@ -36,6 +36,7 @@ import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModelRow;
+import org.nuxeo.ecm.platform.ui.web.model.impl.SelectDataModelImpl;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
 
 /**
@@ -246,7 +247,39 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     
     public SelectDataModel getSimpleSectionsModel() throws ClientException {
     	SelectDataModel selectDataModels = getSectionsModel();
-    	return selectDataModels;
+    	List<SelectDataModelRow> sections = getSectionsModel().getRows();
+    	List<String> publishedSectionsNames = getPublishedSectionsNames();
+    	List<DocumentModel> filteredSections = new ArrayList<DocumentModel>();
+   	 	for (SelectDataModelRow section : sections) {
+   	 		String sectionPath = ((DocumentModel)section.getData()).getPathAsString();
+   	 		if( !publishedSectionsNames.contains(sectionPath) ){
+   	 			filteredSections.add((DocumentModel)section.getData());
+   	 		}
+   	 	}
+    		
+    	//return selectDataModels;
+   	 	
+   	 	SelectDataModel filteredSectionsModel = new SelectDataModelImpl("filteredSections", filteredSections, null);
+   	 	return filteredSectionsModel;
+    }
+    
+    protected List<String> getPublishedSectionsNames(){
+    	DocumentModel doc = navigationContext.getCurrentDocument();
+    	List<String> result = new ArrayList<String>();
+         List<VersionModel> versions = documentManager.getVersionsForDocument(doc.getRef());
+        for (VersionModel model : versions) {
+            DocumentModel tempDoc = documentManager.getDocumentWithVersion(
+                    doc.getRef(), model);
+            if (tempDoc != null) {
+            	  for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
+                  	DocumentRef parentRef = proxy.getParentRef();
+                      DocumentModel section = documentManager.getDocument(parentRef);
+                      result.add(section.getPathAsString());
+            	  }
+            }
+        }
+         return result;   
+       
     }
 
     /*

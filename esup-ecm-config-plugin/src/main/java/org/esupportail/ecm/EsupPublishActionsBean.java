@@ -250,7 +250,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     	List<SelectDataModelRow> sections = getSectionsModel().getRows();
     	List<String> publishedSectionsNames = getPublishedSectionsNames();
     	List<DocumentModel> filteredSections = new ArrayList<DocumentModel>();
-   	 	try{
+   	 	
    	 		for (SelectDataModelRow section : sections) {
    	 			DocumentModel sectionModel = (DocumentModel)section.getData();
    	 			
@@ -267,19 +267,11 @@ public class EsupPublishActionsBean extends PublishActionsBean {
    	 		}
    	 		*/
    	 	}
-   	 		
-   	 	}catch (Exception e) {
-   	 		
-			throw new ClientException("can't get filtered sections",e);
-		}
-    		
-    	//return selectDataModels;
-   	 	
    	 	SelectDataModel filteredSectionsModel = new SelectDataModelImpl("filteredSections", filteredSections, null);
    	 	return filteredSectionsModel;
     }
     
-    protected List<String> getPublishedSectionsNames(){
+    protected List<String> getPublishedSectionsNames() throws ClientException{
     	DocumentModel doc = navigationContext.getCurrentDocument();
     	List<String> result = new ArrayList<String>();
          List<VersionModel> versions = documentManager.getVersionsForDocument(doc.getRef());

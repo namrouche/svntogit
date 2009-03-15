@@ -31,6 +31,7 @@ import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.facet.VersioningDocument;
+import org.nuxeo.ecm.core.api.impl.DocumentModelTreeNodeImpl;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
@@ -252,10 +253,10 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     	List<DocumentModel> filteredSections = new ArrayList<DocumentModel>();
    	 	
    	 		for (SelectDataModelRow section : sections) {
-   	 			DocumentModel sectionModel = (DocumentModel)section.getData();
+   	 		DocumentModelTreeNode sectionModel = (DocumentModelTreeNode)section.getData();
    	 			
    	 		boolean moderation = !isAlreadyPublishedInSection(navigationContext.getCurrentDocument(),
-                sectionModel);
+                sectionModel.getDocument());
    	 		if(!moderation){
    	 			filteredSections.add((DocumentModel)section.getData());
    	 		}

@@ -117,5 +117,36 @@
 	  <target name="clean-target" description="clean target">
 		    <delete  dir="target"/>
 	  </target>	
+	
+	
 
+	<!-- dev targets -->
+	<property name="lib.dir" value="${maven.jars}" />
+	<property name="jarname" value="esup-ecm-config-1.0-SNAPSHOT.jar"/>
+	<property name="src.dir" value="src/main/java" />
+		
+	
+	<path id="compile.classpath">
+			<fileset dir="${lib.dir}" includes="**/*.jar" />
+			
+	</path>
+
+	
+	<target name="compile">
+			<property name="compile.debug" value="true" />
+			<property name="compile.deprecation" value="true" />
+			<property name="compile.optimize" value="true" />
+			<javac srcdir="${src.dir}" destdir="target/classes" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+				<classpath refid="compile.classpath" />
+			</javac>
+		</target>
+	
+	<target name="quick-deploy" description="deploy classes in jboss" depends="compile">
+			<delete file="${deploy.dir}/${nuxeo.ear}/plugins/${jarname}" />
+			<mkdir dir="${deploy.dir}/${nuxeo.ear}/plugins/${jarname}" />
+			<copy todir="${deploy.dir}/${nuxeo.ear}/plugins/${jarname}">
+				<fileset dir="target/classes" />
+			</copy>
+	</target>
+	
 	</project>

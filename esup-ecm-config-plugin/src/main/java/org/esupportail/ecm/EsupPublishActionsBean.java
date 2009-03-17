@@ -1,5 +1,6 @@
 package org.esupportail.ecm;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,7 +27,6 @@ import org.jboss.seam.annotations.WebRemote;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentModelTreeNode;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
@@ -34,7 +34,6 @@ import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.facet.VersioningDocument;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
-import org.nuxeo.ecm.platform.publishing.api.PublishingInformation;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModelRow;
@@ -47,14 +46,22 @@ import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
  * @author Vincent Bonamy
  */
 
-@Scope(ScopeType.CONVERSATION)
-@Name("esupPublishActions")
-@Transactional
-public class EsupPublishActionsBean extends PublishActionsBean {
 
-    private static final Log log = LogFactory.getLog(EsupPublishActionsBean.class);
+@Name("esupPublishActions")
+@Scope(ScopeType.CONVERSATION)
+@Transactional
+public class EsupPublishActionsBean extends PublishActionsBean implements Serializable {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5062112520450522444L;
+
+
+
+	private static final Log log = LogFactory.getLog(EsupPublishActionsBean.class);
     
-	private static final long serialVersionUID = 1L;
+	
 	
     @In(create = true)
     protected transient NavigationContext navigationContext;
@@ -73,6 +80,19 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     
     private SelectDataModel filteredSectionsModel;
 
+    /**
+     * Build a array list structure as follow :
+     * List of versionItem
+     *   |-[0]versionLabel
+     *   |-[1]List
+     *   		|-[0]versionModel
+     *   		|-[1]List
+     *   				|-[0]proxyModel 
+     *   				|-[1]sectionModel (proxy.getParent)
+     *   				|-[2]Map<String,Object> (proxy.getProperties("dublincore"))
+     * @return list of versionItems as described above
+     * @throws ClientException
+     */
     public List getVersionsSelectModel() throws ClientException {
 		
     	Set a = new HashSet();

@@ -87,9 +87,10 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
      *   |-[1]List
      *   		|-[0]versionModel
      *   		|-[1]List
-     *   				|-[0]proxyModel 
-     *   				|-[1]sectionModel (proxy.getParent)
-     *   				|-[2]Map<String,Object> (proxy.getProperties("dublincore"))
+     *   		|		|-[0]proxyModel 
+     *   		|		|-[1]sectionModel (proxy.getParent)
+     *   		|		|-[2]Map<String,Object> (proxy.getProperties("dublincore"))
+     *   		|-[2]ModelLabel
      * @return list of versionItems as described above
      * @throws ClientException
      */

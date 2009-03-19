@@ -29,7 +29,7 @@
 
 	<h:form id="SECTIONS_DOCUMENT_TREE">
 
-		<t:dataList id="versionList" var="versionItem" value="${versions}" layout="none">
+		<t:dataList id="versionList" rowIndexVar="versionRow" var="versionItem" value="${versions}" layout="none">
 
 			<div class="foldableBox">
 
@@ -108,7 +108,7 @@
 									<!-- call to self-made methods for multiselection -->
 									<f:facet name="header">
 										<h:selectBooleanCheckbox rendered="true"
-											onclick="ori_selectSectionsPage('SECTIONS_DOCUMENT_TREE:versionList:0:publishSections:dataTable', this.checked)">
+											onclick="ori_selectSectionsPage('SECTIONS_DOCUMENT_TREE:versionList:#{versionRow}:publishSections:dataTable', this.checked)">
 										</h:selectBooleanCheckbox>
 									</f:facet>
 									<h:selectBooleanCheckbox 
@@ -151,10 +151,10 @@ function confirmDeleteDocuments() {
 
 					<div id="selection_buttons">
 					
-						<h:commandLink value="Publier" action="#{esupPublishActions.publishVersion}" immediate="true">
+						<nxh:commandLink value="#{messages['esup.action.publish.content']}" action="#{esupPublishActions.publishVersion}" immediate="true" styleClass="button">
 							<f:param value="${versionItem[1][0].ref}" name="versionSelectedRef" />
 							<f:param value="${versionItem[1][2]}" name="versionModelLabel" />
-						</h:commandLink> 
+						</nxh:commandLink> 
 					
 						<input type="button" value="annuler" class="button"
 							onclick="esup_popup('publish_#{versionItem[0]}');" />

@@ -15,7 +15,7 @@
 
 	<action id="TAB_RELATIONS" enabled="false"/>
 
-	<action id="TAB_CONTENT_REVIEW" enabled="false"/>
+	<action id="TAB_CONTENT_JBPM" enabled="false"/>
 
     <action id="TAB_MY_SUBSCRIPTIONS" enabled="false"/>
 

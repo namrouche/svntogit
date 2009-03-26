@@ -4,22 +4,20 @@ Bundle-Name: esup-ecm-config project
 Bundle-SymbolicName: org.esup.ecm;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Nuxeo
-Bundle-Category: web,stateless
 Provide-Package: org.esup.ecm
+Require-Bundle: org.nuxeo.runtime,
+ org.nuxeo.ecm.core.api,
+ org.nuxeo.ecm.core,
+ org.nuxeo.ecm.webapp.core,
+ org.nuxeo.ecm.platform.login.cas2,
+ org.nuxeo.ecm.relations.web,
+ org.nuxeo.ecm.platform.jbpm.web,
+ org.nuxeo.ecm.platform.notification.web,
+ org.nuxeo.ecm.platform.comment.web,
+ org.nuxeo.ecm.platform.audit.web
 Nuxeo-Component: OSGI-INF/esup-login-contrib.xml,
  OSGI-INF/esup-theme-contrib.xml,
  OSGI-INF/esup-rennes1-theme-contrib.xml,
  OSGI-INF/esup-ori-theme-contrib.xml,
  OSGI-INF/esup-actions-contrib.xml
-Require-Bundle: org.nuxeo.runtime,
- org.nuxeo.ecm.core.api,
- org.nuxeo.ecm.core,
- org.nuxeo.ecm.webapp.core,
- org.nuxeo.ecm.platform.publishing.api,
- org.nuxeo.ecm.platform.login.anonymous,
- org.nuxeo.ecm.platform.login.cas2,
- org.nuxeo.ecm.relations.web,
- org.nuxeo.ecm.platform.workflow.web,
- org.nuxeo.ecm.platform.notification.web,
- org.nuxeo.ecm.platform.comment.web,
- org.nuxeo.ecm.platform.audit.web
+ 

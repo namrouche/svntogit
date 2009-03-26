@@ -1,11 +1,11 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
-  <property name="nuxeo-ep.file" value="nuxeo-ep-5.1.6.GA-2.zip"/>
-  <property name="nuxeo-ep-unziped.file" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.6.GA/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
-  <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.1.6.zip"/>
+  <property name="nuxeo-ep.file" value="nuxeo-ep-5.2.0.m4-1.zip"/>
+  <property name="nuxeo-ep-unziped.file" value="${nuxeo.dir.parent}/nuxeo-ep-5.2.0.m4/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
+  <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.2-20080710.zip"/>
   <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
-  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.1.6.GA"/>
+  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.2.0.m4"/>
   <property name="nuxeo.core.jcr.connector" value="nuxeo-core-jcr-connector-1.4.3.jar"/>
   <property name="nuxeo.core.jca" value="nuxeo-core-jca-1.4.3.rar"/>
 
@@ -213,13 +213,13 @@
   <!-- sqlStorage with mysql -->
   <target name="deploy.sql.storage.config.mysql" if="isMysql" >
    <echo message="Install sql-storage mysql" />
-    <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/repository-ds.xml"  overwrite="yes"/>
+    <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
   </target>
   
   <!-- sqlStorage  with postgresql -->
   <target name="deploy.sql.storage.config.postgresql" if="isPostGresSql">
     <echo message="Install sql-storage postgresql" />
-    <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/repository-ds.xml"  overwrite="yes"/>
+    <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
   </target>
 
   <target name="deploy.plugin" depends="replace.token.config">

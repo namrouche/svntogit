@@ -18,12 +18,14 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.RequestParameter;
+import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.WebRemote;
+import org.jboss.seam.annotations.remoting.WebRemote;
+import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -33,15 +35,24 @@ import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.facet.VersioningDocument;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
+import org.nuxeo.ecm.platform.actions.Action;
+import org.nuxeo.ecm.platform.publishing.PublishActions;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModelRow;
+import org.nuxeo.ecm.platform.ui.web.model.impl.SelectDataModelRowEvent;
 import org.nuxeo.ecm.platform.ui.web.model.impl.SelectDataModelImpl;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
+import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 
 /**
  * This Seam bean manages the publishing tab in Esup-ECM.
+ *
+ *    
+ * not extend PublishActionsBean to avoid exception :
+ *  java.lang.IllegalStateException: duplicate factory for: currentPublishingSectionsModel (duplicates are specified in publishActions and esupPublishActions)
+ *
  *
  * @author Vincent Bonamy
  */
@@ -50,7 +61,7 @@ import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
 @Name("esupPublishActions")
 @Scope(ScopeType.CONVERSATION)
 @Transactional
-public class EsupPublishActionsBean extends PublishActionsBean implements Serializable {
+public class EsupPublishActionsBean implements PublishActions, Serializable {
 
     /**
 	 * 
@@ -78,7 +89,17 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
     @RequestParameter  
     private String versionModelLabel;
     
+    @In(create = true)
+    protected transient PublishActions publishActions;
+    
     private SelectDataModel filteredSectionsModel;
+
+    @In(create = true, required = false)
+    protected transient FacesMessages facesMessages;
+    
+    @In(create = true)
+    protected transient ResourcesAccessor resourcesAccessor;
+    
 
     /**
      * Build a array list structure as follow :
@@ -183,7 +204,7 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
         List<DocumentModel> forModeration = new ArrayList<DocumentModel>();
 
         for (DocumentModelTreeNode section : selectedSections) {
-            boolean moderation = !isAlreadyPublishedInSection(docToPublish,
+            boolean moderation = !((PublishActionsBean)publishActions).isAlreadyPublishedInSection(docToPublish,
                     section.getDocument());
 
             VersionModel versionModel = new VersionModelImpl();
@@ -253,7 +274,7 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
 
     	DocumentModel proxyToUnpublish = documentManager.getDocument(new IdRef(proxySelectedRef));
     
-    	unPublishDocument(proxyToUnpublish);
+    	((PublishActionsBean)publishActions).unPublishDocument(proxyToUnpublish);
     	facesMessages.add(FacesMessage.SEVERITY_INFO,
                                 resourcesAccessor.getMessages().get(
                                         "document_unpublished"),
@@ -283,7 +304,7 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
    	 		for (SelectDataModelRow section : sections) {
    	 		DocumentModelTreeNode sectionModel = (DocumentModelTreeNode)section.getData();
    	 			
-   	 		boolean moderation = !isAlreadyPublishedInSection(version,
+   	 		boolean moderation = !((PublishActionsBean)publishActions).isAlreadyPublishedInSection(version,
                 sectionModel.getDocument());
    	 		if(moderation){
    	 			filteredSections.add(sectionModel);
@@ -324,7 +345,7 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
     	 for (SelectDataModelRow d : sections) {
             	 d.setSelected(false);
          }
-    	this.setSelectedSections(null);
+    	 ((PublishActionsBean)publishActions).setSelectedSections(null);
         return "OK";
     }
     
@@ -334,9 +355,139 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
     @WebRemote
     public String processRemoteSelectRowEvent(String docRef, Boolean selection)
             throws ClientException {
-    	return super.processRemoteSelectRowEvent(docRef, selection);
+    	return publishActions.processRemoteSelectRowEvent(docRef, selection);
     }
+
     
+
+    @Factory(autoCreate = true, scope = ScopeType.EVENT, value = "esupCurrentPublishingSectionsModel")
+    public SelectDataModel getSectionsModel() throws ClientException {
+        return publishActions.getSectionsModel();
+    }
+
+
+	public void cancelTheSections() {
+		publishActions.cancelTheSections();
+	}
+
+
+
+	public void destroy() {
+		publishActions.destroy();
+	}
+
+
+
+	public List<Action> getActionsForPublishDocument() {
+		return publishActions.getActionsForPublishDocument();
+	}
+
+
+
+	public List<Action> getActionsForSectionSelection() {
+		return publishActions.getActionsForSectionSelection();
+	}
+
+
+
+	public String getComment() {
+		return publishActions.getComment();
+	}
+
+
+	public Set<String> getSectionRootTypes() {
+		return publishActions.getSectionRootTypes();
+	}
+
+
+
+	public Set<String> getSectionTypes() {
+		return publishActions.getSectionTypes();
+	}
+
+
+
+	public List<DocumentModelTreeNode> getSelectedSections() {
+		return publishActions.getSelectedSections();
+	}
+
+
+
+	public boolean hasValidationTask() {
+		return publishActions.hasValidationTask();
+	}
+
+
+
+	public boolean isPublished() {
+		return publishActions.isPublished();
+	}
+
+
+
+	public boolean isReviewer(DocumentModel dm) throws ClientException {
+		return publishActions.isReviewer(dm);
+	}
+
+
+
+	public void notifyEvent(String eventId,
+			Map<String, Serializable> properties, String comment,
+			String category, DocumentModel dm) throws ClientException {
+		publishActions.notifyEvent(eventId, properties, comment, category, dm);
+	}
+
+
+
+	public String publishDocument() throws ClientException {
+		return publishActions.publishDocument();
+	}
+
+
+
+	public DocumentModel publishDocument(DocumentModel docToPublish,
+			DocumentModel section) throws ClientException {
+		return publishActions.publishDocument(docToPublish, section);
+	}
+
+
+
+	public String publishDocumentList(String listName) throws ClientException {
+		return publishActions.publishDocumentList(listName);
+	}
+
+
+
+	public String publishWorkList() throws ClientException {
+		return publishActions.publishWorkList();
+	}
+
+
+
+	public void setComment(String comment) {
+		publishActions.setComment(comment);
+	}
+
+
+
+	public String unPublishDocument() throws ClientException {
+		return publishActions.unPublishDocument();
+	}
+
+
+
+	public void unPublishDocumentsFromCurrentSelection() throws ClientException {
+		publishActions.unPublishDocumentsFromCurrentSelection();
+	}
+
+
+
+	public void processSelectRowEvent(SelectDataModelRowEvent event)
+			throws ClientException {
+		publishActions.processSelectRowEvent(event);
+	}
+    
+
     /*
      * Called by Seam remoting. Process multiselected sections
      */
@@ -364,4 +515,5 @@ public class EsupPublishActionsBean extends PublishActionsBean implements Serial
         return "OK";
     }
     
+
 }

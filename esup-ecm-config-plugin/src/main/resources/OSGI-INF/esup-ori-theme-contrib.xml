@@ -16,13 +16,13 @@
  <!-- views -->
   <extension target="org.nuxeo.theme.services.ThemeService" point="views">
 
-    <view name="Ori logo">
+    <view name="Ori logo" template-engine="jsf-facelets">
       <format-type>widget</format-type>
       <class>org.nuxeo.theme.jsf.views.JSFView</class>
       <template>incl/logo-ori.xhtml</template>
     </view>
 
-    <view name="Ori footer">
+    <view name="Ori footer" template-engine="jsf-facelets">
       <format-type>widget</format-type>
       <class>org.nuxeo.theme.jsf.views.JSFView</class>
       <template>incl/footer-ori.xhtml</template>

@@ -16,13 +16,13 @@
  <!-- views -->
   <extension target="org.nuxeo.theme.services.ThemeService" point="views">
 
-    <view name="Rennes1 logo">
+    <view name="Rennes1 logo" template-engine="jsf-facelets">
       <format-type>widget</format-type>
       <class>org.nuxeo.theme.jsf.views.JSFView</class>
       <template>incl/logo-rennes1.xhtml</template>
     </view>
 
-    <view name="Rennes1 footer">
+    <view name="Rennes1 footer" template-engine="jsf-facelets">
       <format-type>widget</format-type>
       <class>org.nuxeo.theme.jsf.views.JSFView</class>
       <template>incl/footer-rennes1.xhtml</template>

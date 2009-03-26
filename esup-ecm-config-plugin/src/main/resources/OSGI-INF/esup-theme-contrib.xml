@@ -16,13 +16,13 @@
  <!-- views -->
   <extension target="org.nuxeo.theme.services.ThemeService" point="views">
 
-    <view name="Esup logo">
+    <view name="Esup logo" template-engine="jsf-facelets">
       <format-type>widget</format-type>
       <class>org.nuxeo.theme.jsf.views.JSFView</class>
       <template>incl/logo-esup.xhtml</template>
     </view>
 
-    <view name="Esup footer">
+    <view name="Esup footer" template-engine="jsf-facelets">
       <format-type>widget</format-type>
       <class>org.nuxeo.theme.jsf.views.JSFView</class>
       <template>incl/footer-esup.xhtml</template>
@@ -49,7 +49,7 @@
   <extension target="org.nuxeo.theme.services.ThemeService"
     point="applications">
 
-    <application root="/nuxeo">
+    <application root="/nuxeo" template-engine="jsf-facelets">
 
       <negotiation>
         <strategy>nuxeo5</strategy>

@@ -5,8 +5,24 @@
   <assembly-descriptor>
     <interceptor-binding>
       <ejb-name>*</ejb-name>
-      <interceptor-class>org.jboss.seam.ejb.SeamInterceptor</interceptor-class>
+      <interceptor-class>
+        org.jboss.seam.ejb.SeamInterceptor
+      </interceptor-class>
     </interceptor-binding>
+
+    <interceptor-binding>
+      <ejb-name>*</ejb-name>
+      <interceptor-class>
+        org.nuxeo.ecm.platform.ui.web.shield.NuxeoErrorInterceptor
+      </interceptor-class>
+    </interceptor-binding>
+
   </assembly-descriptor>
 
+  <interceptors>
+    <interceptor>
+        <interceptor-class>org.jboss.seam.ejb.SeamInterceptor</interceptor-class>
+    </interceptor>
+ </interceptors>
+ 
 </ejb-jar>

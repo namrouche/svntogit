@@ -34,6 +34,7 @@
 	    <exec executable="mvn" failonerror="true">
 	      <arg value="install" />
 	      <arg value="-Dmaven.test.skip=true" />
+	      <arg value="-Dmaven.compiler.debug=false" />
 	      <!-- Vincent : Ajout du -o pour eviter la reconnection au serveur maven nuxeo (long)-->
 	<!-- Raymond : Ne fonctionne pas sur un poste "vierge"   		
 	      <arg value="-o" />

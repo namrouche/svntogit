@@ -26,12 +26,21 @@
     <config-property name="property" type="java.lang.String">Password=</config-property>
     -->
 
-    <!-- Configuration for Derby: -->
+    <!-- Configuration for Derby: 
     <config-property name="xaDataSource" type="java.lang.String">org.apache.derby.jdbc.EmbeddedXADataSource</config-property>
     <config-property name="property" type="java.lang.String">createDatabase=create</config-property>
     <config-property name="property" type="java.lang.String">databaseName=${jboss.server.data.dir}/derby/nuxeo</config-property>
     <config-property name="property" type="java.lang.String">user=sa</config-property>
     <config-property name="property" type="java.lang.String">password=</config-property>
+    -->
+
+    <!-- Configuration for MySQL -->
+    <config-property name="xaDataSource" type="java.lang.String">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</config-property>
+    <config-property name="property" type="java.lang.String">ServerName=@sqlStorageServer@</config-property>
+    <config-property name="property" type="java.lang.String">PortNumber/Integer=@sqlStoragePort@</config-property>
+    <config-property name="property" type="java.lang.String">DatabaseName=@sqlStorageDb@</config-property>
+    <config-property name="property" type="java.lang.String">User=@sqlStorageUser@</config-property>
+    <config-property name="property" type="java.lang.String">Password=@sqlStoragePassword@</config-property>
 
 
   </tx-connection-factory>

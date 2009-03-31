@@ -2,92 +2,124 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.nuxeo.ecm.platform</groupId>
-		<artifactId>nuxeo-platform-parent</artifactId>
-		<version>5.2.0.m4</version>
-	</parent>
-	
+
 	<groupId>org.esup.ecm</groupId>
 	<artifactId>esup-ecm-config</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>esup-ecm-config project</name>
 	<description>esup-ecm-config project description</description>
 
+	<properties>
+		<nuxeo.version>5.2.0-RC1</nuxeo.version>
+		<nuxeo.core.version>1.5.0-RC1</nuxeo.core.version>
+		<jboss.version>4.0.4.GA</jboss.version>
+		<jboss.ejb.version>3.0-RC8</jboss.ejb.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core</artifactId>
+			<version>${nuxeo.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.ecm.platform</groupId>
 			<artifactId>nuxeo-platform-webapp-core</artifactId>
-			<type>ejb</type>
+			<version>${nuxeo.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.nuxeo.ecm.core</groupId>
+		<!--
+			encore besoin ? <dependency> <groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core-jcr-connector-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- dependency>
-			<groupId>org.nuxeo.ecm.platform</groupId>
-			<artifactId>nuxeo-platform-workflow-jbpm-document-handlers</artifactId>
-		</dependency-->
+			<version>${nuxeo.version}</version> </dependency>
+		-->
 		<dependency>
 			<groupId>org.nuxeo.ecm.platform</groupId>
 			<artifactId>nuxeo-platform-notification-core</artifactId>
-			<type>ejb</type>
+			<version>${nuxeo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.ecm.platform</groupId>
 			<artifactId>nuxeo-platform-notification-facade</artifactId>
-			<type>ejb</type>
+			<version>${nuxeo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.ecm.platform</groupId>
 			<artifactId>nuxeo-platform-filemanager-core</artifactId>
+			<version>${nuxeo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.ecm.platform</groupId>
 			<artifactId>nuxeo-platform-publishing-web</artifactId>
+			<version>${nuxeo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
+			<version>3.2.0.ga</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.ejb</groupId>
 			<artifactId>ejb</artifactId>
+			<version>3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.faces</groupId>
 			<artifactId>jsf-api</artifactId>
+			<version>1.2_09_jboss</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-      		<groupId>org.jboss.seam</groupId>
-      		<artifactId>jboss-seam</artifactId>
-      		<scope>provided</scope>
-    	</dependency>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam</artifactId>
+			<version>2.0.3.CR1-NX2</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>jboss</groupId>
 			<artifactId>jboss-annotations-ejb3</artifactId>
+			<version>${jboss.ejb.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jboss</groupId>
 			<artifactId>jboss-j2ee</artifactId>
+			<version>${jboss.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
+			<version>3.2.0.ga</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	
+
+	<repositories>
+		<repository>
+			<id>public</id>
+			<url>http://maven.nuxeo.org/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -100,5 +132,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

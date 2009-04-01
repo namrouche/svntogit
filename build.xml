@@ -1,7 +1,7 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
-  <property name="nuxeo-ep.file" value="nuxeo-ep-5.2.0-RC1-jboss-all.zip"/>
+  <property name="nuxeo-ep.file" value="nuxeo-ep-5.2.0-RC1-jboss-all-1.zip"/>
   <property name="nuxeo-ep-unziped.file" value="${nuxeo.dir.parent}/nuxeo-ep-5.2.0-RC1/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
   <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.2-20080710.zip"/>
   <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>

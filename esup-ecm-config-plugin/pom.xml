@@ -24,16 +24,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.ecm.platform</groupId>
-			<artifactId>nuxeo-platform-webapp-core</artifactId>
-			<version>${nuxeo.version}</version>
-		</dependency>
-		<!--
-			encore besoin ? <dependency> <groupId>org.nuxeo.ecm.core</groupId>
-			<artifactId>nuxeo-core-jcr-connector-test</artifactId>
-			<version>${nuxeo.version}</version> </dependency>
-		-->
-		<dependency>
-			<groupId>org.nuxeo.ecm.platform</groupId>
 			<artifactId>nuxeo-platform-notification-facade</artifactId>
 			<version>${nuxeo.version}</version>
 		</dependency>

@@ -1,183 +1,153 @@
-<div xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
-	xmlns:nxd="http://nuxeo.org/nxweb/document"
-	xmlns:nxu="http://nuxeo.org/nxweb/util"
-	xmlns:nxh="http://nuxeo.org/nxweb/html">
+<div xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+  xmlns:nxd="http://nuxeo.org/nxweb/document"
+  xmlns:nxh="http://nuxeo.org/nxweb/html"
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:rich="http://richfaces.org/rich"
+  class="menu">
 
-	
-<script type="text/javascript" src="#{baseURL}scripts/EsupPopupCss.js"></script>
-	
-<script type="text/javascript" src="#{baseURL}scripts/EsupPublishingTableSelections.js"></script> 
-
-<link rel="stylesheet" type="text/css" media="screen" href="#{baseURL}css/EsupPopupCss.css" />
-
-<div id="blanket" style="display: none;"></div>
-
-    <p><h:outputText rendered="${empty versionList}"
-      value="#{messages['label.noversion']}"/></p>
-
-<h:outputText value="#{messages['label.publish.noversions.available']}"
-	rendered="#{!documentVersioning.uidDataAvailable}" /> 
-	
-<nxu:methodResult
+  <a4j:region renderRegionOnly="true">
+  <a4j:outputPanel ajaxRendered="true">
+  <a4j:form ajaxSubmit="true" id="publishTreeForm">
+  
+  <nxu:methodResult
 		value="#{esupPublishActions.getVersionsSelectModel()}" name="versions">
-
-	<h:form id="SECTIONS_DOCUMENT_TREE">
-
-		<t:dataList id="versionList" rowIndexVar="versionRow" var="versionItem" value="${versions}" layout="none">
-
-			<div class="foldableBox">
+		
+  <p><h:outputText rendered="${empty versionList}"
+      value="#{messages['label.noversion']}"/></p>
+      	
+<nxu:dataList id="versionList" rowIndexVar="versionRow" var="versionItem" value="${versions}" layout="none">	
+	
+	<div class="foldableBox">
 
 			<h3 class="unfolded"><a href="#nogo"
 				onclick="return toggleBox(this)"> Version <h:outputText
 				value="#{versionItem[0]}" /> </a></h3>
 
-			<div class="boxBody"><h:dataTable var="proxySection"
-				value="${versionItem[1][1]}" rowClasses="dataRowEven,dataRowOdd"
-				styleClass="dataList">
-
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Publiée dans" />
-					</f:facet>
-					<h:outputText value="#{proxySection[1].title}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Titre" />
-					</f:facet>
-					<h:outputText value="#{proxySection[0].title}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="le" />
-					</f:facet>
-					<h:outputText value="#{proxySection[2]['dc:issued']}">
-						<f:convertDateTime pattern="#{nxu:basicDateFormater()}" />
-					</h:outputText>
-				</h:column>
-
-
-				<!--  Actions for the published document  -->
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Action" />
-					</f:facet>
-					<nxu:methodResult name="actions"
-						value="#{webActions.getActionsList('PUBLISHED_DOCUMENT')}">
-						<nxu:dataList layout="simple" var="action" value="#{actions}"
-							rowIndexVar="row" rowCountVar="rowCount">
-							<h:outputText value=" | " rendered="#{row!=(rowCount-1)}" />
-							<nxh:commandLink action="#{action.getLink()}">
-								<h:outputText value="#{messages[action.label]}" />
-								<f:param name="proxySelectedRef" value="#{proxySection[0].ref}" />
-							</nxh:commandLink>
-						</nxu:dataList>
-					</nxu:methodResult>
-				</h:column>
-
-			</h:dataTable> <input type="button" value="publier" class="button"
-				onclick="popupForPublishing('publish_#{versionItem[0]}');" />
-
-
-			<div id="publish_#{versionItem[0]}" style="display: none"
-				class="popUpDiv"><nxu:methodResult
-				value="#{esupPublishActions.getSimpleSectionsModel(versionItem[1][0].ref)}" name="documents">
-
-				<f:subview id="publishSections"
-					rendered="#{documents != null and documentVersioning.uidDataAvailable}">
-
-					<h:outputText value="#{messages['label.sections.not.defined']}"
-						rendered="#{documents.rowCount == 0}" />
-					<nxu:methodResult value="#{currentDocument.parentRef.toString()}"
-						name="parentRef">
-						<nxu:dataTable id="dataTable" value="#{documents.rows}" var="row"
-							rowClasses="dataRowEven,dataRowOdd" styleClass="dataOutput"
-							rendered="#{documents.rowCount > 0}">
-							<nxu:methodResult value="#{row.data.document.ref.toString()}"
-								name="sectionRef">
-								<!-- id and selection -->
-								<nxu:column styleClass="iconColumn" rendered="true">
-									<!-- call to self-made methods for multiselection -->
-									<f:facet name="header">
-										<h:selectBooleanCheckbox rendered="true"
-											onclick="ori_selectSectionsPage('SECTIONS_DOCUMENT_TREE:versionList:#{versionRow}:publishSections:dataTable', this.checked)">
-										</h:selectBooleanCheckbox>
-									</f:facet>
-									<h:selectBooleanCheckbox 
-										onclick="selectSectionForPublish('#{row.data.document.ref}', this.checked)"
-										rendered="#{sectionRef!=parentRef}">
-										<!-- oncomplete="enableCheckBoxesIn('#{documents.name}:dataTable')"> -->
-									</h:selectBooleanCheckbox>
-								</nxu:column>
-								<!--  Title -->
-								<nxu:column>
-									<f:facet name="header">
-										<h:outputText
-											value="#{messages['label.publish.header.title']}" />
-									</f:facet>
-									<h:outputText value="#{row.data.treeLabel}" escape="false" />
-								</nxu:column>
-
-							</nxu:methodResult>
-						</nxu:dataTable>
-					</nxu:methodResult>
-
-					<script type="text/javascript">
-function confirmDeleteDocuments() {
-    return confirm("#{messages['label.documents.confirmDeleteDocuments']}");
-}
-</script>
-
-					<f:subview
-						rendered="#{!empty publishActions.actionsForPublishDocument}">
-						<table class="dataInput" border="0">
-							<tr>
-								<td class="labelColumn"><h:outputText
-									value="#{messages['label.comment']}" /></td>
-								<td class="fieldColumn"><h:inputTextarea rows="3" cols="30"
-									value="#{publishActions.comment}" id="comment" /></td>
-							</tr>
-						</table>
-					</f:subview>
+			<div class="boxBody">
+			
+		
+  <h:panelGroup rendered="#{!empty publishActions.sectionRootsForPublishing}">
+    <h:panelGrid class="dataInput" columnClasses="labelColumn, fieldColumn" columns="2">
+      <h:panelGroup>
+        <h:outputText value="#{messages['label.publish.sections']}" />
+      </h:panelGroup>
+      <h:panelGroup>
+        <h:selectOneListbox class="dataInputText" size="1"
+          value="#{publishActions.currentSectionRootIdForPublishing}">
+          <nxu:selectItems value="#{publishActions.sectionRootsForPublishing}"
+            var="root"
+            itemValue="#{root.id}"
+            itemLabel="#{root.title}" />
+            <a4j:support event="onchange" reRender="sectionTree" ignoreDupResponses="true" />
+        </h:selectOneListbox>
+      </h:panelGroup>
+    </h:panelGrid>
+   
+    <dl>
+    <dd class="menuForm">
+      <h:panelGroup id="sectionTree">
+        <rich:tree
+          icon="#{nodeState.isExpanded(rowKey)?nxd:iconExpandedPath(node.document):nxd:iconPath(node.document)}"
+          iconLeaf="#{nxd:iconPath(node.document)}"
+          iconExpanded="/img/toggle_minus.png"
+          iconCollapsed="/img/toggle_plus.png"
+          rowKeyVar="rowKey"
+          stateVar="nodeState"
+          id="publishTree">
+          <rich:recursiveTreeNodesAdaptor
+            roots="#{publishActions.currentSectionsTreeForPublishing}"
+            nodes="#{node.children}"
+            var="node"
+            id="publishRecursiveAdaptor">
+            <rich:treeNode
+              highlightedClass="treeNodeHighlightedClass"
+              selectedClass="treeNodeSelectedClass"
+              id="publishTreeNode">
+              <h:outputText value="#{nxd:titleOrId(node.document)}" />
+              <nxu:methodResult name="canPublishToSection" value="#{publishActions.getCanPublishToSection(node.document)}">
+                <a4j:commandLink immediate="true"
+                  action="#{esupPublishActions.publishVersion(versionItem[1][2], node.document)}"
+                  rendered="#{canPublishToSection}"
+                  reRender="publishingInfoList"
+                  id="publishCommandLink">
+                  <h:graphicImage value="/icons/back.png" />
+                  <h:outputText value="#{messages['label.publish.publish']}" />
+                </a4j:commandLink>
+              </nxu:methodResult>
+            </rich:treeNode>
+          </rich:recursiveTreeNodesAdaptor>
+        </rich:tree>
+      </h:panelGroup>
+    </dd>
+    </dl>
+  </h:panelGroup>
 
 
-					<div id="selection_buttons">
-					
-						<nxh:commandLink value="#{messages['esup.action.publish.content']}" action="#{esupPublishActions.publishVersion}" immediate="true" styleClass="button">
-							<f:param value="${versionItem[1][0].ref}" name="versionSelectedRef" />
-							<f:param value="${versionItem[1][2]}" name="versionModelLabel" />
-						</nxh:commandLink> 
-					
-						<input type="button" value="annuler" class="button"
-							onclick="esup_popup('publish_#{versionItem[0]}');" />
-							
-					</div>
+  <h:panelGroup id="publishingInfoList">
+    <h:panelGroup rendered="#{!empty versionItem[1][1]}">
+      
+      <nxu:dataTable value="${versionItem[1][1]}" var="info"
+        preserveSort="true" preserveDataModel="false"
+        rowClasses="dataRowEven,dataRowOdd" sortable="false"
+        styleClass="dataList">
+        
+        <!-- Name -->
+        <nxu:column>
+          <f:facet name="header">
+            <h:outputText value="#{messages['label.content.header.title']}" />
+          </f:facet>
+          <nxu:methodResult name="formattedPath" value="#{publishActions.getFormattedPath(info.section)}">
+            <nxd:restDocumentLink document="#{info.section}">
+              <h:outputText value="#{formattedPath}" />
+            </nxd:restDocumentLink>
+          </nxu:methodResult>
+        </nxu:column>
+        
+        <!--  Version of the published document -->
+        <h:column>
+          <f:facet name="header">
+            <h:outputText
+              value="#{messages['label.publish.header.version']}" />
+          </f:facet>
+          <h:outputText value="#{info.proxy}" />
+        </h:column>
+      
+        <!--  Actions for the published document  -->
+        <h:column >
+          <f:facet name="header">
+            <h:outputText value="Action" />
+          </f:facet>
+          
+          <nxu:methodResult name="canPublishToSection" value="#{publishActions.getCanPublishToSection(info.section)}">
+            <a4j:commandLink immediate="true"
+              value="#{messages['command.document.unpublish']}"
+              action="#{esupPublishActions.unPublishProxy(info.proxy)}"
+              rendered="#{nxd:hasPermission(info.section, 'Write') and section.ref != currentDocument.parentRef}"
+              reRender="publishingInfoList"
+              ignoreDupResponses="true">
+            </a4j:commandLink>
+          </nxu:methodResult>
+        </h:column>
+      </nxu:dataTable>
+  
+      
+    </h:panelGroup>
+    
+  </h:panelGroup>
 
-
-					<div style="clear: both"></div>
-
-
-				</f:subview>
-
-			</nxu:methodResult></div>
-
-			</div>
-
-			</div>
-
-		</t:dataList>
-
-	</h:form>
-
-</nxu:methodResult>
-
+  
+  </div>
+  
+  </div>
+  
+  </nxu:dataList>
+  
+  </nxu:methodResult>
+  
+  </a4j:form>
+  </a4j:outputPanel>  
+  </a4j:region>
 </div>
-

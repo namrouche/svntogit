@@ -29,15 +29,18 @@ import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentModelTreeNode;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.facet.VersioningDocument;
+import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.actions.Action;
 import org.nuxeo.ecm.platform.publishing.PublishActions;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
+import org.nuxeo.ecm.platform.publishing.api.PublishingInformation;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModelRow;
@@ -53,7 +56,7 @@ import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
  * not extend PublishActionsBean to avoid exception :
  *  java.lang.IllegalStateException: duplicate factory for: currentPublishingSectionsModel (duplicates are specified in publishActions and esupPublishActions)
  *
- *
+ * @see PublishActionsBean
  * @author Vincent Bonamy
  */
 
@@ -61,44 +64,14 @@ import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 @Name("esupPublishActions")
 @Scope(ScopeType.CONVERSATION)
 @Transactional
-public class EsupPublishActionsBean implements PublishActions, Serializable {
+public class EsupPublishActionsBean extends PublishActionsBean {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 5062112520450522444L;
 
-
-
 	private static final Log log = LogFactory.getLog(EsupPublishActionsBean.class);
-    
-	
-	
-    @In(create = true)
-    protected transient NavigationContext navigationContext;
 
-    @In(create = true)
-    protected transient CoreSession documentManager;
-    
-    @In(create = true)
-    protected transient VersioningManager versioningManager;
-  
-    @RequestParameter
-    private String proxySelectedRef;
-    
-    @RequestParameter  
-    private String versionModelLabel;
-    
-    @In(create = true)
-    protected transient PublishActions publishActions;
-    
-    private SelectDataModel filteredSectionsModel;
+    protected DocumentModelList filteredSectionsModel;
 
-    @In(create = true, required = false)
-    protected transient FacesMessages facesMessages;
-    
-    @In(create = true)
-    protected transient ResourcesAccessor resourcesAccessor;
     
 
     /**
@@ -133,7 +106,7 @@ public class EsupPublishActionsBean implements PublishActions, Serializable {
                 if(!versionsDoc.containsKey(versionLabel)) {
                 	List values = new ArrayList();
                 	values.add(tempDoc);
-                	values.add(new ArrayList());
+                	values.add(new ArrayList<PublishingInformation>());
                 	values.add(model.getLabel());
                 	versionsDoc.put(versionLabel, values);
                 }
@@ -141,12 +114,9 @@ public class EsupPublishActionsBean implements PublishActions, Serializable {
                 for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
                 	DocumentRef parentRef = proxy.getParentRef();
                     DocumentModel section = documentManager.getDocument(parentRef);
-                    Map<String, Object> dublincoreProperties = proxy.getProperties("dublincore");
-                    List l = new ArrayList();
-                    l.add(proxy);
-                    l.add(section);
-                    l.add(dublincoreProperties);
-                    ((List)versionsDoc.get(versionLabel).get(1)).add(l);
+                    PublishingInformation info = new PublishingInformation(proxy, section);
+                    //l.add(dublincoreProperties);
+                    ((List)versionsDoc.get(versionLabel).get(1)).add(info);
                 }
             }
             
@@ -173,95 +143,30 @@ public class EsupPublishActionsBean implements PublishActions, Serializable {
     /*
      * Called by  esup_document_publish.xhtml
      */
-    public String publishVersion() throws ClientException {
+    public String publishVersion(String versionModelLabel, DocumentModel section) throws ClientException {
     	
     	DocumentModel docToPublish = navigationContext.getCurrentDocument();
-    	
-        if (documentManager.getLock(docToPublish.getRef()) != null) {
-            facesMessages.add(FacesMessage.SEVERITY_WARN,
-                    resourcesAccessor.getMessages().get(
-                            "error.document.locked.for.publish"));
-            return null;
-        }
 
-        List<DocumentModelTreeNode> selectedSections = getSelectedSections();
-        if (selectedSections.isEmpty()) {
-            facesMessages.add(FacesMessage.SEVERITY_WARN,
-                    resourcesAccessor.getMessages().get(
-                            "publish.no_section_selected"));
+        VersionModel versionModel = new VersionModelImpl();
 
-            return null;
-        }
-
-        log.debug("selected " + selectedSections.size() + " sections");
-
-        /**
-         * Proxies for which we need a moderation. Let's request the moderation
-         * after the document manager session has been saved to avoid conflicts
-         * in between sync txn and async txn that can start before the end of
-         * the sync txn.
-         */
-        List<DocumentModel> forModeration = new ArrayList<DocumentModel>();
-
-        for (DocumentModelTreeNode section : selectedSections) {
-            boolean moderation = !((PublishActionsBean)publishActions).isAlreadyPublishedInSection(docToPublish,
-                    section.getDocument());
-
-            VersionModel versionModel = new VersionModelImpl();
-
-            versionModel.setCreated(Calendar.getInstance());
-            versionModel.setDescription("");
-            versionModel.setLabel(versionModelLabel);
+        versionModel.setCreated(Calendar.getInstance());
+        versionModel.setDescription("");
+        versionModel.setLabel(versionModelLabel);
             
-            DocumentModel proxy = documentManager.createProxy(section.getDocument().getRef(), docToPublish.getRef(), versionModel, false);
+        DocumentModel proxy = documentManager.createProxy(section.getRef(), docToPublish.getRef(), versionModel, false);
             
-            Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL,
+        Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL,
                     locale);
-            proxy.setProperty("dublincore", "dc:issued",
+        proxy.setProperty("dublincore", "dc:issued",
                     dateFormat.getCalendar());
             
-            documentManager.save();
-            
-            if (moderation && !isReviewer(proxy)) {
-                forModeration.add(proxy);
-            }
-        }
+        documentManager.save();
 
-        // A document is considered published if it doesn't have
-        // approval from section's manager
-        boolean published = false;
-        if (selectedSections.size() > forModeration.size()) {
-            published = true;
-        }
-
-        if (published) {
-
-            // notifyEvent(org.nuxeo.ecm.webapp.helpers.EventNames.DOCUMENT_PUBLISHED,
-            // null, comment,
-            // null, docToPublish);
-
-            facesMessages.add(FacesMessage.SEVERITY_INFO,
+        facesMessages.add(FacesMessage.SEVERITY_INFO,
                     resourcesAccessor.getMessages().get("document_published"),
                     resourcesAccessor.getMessages().get(docToPublish.getType()));
-        }
 
-        if (!forModeration.isEmpty()) {
-            // notifyEvent(org.nuxeo.ecm.webapp.helpers.EventNames.DOCUMENT_SUBMITED_FOR_PUBLICATION,
-            // null, comment,
-            // null, docToPublish);
-            facesMessages.add(FacesMessage.SEVERITY_INFO,
-                    resourcesAccessor.getMessages().get(
-                            "document_submitted_for_publication"),
-                    resourcesAccessor.getMessages().get(docToPublish.getType()));
-            for (DocumentModel proxy : forModeration) {
-                notifyEvent(
-                        org.nuxeo.ecm.webapp.helpers.EventNames.PROXY_PUSLISHING_PENDING,
-                        null, null, null, proxy);
-            }
-        }
-
-        initSelectedSections();
         
         return null;
     }
@@ -270,250 +175,16 @@ public class EsupPublishActionsBean implements PublishActions, Serializable {
     /*
      * Called by document_publish.xhtml
      */
-    public String unPublishProxy() throws ClientException {
+    public String unPublishProxy(DocumentModel proxyToUnpublish) throws ClientException {
 
-    	DocumentModel proxyToUnpublish = documentManager.getDocument(new IdRef(proxySelectedRef));
-    
-    	((PublishActionsBean)publishActions).unPublishDocument(proxyToUnpublish);
+    	this.unPublishDocument(proxyToUnpublish);
     	facesMessages.add(FacesMessage.SEVERITY_INFO,
                                 resourcesAccessor.getMessages().get(
                                         "document_unpublished"),
                                 resourcesAccessor.getMessages().get(
                                 		proxyToUnpublish.getType()));
-    	
-    	initSelectedSections();
-        
+
         return null;
     }
-    
-    
-    
-    /**
-     * Return a filtered list of sections 
-     * to avoid double items, only sections where this version is not yet published are in returned list
-     * @param versionRef
-     * @return
-     * @throws ClientException
-     */
-    public SelectDataModel getSimpleSectionsModel(DocumentRef versionRef) throws ClientException {
-    	SelectDataModel selectDataModels = getSectionsModel();
-    	List<SelectDataModelRow> sections = getSectionsModel().getRows();
-    	List<DocumentModelTreeNode> filteredSections = new ArrayList<DocumentModelTreeNode>();
-    	DocumentModel version = documentManager.getDocument(versionRef);
-   	 	
-   	 		for (SelectDataModelRow section : sections) {
-   	 		DocumentModelTreeNode sectionModel = (DocumentModelTreeNode)section.getData();
-   	 			
-   	 		boolean moderation = !((PublishActionsBean)publishActions).isAlreadyPublishedInSection(version,
-                sectionModel.getDocument());
-   	 		if(moderation){
-   	 			filteredSections.add(sectionModel);
-   	 		}
-   	 	}
-   	 	filteredSectionsModel = new SelectDataModelImpl("filteredSections", filteredSections, null);
-   	  	return filteredSectionsModel;
-    }
-    
-       
-    /**
-    protected List<String> getPublishedSectionsNames() throws ClientException{
-    	DocumentModel doc = navigationContext.getCurrentDocument();
-    	List<String> result = new ArrayList<String>();
-         List<VersionModel> versions = documentManager.getVersionsForDocument(doc.getRef());
-        for (VersionModel model : versions) {
-            DocumentModel tempDoc = documentManager.getDocumentWithVersion(
-                    doc.getRef(), model);
-            if (tempDoc != null) {
-            	  for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
-                  	DocumentRef parentRef = proxy.getParentRef();
-                      DocumentModel section = documentManager.getDocument(parentRef);
-                      result.add(section.getPathAsString());
-            	  }
-            }
-        }
-         return result;   
-       
-    }
-    */
-
-    /*
-     * Called by Seam remoting.
-     */
-    @WebRemote
-    public String initSelectedSections() throws ClientException {
-    	List<SelectDataModelRow> sections = getSectionsModel().getRows();
-    	 for (SelectDataModelRow d : sections) {
-            	 d.setSelected(false);
-         }
-    	 ((PublishActionsBean)publishActions).setSelectedSections(null);
-        return "OK";
-    }
-    
-    /*
-     * Called by Seam remoting.
-     */
-    @WebRemote
-    public String processRemoteSelectRowEvent(String docRef, Boolean selection)
-            throws ClientException {
-    	return publishActions.processRemoteSelectRowEvent(docRef, selection);
-    }
-
-    
-
-    @Factory(autoCreate = true, scope = ScopeType.EVENT, value = "esupCurrentPublishingSectionsModel")
-    public SelectDataModel getSectionsModel() throws ClientException {
-        return publishActions.getSectionsModel();
-    }
-
-
-	public void cancelTheSections() {
-		publishActions.cancelTheSections();
-	}
-
-
-
-	public void destroy() {
-		publishActions.destroy();
-	}
-
-
-
-	public List<Action> getActionsForPublishDocument() {
-		return publishActions.getActionsForPublishDocument();
-	}
-
-
-
-	public List<Action> getActionsForSectionSelection() {
-		return publishActions.getActionsForSectionSelection();
-	}
-
-
-
-	public String getComment() {
-		return publishActions.getComment();
-	}
-
-
-	public Set<String> getSectionRootTypes() {
-		return publishActions.getSectionRootTypes();
-	}
-
-
-
-	public Set<String> getSectionTypes() {
-		return publishActions.getSectionTypes();
-	}
-
-
-
-	public List<DocumentModelTreeNode> getSelectedSections() {
-		return publishActions.getSelectedSections();
-	}
-
-
-
-	public boolean hasValidationTask() {
-		return publishActions.hasValidationTask();
-	}
-
-
-
-	public boolean isPublished() {
-		return publishActions.isPublished();
-	}
-
-
-
-	public boolean isReviewer(DocumentModel dm) throws ClientException {
-		return publishActions.isReviewer(dm);
-	}
-
-
-
-	public void notifyEvent(String eventId,
-			Map<String, Serializable> properties, String comment,
-			String category, DocumentModel dm) throws ClientException {
-		publishActions.notifyEvent(eventId, properties, comment, category, dm);
-	}
-
-
-
-	public String publishDocument() throws ClientException {
-		return publishActions.publishDocument();
-	}
-
-
-
-	public DocumentModel publishDocument(DocumentModel docToPublish,
-			DocumentModel section) throws ClientException {
-		return publishActions.publishDocument(docToPublish, section);
-	}
-
-
-
-	public String publishDocumentList(String listName) throws ClientException {
-		return publishActions.publishDocumentList(listName);
-	}
-
-
-
-	public String publishWorkList() throws ClientException {
-		return publishActions.publishWorkList();
-	}
-
-
-
-	public void setComment(String comment) {
-		publishActions.setComment(comment);
-	}
-
-
-
-	public String unPublishDocument() throws ClientException {
-		return publishActions.unPublishDocument();
-	}
-
-
-
-	public void unPublishDocumentsFromCurrentSelection() throws ClientException {
-		publishActions.unPublishDocumentsFromCurrentSelection();
-	}
-
-
-
-	public void processSelectRowEvent(SelectDataModelRowEvent event)
-			throws ClientException {
-		publishActions.processSelectRowEvent(event);
-	}
-    
-
-    /*
-     * Called by Seam remoting. Process multiselected sections
-     */
-    @WebRemote
-    public String processRemoteSelectedSections(Boolean selection) throws ClientException {
-    	List<SelectDataModelRow> sections = null;
-    	if(filteredSectionsModel != null){
-    		sections = filteredSectionsModel.getRows();
-    	}else{
-    		sections = getSectionsModel().getRows();
-    	}
-    	 
-    	 for (SelectDataModelRow d : sections) {
-    		    DocumentModelTreeNode section = (DocumentModelTreeNode)d.getData();
-    		    
-    		    
-    		    if (selection) {
-    		    	log.debug("SECTION ADDED"+section.getDocument().getRef().toString() );
-    	            getSelectedSections().add(section);
-    	        } else {
-    	        	log.debug("SECTION REMOVED"+section.getDocument().getRef().toString() );
-    	            getSelectedSections().remove(section);
-    	        }
-         }
-        return "OK";
-    }
-    
 
 }

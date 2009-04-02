@@ -15,7 +15,7 @@
   <nxu:methodResult
 		value="#{esupPublishActions.getVersionsSelectModel()}" name="versions">
 		
-  <p><h:outputText rendered="${empty versionList}"
+  <p><h:outputText rendered="${empty versions}"
       value="#{messages['label.noversion']}"/></p>
       	
 <nxu:dataList id="versionList" rowIndexVar="versionRow" var="versionItem" value="${versions}" layout="none">	
@@ -24,7 +24,7 @@
 
 			<h3 class="unfolded"><a href="#nogo"
 				onclick="return toggleBox(this)"> Version <h:outputText
-				value="#{versionItem[0]}" /> </a></h3>
+				value="#{versionItem.versionLabel}" /> </a></h3>
 
 			<div class="boxBody">
 			
@@ -69,7 +69,7 @@
               <h:outputText value="#{nxd:titleOrId(node.document)}" />
               <nxu:methodResult name="canPublishToSection" value="#{publishActions.getCanPublishToSection(node.document)}">
                 <a4j:commandLink immediate="true"
-                  action="#{esupPublishActions.publishVersion(versionItem[1][2], node.document)}"
+                  action="#{esupPublishActions.publishVersion(versionItem.modelLabel, node.document)}"
                   rendered="#{canPublishToSection}"
                   reRender="publishingInfoList"
                   id="publishCommandLink">
@@ -87,9 +87,9 @@
 
 
   <h:panelGroup id="publishingInfoList">
-    <h:panelGroup rendered="#{!empty versionItem[1][1]}">
+    <h:panelGroup rendered="#{!empty versionItem.publishingInfos}">
       
-      <nxu:dataTable value="${versionItem[1][1]}" var="info"
+      <nxu:dataTable value="${versionItem.publishingInfos}" var="info"
         preserveSort="true" preserveDataModel="false"
         rowClasses="dataRowEven,dataRowOdd" sortable="false"
         styleClass="dataList">
@@ -112,7 +112,7 @@
             <h:outputText
               value="#{messages['label.publish.header.version']}" />
           </f:facet>
-          <h:outputText value="#{info.proxy}" />
+          <h:outputText value="#{info.proxyVersion}" />
         </h:column>
       
         <!--  Actions for the published document  -->

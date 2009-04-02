@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -75,67 +77,36 @@ public class EsupPublishActionsBean extends PublishActionsBean {
     
 
     /**
-     * Build a array list structure as follow :
-     * List of versionItem
-     *   |-[0]versionLabel
-     *   |-[1]List
-     *   		|-[0]versionModel
-     *   		|-[1]List
-     *   		|		|-[0]proxyModel 
-     *   		|		|-[1]sectionModel (proxy.getParent)
-     *   		|		|-[2]Map<String,Object> (proxy.getProperties("dublincore"))
-     *   		|-[2]ModelLabel
-     * @return list of versionItems as described above
+     * @return list of EsupVersionPojo
      * @throws ClientException
+     * @see EsupVersionPojo
      */
-    public List getVersionsSelectModel() throws ClientException {
+    public Collection<EsupVersionPojo> getVersionsSelectModel() throws ClientException {
 		
-    	Set a = new HashSet();
-    	Map<String, List> versionsDoc = new HashMap<String, List>();
-    	
+    	Map<String, EsupVersionPojo> esupVersionsMap = new TreeMap<String, EsupVersionPojo>();
+
 		DocumentModel doc = navigationContext.getCurrentDocument();
 
         List<VersionModel> versions = documentManager.getVersionsForDocument(doc.getRef());
         for (VersionModel model : versions) {
-            DocumentModel tempDoc = documentManager.getDocumentWithVersion(
-                    doc.getRef(), model);
+            DocumentModel tempDoc = documentManager.getDocumentWithVersion(doc.getRef(), model);
             if (tempDoc != null) {
-                VersioningDocument docVer = tempDoc.getAdapter(VersioningDocument.class);
-
                 String versionLabel = versioningManager.getVersionLabel(tempDoc);
-                if(!versionsDoc.containsKey(versionLabel)) {
-                	List values = new ArrayList();
-                	values.add(tempDoc);
-                	values.add(new ArrayList<PublishingInformation>());
-                	values.add(model.getLabel());
-                	versionsDoc.put(versionLabel, values);
+                if(!esupVersionsMap.containsKey(versionLabel)) {
+                	esupVersionsMap.put(versionLabel, new EsupVersionPojo(versionLabel, model.getLabel()));
                 }
                 
                 for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
                 	DocumentRef parentRef = proxy.getParentRef();
                     DocumentModel section = documentManager.getDocument(parentRef);
-                    PublishingInformation info = new PublishingInformation(proxy, section);
-                    //l.add(dublincoreProperties);
-                    ((List)versionsDoc.get(versionLabel).get(1)).add(info);
+                    EsupPublishPojo info = new EsupPublishPojo(section, versioningManager.getVersionLabel(proxy), proxy);
+                    esupVersionsMap.get(versionLabel).getPublishingInfos().add(info);
                 }
             }
             
         }
         
-       List versionsDocList = new ArrayList();
-        
-       List<String> labels = new ArrayList<String>(versionsDoc.keySet());
-       Collections.sort(labels);
-       Collections.reverse(labels);
-       
-       for(String key: labels) {
-    	   List v = new ArrayList();
-    	   v.add(key);
-    	   v.add(versionsDoc.get(key));
-    	   versionsDocList.add(v);
-       }
-       
-       return versionsDocList;
+       return esupVersionsMap.values();
 	}
     
     

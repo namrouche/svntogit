@@ -81,7 +81,7 @@
 	  </target>
 
 	  <target name="web" description="Copy web files to a live JBoss">
-	    <copy todir="${deploy.dir}/${nuxeo.ear}/nuxeo.war" overwrite="true">
+	    <copy todir="/home/vincent/nuxeo-formation/nuxeo-ep-5.2.0-RC1/server/default/deploy/${nuxeo.ear}/nuxeo.war" overwrite="true">
 	      <fileset dir="${basedir}/src/main/resources/nuxeo.war/" />
 	    </copy>
 	  </target>

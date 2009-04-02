@@ -1,18 +1,12 @@
 package org.esupportail.ecm;
 
-import java.io.Serializable;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.faces.application.FacesMessage;
@@ -21,44 +15,21 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.DocumentModelTreeNode;
 import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.VersionModel;
-import org.nuxeo.ecm.core.api.facet.VersioningDocument;
-import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
-import org.nuxeo.ecm.platform.actions.Action;
-import org.nuxeo.ecm.platform.publishing.PublishActions;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
-import org.nuxeo.ecm.platform.publishing.api.PublishingInformation;
-import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
-import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
-import org.nuxeo.ecm.platform.ui.web.model.SelectDataModelRow;
-import org.nuxeo.ecm.platform.ui.web.model.impl.SelectDataModelRowEvent;
-import org.nuxeo.ecm.platform.ui.web.model.impl.SelectDataModelImpl;
-import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
-import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 
 /**
  * This Seam bean manages the publishing tab in Esup-ECM.
  *
  *    
- * not extend PublishActionsBean to avoid exception :
- *  java.lang.IllegalStateException: duplicate factory for: currentPublishingSectionsModel (duplicates are specified in publishActions and esupPublishActions)
- *
  * @see PublishActionsBean
  * @author Vincent Bonamy
  */

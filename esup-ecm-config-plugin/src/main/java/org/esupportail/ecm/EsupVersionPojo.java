@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nuxeo.ecm.core.api.VersionModel;
+
 public class EsupVersionPojo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -13,11 +15,14 @@ public class EsupVersionPojo implements Serializable {
 	String modelLabel;
 	
 	List<EsupPublishPojo> publishingInfos;
+	
+	VersionModel model;
 
-	public EsupVersionPojo(String versionLabel, String modelLabel) {
+	public EsupVersionPojo(String versionLabel, String modelLabel, VersionModel model) {
 		super();
 		this.versionLabel = versionLabel;
 		this.modelLabel = modelLabel;
+		this.model = model;
 		publishingInfos = new ArrayList<EsupPublishPojo>();
 	}
 
@@ -44,5 +49,13 @@ public class EsupVersionPojo implements Serializable {
 	public void setPublishingInfos(List<EsupPublishPojo> publishingInfos) {
 		this.publishingInfos = publishingInfos;
 	}
-	
+
+	public VersionModel getModel() {
+		return model;
+	}
+
+	public void setModel(VersionModel model) {
+		this.model = model;
+	}
+
 }

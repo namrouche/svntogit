@@ -3,6 +3,7 @@ package org.esupportail.ecm;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -93,7 +94,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
             if (tempDoc != null) {
                 String versionLabel = versioningManager.getVersionLabel(tempDoc);
                 if(!esupVersionsMap.containsKey(versionLabel)) {
-                	esupVersionsMap.put(versionLabel, new EsupVersionPojo(versionLabel, model.getLabel()));
+                	esupVersionsMap.put(versionLabel, new EsupVersionPojo(versionLabel, model.getLabel(), model));
                 }
                 
                 for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
@@ -109,7 +110,28 @@ public class EsupPublishActionsBean extends PublishActionsBean {
        return esupVersionsMap.values();
 	}
     
-    
+    /*
+     * Called by  esup_document_publish.xhtml
+     * @see PublishActionsBean.getCanPublishToSection
+     */   
+    public boolean getCanPublishVersionToSection(VersionModel model, DocumentModel section) throws ClientException {
+        Set<String> sectionRootTypes = getSectionRootTypes();
+
+        if (sectionRootTypes.contains(section.getType())) {
+            return false;
+        }
+
+        if (!documentManager.hasPermission(section.getRef(),
+                CAN_ASK_FOR_PUBLISHING)) {
+            return false;
+        }
+        
+        DocumentModel currentDocument = navigationContext.getCurrentDocument();
+        
+        DocumentModel versionDocument  = documentManager.getDocumentWithVersion(currentDocument.getRef(), model);
+        
+        return !this.isAlreadyPublishedInSection(versionDocument, section);
+    }
     
     /*
      * Called by  esup_document_publish.xhtml

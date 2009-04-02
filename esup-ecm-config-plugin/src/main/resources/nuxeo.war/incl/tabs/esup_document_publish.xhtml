@@ -67,7 +67,7 @@
               selectedClass="treeNodeSelectedClass"
               id="publishTreeNode">
               <h:outputText value="#{nxd:titleOrId(node.document)}" />
-              <nxu:methodResult name="canPublishToSection" value="#{publishActions.getCanPublishToSection(node.document)}">
+              <nxu:methodResult name="canPublishToSection" value="#{esupPublishActions.getCanPublishVersionToSection(versionItem.model, node.document)}">
                 <a4j:commandLink immediate="true"
                   action="#{esupPublishActions.publishVersion(versionItem.modelLabel, node.document)}"
                   rendered="#{canPublishToSection}"

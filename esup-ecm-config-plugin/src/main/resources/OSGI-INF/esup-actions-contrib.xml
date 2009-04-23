@@ -3,6 +3,18 @@
   <extension target="org.nuxeo.ecm.platform.actions.ActionService"
     point="actions">
 
+<!-- nuxeo-platform: overwrite actions-contrib.xml -->   
+   <action id="user_manager" link="#{userManagerActions.viewUsers}"
+      enabled="true" label="command.manageMembers" order="20">
+      <category>USER_SERVICES</category>
+      <filter-id>only_for_manager</filter-id>
+      <filter id="user_manager">
+        <rule grant="true">
+          <condition>#{userServicesContext.userManagerEnabled}</condition>
+        </rule>
+      </filter>
+    </action>
+ 
   <action id="TAB_VIEW" link="/incl/tabs/esup_document_view.xhtml"/>
 
    <action id="TAB_EDIT" link="/incl/tabs/esup_document_edit.xhtml"/>

@@ -1,38 +1,43 @@
 <Server>
 
+  <!--APR library loader. Documentation at /docs/apr.html -->
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <!--Initialize Jasper prior to webapps are loaded. Documentation at /docs/jasper-howto.html -->
+  <Listener className="org.apache.catalina.core.JasperListener" />
+
    <!-- Use a custom version of StandardService that allows the
    connectors to be started independent of the normal lifecycle
    start to allow web apps to be deployed before starting the
    connectors.
    -->
-   <Service name="jboss.web"
-      className="org.jboss.web.tomcat.tc5.StandardService">
+   <Service name="jboss.web">
 
-      <!-- A HTTP/1.1 Connector on port 8080 -->
-      <Connector port="@tomcatPortHttp@" address="${jboss.bind.address}"
-         maxThreads="250" strategy="ms" maxHttpHeaderSize="8192"
-         emptySessionPath="true"
+    <!-- A "Connector" represents an endpoint by which requests are received
+         and responses are returned. Documentation at :
+         Java HTTP Connector: /docs/config/http.html (blocking & non-blocking)
+         Java AJP  Connector: /docs/config/ajp.html
+         APR (HTTP/AJP) Connector: /docs/apr.html
+         Define a non-SSL HTTP/1.1 Connector on port 8080
+    -->
+    <Connector port="@tomcatPortHttp@" address="${jboss.bind.address}"    
+         maxThreads="250" maxHttpHeaderSize="8192"
+         emptySessionPath="true" protocol="HTTP/1.1"
          enableLookups="false" redirectPort="8443" acceptCount="100"
-         connectionTimeout="20000" disableUploadTimeout="true"/>
+         connectionTimeout="20000" disableUploadTimeout="true" />
 
-      <!-- Add this option to the connector to avoid problems with 
-          .NET clients that don't implement HTTP/1.1 correctly 
-         restrictedUserAgents="^.*MS Web Services Client Protocol 1.1.4322.*$"
-      -->
-	
-      <!-- A AJP 1.3 Connector on port 8009 -->
-      <Connector port="@tomcatPortJk@" address="${jboss.bind.address}"
-         emptySessionPath="true" enableLookups="false" redirectPort="8443" 
-         protocol="AJP/1.3"/>
+    <!-- Define a SSL HTTP/1.1 Connector on port 8443
+         This connector uses the JSSE configuration, when using APR, the 
+         connector should be using the OpenSSL style configuration
+         described in the APR documentation -->
+    <!--
+    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+               maxThreads="150" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" />
+    -->
 
-      <!-- SSL/TLS Connector configuration using the admin devl guide keystore
-      <Connector port="8443" address="${jboss.bind.address}"
-           maxThreads="100" strategy="ms" maxHttpHeaderSize="8192"
-           emptySessionPath="true"
-           scheme="https" secure="true" clientAuth="false" 
-           keystoreFile="${jboss.server.home.dir}/conf/chap8.keystore"
-           keystorePass="rmi+ssl" sslProtocol = "TLS" />
-      -->
+    <!-- Define an AJP 1.3 Connector on port 8009 -->
+    <Connector port="@tomcatPortJk@" address="${jboss.bind.address}" protocol="AJP/1.3"
+         emptySessionPath="true" enableLookups="false" redirectPort="8443" />
 
       <Engine name="jboss.web" defaultHost="localhost">
 
@@ -86,9 +91,9 @@
  
             <!-- Access logger -->
             <!--
-            <Valve className="org.apache.catalina.valves.FastCommonAccessLogValve"
+            <Valve className="org.apache.catalina.valves.AccessLogValve"
                 prefix="localhost_access_log." suffix=".log"
-                pattern="common" directory="${jboss.server.home.dir}/log" 
+                pattern="common" directory="${jboss.server.log.dir}" 
                 resolveHosts="false" />
             -->
 
@@ -123,7 +128,7 @@
                caching and replication across the cluster.  The JBossCache 
                instance must be configured separately.  By default, the valve 
                shares a JBossCache with the service that supports HttpSession 
-               replication.  See the "tc5-cluster-service.xml" file in the 
+               replication.  See the "jboss-web-cluster-service.xml" file in the 
                server/all/deploy directory for cache configuration details.
             
                Besides the attributes supported by the standard Tomcat
@@ -140,7 +145,7 @@
                               to support session replication.
             -->
             <!--
-            <Valve className="org.jboss.web.tomcat.tc5.sso.ClusteredSingleSignOn" />
+            <Valve className="org.jboss.web.tomcat.service.sso.ClusteredSingleSignOn" />
             -->
          
             <!-- Check for unclosed connections and transaction terminated checks
@@ -149,10 +154,9 @@
                  Important: The dependency on the CachedConnectionManager
                  in META-INF/jboss-service.xml must be uncommented, too
             -->
-            <Valve className="org.jboss.web.tomcat.tc5.jca.CachedConnectionValve"
+            <Valve className="org.jboss.web.tomcat.service.jca.CachedConnectionValve"
                 cachedConnectionManagerObjectName="jboss.jca:service=CachedConnectionManager"
                 transactionManagerObjectName="jboss:service=TransactionManager" />
-
 
          </Host>
 

@@ -246,7 +246,7 @@
         <include name="**/*.sh"/>
       </fileset>
     </chmod>
-    <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jbossweb-tomcat55.sar/server.xml" overwrite="yes"/>
+    <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jboss-web.deployer/server.xml" overwrite="yes"/>
 
   	<!-- openoffice configuration -->
     <copy todir="${openoffice.home}/nxOOo"  overwrite="yes">

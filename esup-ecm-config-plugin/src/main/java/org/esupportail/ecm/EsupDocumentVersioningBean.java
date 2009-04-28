@@ -6,21 +6,13 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.versioning.api.VersioningActions;
-import org.nuxeo.ecm.webapp.base.InputController;
-import org.nuxeo.ecm.webapp.contentbrowser.DocumentActionsBean;
-import org.nuxeo.ecm.webapp.helpers.EventManager;
 import org.nuxeo.ecm.webapp.versioning.DocumentVersioningBean;
 
 /**
@@ -33,23 +25,14 @@ import org.nuxeo.ecm.webapp.versioning.DocumentVersioningBean;
 
 @Name("esupDocumentVersioning")
 @Scope(CONVERSATION)
-public class EsupDocumentVersioningBean extends InputController implements Serializable {
+public class EsupDocumentVersioningBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log log = LogFactory.getLog(EsupDocumentVersioningBean.class);
 	
-    @In(create = true, required = false)
-    protected transient CoreSession documentManager;
-
-    @In(create = true)
-    protected transient NavigationContext navigationContext;
-
 	@In(create = true)
 	private DocumentVersioningBean documentVersioning;
-
-	@In(create = true)
-	private DocumentActionsBean documentActions;
 
 	/**
 	 * @see org.nuxeo.ecm.webapp.versioning.DocumentVersioningBean#getAvailableVersioningOptionsMap()

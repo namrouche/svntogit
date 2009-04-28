@@ -10,7 +10,22 @@
   <c:if test="#{!empty documentActions.changeableDocumentType.layout}">
     <ui:include src="/incl/esup_document_editor.xhtml" />
   </c:if>
+  <c:if test="#{empty documentActions.changeableDocumentType.layout}">
+    <nxl:documentLayout mode="edit" value="#{changeableDocument}" />
+  </c:if>
 
+  <table class="dataInput">
+    <tbody>
+      <tr>
+        <td class="labelColumn">
+          <h:outputText value="#{messages['label.comment']}" />
+        </td>
+        <td class="fieldColumn">
+          <h:inputTextarea value="#{changeableDocument.contextData['request/comment']}" />
+        </td>
+      </tr>
+    </tbody> 
+  </table>
 
   <p class="buttonsGadget">
     <h:commandButton type="submit" value="#{messages['command.save']}"

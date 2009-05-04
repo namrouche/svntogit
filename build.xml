@@ -117,13 +117,7 @@
       <replacefilter
           token="@jdbcCompassUrl@" value="${db.url}" />
       <replacefilter
-          token="@jdbcSchema@" value="${db.schema}" />
-          
-     <!-- JCR  -->
-     <replacefilter
-          token="@jdbcJcrUrl@" value="${db.jcr.url}" />
-          
-      <!-- Sql Storage -->
+          token="@jdbcSchema@" value="${db.schema}" />                   
       <replacefilter
           token="@sqlStorageServer@" value="${db.sql.server}" />
       <replacefilter
@@ -185,14 +179,6 @@
 
   </target>
 
-  <!-- JCR Repository -->
-  <target name="deploy.jcr.storage">
-   <echo message="Install JCR repository" />
-        <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-mysql-ds.xml"/>
-        <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
-        <copy file="build/config/jcr-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
-  </target>
-  
   <!-- sqlStorage Repository -->
   <target name="deploy.sql.storage" depends="deploy.sql.storage.config.postgresql,deploy.sql.storage.config.mysql">
    <echo message="Install sql-storage repository" />
@@ -230,8 +216,8 @@
      <!-- usual nuxeo.properties -->
     <copy file="build/config/nuxeo.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/nuxeo.properties" overwrite="yes"/>
  
-    <!-- (jcr/sql)-storage repository backend -->
-    <antcall target="deploy.${rep.type}.storage" />
+    <!-- Repository backend -->
+    <antcall target="deploy.sql.storage" />
 
   	<!-- jboss configuration -->
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>

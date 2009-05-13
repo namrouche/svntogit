@@ -82,6 +82,9 @@
     <copy todir="build/nxOOo" overwrite="yes">
       <fileset dir="nxOOo"/>
     </copy>
+    <copy todir="build/esup-ecm-config-plugin/src/main/resources/nuxeo.war/img" overwrite="yes">
+      <fileset dir="nxOOo"/>
+    </copy>
   </target>
 
   <!-- special stuff mysql for Jena and Compass -->
@@ -177,8 +180,37 @@
       <replacefilter token="@defaultAdministratorId@" value="${ldap.user.defaultAdministratorId}" />
     </replace>
 
+    <!-- logo -->
+    <antcall target="_replace.local.logo" />
+    <antcall target="_default.local.logo" />
+
+
+  	<!-- banner background -->
+	<basename property="local.banner.background.name" file="${local.banner.background.path}"/>
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/themes/palettes/esup-etablissementbackgrounds.properties">
+      <replacefilter token="@backgroundBanner@" value="${local.banner.background.name}" />
+    </replace>
+
+  	
   </target>
 
+	<target name="_replace.local.logo"   if="local.logo.path">
+		<echo message="Install local logo" />
+	    <copy file="${local.logo.path}" todir="build/esup-ecm-config-plugin/src/main/resources/nuxeo.war/img"  overwrite="yes"/>
+		<basename property="local.logo.name" file="${local.logo.path}"/>
+		<replace file="build/esup-ecm-config-plugin/src/main/resources/nuxeo.war/incl/esup-logo-etablissement.xhtml">
+	      <replacefilter token="@logoEtablissement@" value="${local.logo.name}" />
+	    </replace>
+	</target>
+	
+	<target name="_default.local.logo"   unless="local.logo.path">
+		<echo message="Install default logo" />
+		<basename property="default.logo.name" file="${default.logo.path}"/>
+		<replace file="build/esup-ecm-config-plugin/src/main/resources/nuxeo.war/incl/esup-logo-etablissement.xhtml">
+	      <replacefilter token="@logoEtablissement@" value="${default.logo.name}" />
+	    </replace>
+	</target>
+	
   <!-- sqlStorage Repository -->
   <target name="deploy.sql.storage" depends="deploy.sql.storage.config.postgresql,deploy.sql.storage.config.mysql">
    <echo message="Install sql-storage repository" />

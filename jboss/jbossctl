@@ -26,7 +26,7 @@
 JAVA_HOME=${JAVA_HOME:-"@jdkHome@"}
 CONFIG=default
 JBOSS_USER=${JBOSS_USER:-"@jbossUser@"}
-BINDHOST=
+BINDHOST=${JBOSS_BINDADRESS:-"@jbossBindAdress@"}
 
 # The directory containing directories log, bin, conf, etc.
 #HERE=`dirname $0`

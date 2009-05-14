@@ -138,7 +138,8 @@
     <replace file="build/jboss/jbossctl">
       <replacefilter token="@jbossUser@" value="${jboss.user}" />
         <replacefilter token="@jbossHome@" value="${jboss.home}" />
-        <replacefilter token="@jdkHome@" value="${jdk.home}" />
+    	<replacefilter token="@jbossBindAdress@" value="${jboss.bind.address}" />
+    	<replacefilter token="@jdkHome@" value="${jdk.home}" />
         <replacefilter token="@consoleLog@" value="${jboss.console.log}" />
         <replacefilter token="@serverLog@" value="${jboss.server.log}" />
     </replace>

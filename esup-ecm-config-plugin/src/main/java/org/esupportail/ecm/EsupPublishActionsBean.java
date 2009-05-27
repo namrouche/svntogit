@@ -15,16 +15,22 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
+import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
+import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
+import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 
 /**
  * This Seam bean manages the publishing tab in Esup-ECM.
@@ -38,7 +44,7 @@ import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
 @Name("esupPublishActions")
 @Scope(ScopeType.CONVERSATION)
 @Transactional
-public class EsupPublishActionsBean extends PublishActionsBean {
+public class EsupPublishActionsBean {
 
 	private static final long serialVersionUID = 5062112520450522444L;
 
@@ -46,8 +52,28 @@ public class EsupPublishActionsBean extends PublishActionsBean {
 
     protected DocumentModelList filteredSectionsModel;
 
+	@In(create = true)
+	private PublishActionsBean publishActions;
+    
+    @In(create = true)
+    protected transient NavigationContext navigationContext;
     
 
+    @In(create = true, required = false)
+    protected transient CoreSession documentManager;
+
+    @In(create = true)
+    protected transient VersioningManager versioningManager;
+    
+    protected static final String CAN_ASK_FOR_PUBLISHING = "CanAskForPublishing";
+    
+    @In(create = true, required = false)
+    protected transient FacesMessages facesMessages;
+
+    @In(create = true)
+    protected transient ResourcesAccessor resourcesAccessor;
+    
+    
     /**
      * @return list of EsupVersionPojo
      * @throws ClientException
@@ -86,14 +112,14 @@ public class EsupPublishActionsBean extends PublishActionsBean {
      * @see PublishActionsBean.getCanPublishToSection
      */   
     public boolean getCanPublishVersionToSection(VersionModel model, DocumentModel section) throws ClientException {
-        Set<String> sectionRootTypes = getSectionRootTypes();
+        Set<String> sectionRootTypes = publishActions.getSectionRootTypes();
 
         if (sectionRootTypes.contains(section.getType())) {
             return false;
         }
 
         if (!documentManager.hasPermission(section.getRef(),
-                CAN_ASK_FOR_PUBLISHING)) {
+        		CAN_ASK_FOR_PUBLISHING)) {
             return false;
         }
         
@@ -101,7 +127,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
         
         DocumentModel versionDocument  = documentManager.getDocumentWithVersion(currentDocument.getRef(), model);
         
-        return !this.isAlreadyPublishedInSection(versionDocument, section);
+        return !publishActions.isAlreadyPublishedInSection(versionDocument, section);
     }
     
     /*
@@ -141,7 +167,7 @@ public class EsupPublishActionsBean extends PublishActionsBean {
      */
     public String unPublishProxy(DocumentModel proxyToUnpublish) throws ClientException {
 
-    	this.unPublishDocument(proxyToUnpublish);
+    	publishActions.unPublishDocument(proxyToUnpublish);
     	facesMessages.add(FacesMessage.SEVERITY_INFO,
                                 resourcesAccessor.getMessages().get(
                                         "document_unpublished"),

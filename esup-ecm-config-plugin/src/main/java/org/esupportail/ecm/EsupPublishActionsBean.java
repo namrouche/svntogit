@@ -44,7 +44,7 @@ import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 @Name("esupPublishActions")
 @Scope(ScopeType.CONVERSATION)
 @Transactional
-public class EsupPublishActionsBean {
+public class EsupPublishActionsBean implements Serializable {
 
 	private static final long serialVersionUID = 5062112520450522444L;
 

@@ -24,6 +24,7 @@ import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
+import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
 
 /**
@@ -116,9 +117,33 @@ public class EsupPublishActionsBean extends PublishActionsBean {
         versionModel.setCreated(Calendar.getInstance());
         versionModel.setDescription("");
         versionModel.setLabel(versionModelLabel);
-            
+        
+        
+        // BEGIN :: code actuel ori-oai 
         DocumentModel proxy = documentManager.createProxy(section.getRef(), docToPublish.getRef(), versionModel, false);
-            
+        // END :: code actuel ori-oai
+        
+        // BEGIN :: proposition de code pour moderation
+        /*
+        //DocumentModel versionDocument  = documentManager.getDocumentWithVersion(docToPublish.getRef(), versionModel);
+        //log.info("publishVersion :: versionDocument="+versionDocument);
+        
+        EsupDocumentPublisher documentPublisher = new EsupDocumentPublisher(documentManager, docToPublish, versionModel, section, "demande de publication");
+
+        // If not enough rights to creating content, bypass rights since READ is
+        // enough for publishing.
+        if (!documentManager.hasPermission(section.getRef(), SecurityConstants.ADD_CHILDREN)) {
+        	log.info("publishVersion :: runUnrestricted");
+        	documentPublisher.runUnrestricted();
+        } else {
+        	log.info("publishVersion :: run");
+        	documentPublisher.run();
+        }
+
+        DocumentModel proxy =  documentManager.getDocument(documentPublisher.proxyRef);
+        */
+        // END :: proposition de code pour moderation
+        
         Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL,
                     locale);

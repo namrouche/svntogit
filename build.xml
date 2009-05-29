@@ -1,6 +1,7 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
+  <property name="jboss.log4j.level" value="INFO"/>
   <property name="nuxeo-dm.file" value="nuxeo-dm-5.2.0-jboss.zip"/>
   <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
   <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.2-20080710.zip"/>

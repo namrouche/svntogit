@@ -1,11 +1,12 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
-  <property name="nuxeo-ep.file" value="nuxeo-ep-5.2.0-RC1-jboss-all-1.zip"/>
-  <property name="nuxeo-ep-unziped.file" value="${nuxeo.dir.parent}/nuxeo-ep-5.2.0-RC1/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
+  <property name="jboss.log4j.level" value="INFO"/>
+  <property name="nuxeo-dm.file" value="nuxeo-dm-5.2.0-jboss.zip"/>
+  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
   <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.2-20080710.zip"/>
   <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
-  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-ep-5.2.0-RC1"/>
+  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0"/>
 
   
   <property name="jboss.home" value="${nuxeo.dir}"/>
@@ -17,6 +18,7 @@
         <equals arg1="${db.type}" arg2="PostgreSQL"/>
   </condition>
 
+	
   <taskdef 
       resource="net/sf/antcontrib/antlib.xml" 
       classpath="ant-utils/ant-contrib-1.0.jar"/>
@@ -29,18 +31,18 @@
     <mkdir  dir="build/esup-ecm-config-plugin"/>
     <mkdir  dir="packages"/>
   	<mkdir dir="${nuxeo.dir.parent}/nuxeo-shell"/>
-    <available file="packages/${nuxeo-ep.file}" property="nuxeo-ep.file.present" />
+    <available file="packages/${nuxeo-dm.file}" property="nuxeo-dm.file.present" />
     <available file="packages/${nuxeo-nxshell.file}" property="nuxeo-nxshell.file.present" />
-    <available file="${nuxeo-ep-unziped.file}" property="nuxeo-ep.unziped.file.present" />
+    <available file="${nuxeo-dm-unziped.file}" property="nuxeo-dm.unziped.file.present" />
     <available file="${nuxeo-nxshell-unziped.file}" property="nuxeo-nxshell.unziped" />
-    <antcall target="get.nuxeo-ep.file" />
+    <antcall target="get.nuxeo-dm.file" />
     <antcall target="get.nuxeo-nxshell.file" />
   </target>
   	
-	  <target name="get.nuxeo-ep.file" unless="nuxeo-ep.file.present">
-	    <echo message="Download ${nuxeo-ep.file} in the packages directory."/>
+	  <target name="get.nuxeo-dm.file" unless="nuxeo-dm.file.present">
+	    <echo message="Download ${nuxeo-dm.file} in the packages directory."/>
 	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
-	    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-ep.file}" dest="packages/${nuxeo-ep.file}" verbose="false"/>
+	    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
 	  </target>
 
 	  <target name="get.nuxeo-nxshell.file" unless="nuxeo-nxshell.file.present">
@@ -54,8 +56,8 @@
   	<antcall target="deploy.nuxeo.nxshell" />
   </target>
 	
-	<target name="deploy.nuxeo.ep" unless="nuxeo-ep.unziped.file.present">
-	    <unzip src="packages/${nuxeo-ep.file}" dest="${nuxeo.dir.parent}" />
+	<target name="deploy.nuxeo.ep" unless="nuxeo-dm.unziped.file.present">
+	    <unzip src="packages/${nuxeo-dm.file}" dest="${nuxeo.dir.parent}" />
 	</target>
 
 	<target name="deploy.nuxeo.nxshell" unless="nuxeo-nxshell-unziped.file">
@@ -148,6 +150,10 @@
       <replacefilter token="@tomcatPortJk@" value="${tomcat.port.jk}" />
     </replace>
  
+    <replace file="build/jboss/jboss-log4j.xml">
+      <replacefilter token="@threshold@" value="${jboss.log4j.level}" />
+    </replace>
+  	
      <replace file="build/nxOOo/nxopenoffice">
       <replacefilter token="@OOoPort@" value="${openoffice.port}" />
       <replacefilter token="@OOoPath@" value="${openoffice.home}" />
@@ -221,7 +227,7 @@
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-versioning-config.xml"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/${nuxeo.core.jcr.connector}"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/${nuxeo.core.jca}"/>
-         <copy file="build/config/sql-storage-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/>
+         <copy file="build/config/sql-storage-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/> 		
   </target>
   
   <!-- sqlStorage with mysql -->
@@ -266,6 +272,7 @@
       </fileset>
     </chmod>
     <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jboss-web.deployer/server.xml" overwrite="yes"/>
+    <copy file="build/jboss/jboss-log4j.xml" tofile="${nuxeo.dir}/server/default/conf/jboss-log4j.xml" overwrite="yes"/>
 
   	<!-- openoffice configuration -->
     <copy todir="${openoffice.home}/nxOOo"  overwrite="yes">
@@ -310,7 +317,7 @@
             <exclude name="**/build/**"/>
             <exclude name="**/bin/**"/>
             <exclude name="packages/${esup-ecm.file}.zip"/>
-            <exclude name="packages/${nuxeo-ep.file}"/>
+            <exclude name="packages/${nuxeo-dm.file}"/>
             <exclude name="packages/${nuxeo-nxshell.file}"/>
 	       	<exclude name="build.properties"/>
 	       </zipfileset>

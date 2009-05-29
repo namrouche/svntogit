@@ -8,9 +8,9 @@
       </repository>
     </repository>
   </extension>
-  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
+  <!-- extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
     point="lifecyclemanager">
     <lifecyclemanager
       class="org.nuxeo.ecm.core.storage.sql.coremodel.SQLLifeCycleManager" />
-  </extension>
+  </extension-->
 </component>

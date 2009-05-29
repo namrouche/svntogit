@@ -31,7 +31,7 @@
 
 	  <target name="install" depends="install-unix,install-windows" description="Build" />
 	  <target name="install-unix" if="osfamily-unix">
-	    <exec executable="mvn" failonerror="true">
+	    <exec executable="mvn" failonerror="false">
 	      <arg value="install" />
 	      <arg value="-Dmaven.test.skip=true" />
 	      <arg value="-Dmaven.compiler.debug=false" />

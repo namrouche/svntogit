@@ -1,12 +1,14 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
+  <property file="default.properties"/>
   <property name="jboss.log4j.level" value="INFO"/>
   <property name="nuxeo-dm.file" value="nuxeo-dm-5.2.0-jboss.zip"/>
   <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
   <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.2-20080710.zip"/>
   <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0"/>
+  <property name="unused.component.dir" value="unused"/>
 
   
   <property name="jboss.home" value="${nuxeo.dir}"/>
@@ -24,6 +26,7 @@
       classpath="ant-utils/ant-contrib-1.0.jar"/>
 
   <target name="prepare">
+  	<mkdir dir="${unused.component.dir}"/>
     <mkdir  dir="build"/>
     <mkdir  dir="build"/>
     <mkdir  dir="build/jboss"/>
@@ -65,10 +68,11 @@
 	</target>
 
 	<target name="clean" description="clean build">
-    <delete  dir="build"/>
-    <delete  dir="packages"/>
-    <delete  dir="esup-ecm-config-plugin/target"/>
-  </target>
+    	<delete  dir="build"/>
+	    <delete  dir="packages"/>
+	    <delete  dir="esup-ecm-config-plugin/target"/>
+		<delete dir="${unused.component.dir}" />
+	</target>
 
 
   <target name="copy.src.build" depends="prepare">
@@ -304,8 +308,81 @@
       <fileset dir="${basedir}/esup-ecm-config-plugin/src/main/resources/nuxeo.war/" />
     </copy>
   </target>
+	
+	<target name="manage.nuxeo.component">
+		<property name="system.path" value="server/default/deploy/nuxeo.ear/system" />
+		<mkdir dir="${unused.component.dir}"/>
+		<if>
+			<istrue value="${use.website.type}"/>
+			<then>
+				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+					<fileset dir="${unused.component.dir}">
+						<filename name="nuxeo-webengine-sites*.jar"/>
+					</fileset>
+				</move>	
+			</then>
+			<else>
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-webengine-sites*.jar"/>
+					</fileset>
+				</move>					
+			</else>
+		</if>
+		<if>
+			<istrue value="${use.image.type}"/>
+			<then>
+				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+					<fileset dir="${unused.component.dir}">
+						<filename name="nuxeo-platform-imaging*.jar"/>
+					</fileset>
+				</move>
+			</then>
+			<else>
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-platform-imaging*.jar"/>
+					</fileset>
+				</move>					
+			</else>
+		</if>
+		<if>
+			<istrue value="${use.forum.type}"/>
+			<then>
+				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+					<fileset dir="${unused.component.dir}">
+						<filename name="nuxeo-platform-forum*.jar"/>
+					</fileset>
+				</move>
+			</then>
+			<else>
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-platform-forum*.jar"/>
+					</fileset>
+				</move>					
+			</else>
+		</if>
+		<if>
+			<istrue value="${use.mail.type}"/>
+			<then>
+				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+					<fileset dir="${unused.component.dir}">
+						<filename name="nuxeo-platform-mail*.jar"/>
+					</fileset>
+				</move>
+			</then>
+			<else>
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-platform-mail*.jar"/>
+					</fileset>
+				</move>					
+			</else>
+		</if>
+	</target>
 
-  <target name="deploy" depends="deploy.nuxeo,deploy.plugin" description="Deploy" />
+  <target name="deploy" depends="deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />
 
     <target name="buildzip" depends="prepare" description="Construct ${esup-ecm.file}.zip">
 	    <echo message="Construct ${esup-ecm.file}.zip ...."/>

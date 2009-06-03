@@ -146,6 +146,12 @@
       <artifactId>commons-collections</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>javax.script</groupId>
+      <artifactId>script-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
 
   </dependencies>

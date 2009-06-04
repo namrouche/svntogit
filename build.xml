@@ -370,14 +370,14 @@
 			<then>
 				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
 					<fileset dir="${unused.component.dir}">
-						<filename name="nuxeo-platform-mail-types*.jar"/>
+						<filename name="nuxeo-platform-mail-*.jar"/>
 					</fileset>
 				</move>
 			</then>
 			<else>
 				<move todir="${unused.component.dir}" verbose="true"> 
 					<fileset dir="${nuxeo.dir}/${system.path}">
-						<filename name="nuxeo-platform-mail-types*.jar"/>
+						<filename name="nuxeo-platform-mail-*.jar"/>
 					</fileset>
 				</move>					
 			</else>

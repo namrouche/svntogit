@@ -82,7 +82,9 @@
     <copy todir="build/jboss" overwrite="yes">
       <fileset dir="jboss"/>
     </copy>
-     <copy todir="build/esup-ecm-config-plugin" overwrite="yes">
+  	<!-- delete to avoid unexpected deleted files -->
+  	<delete dir="build/esup-ecm-config-plugin"/>
+    <copy todir="build/esup-ecm-config-plugin" overwrite="yes">
      <fileset dir="esup-ecm-config-plugin"/>
     </copy>
     <copy todir="build/nxOOo" overwrite="yes">
@@ -368,14 +370,31 @@
 			<then>
 				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
 					<fileset dir="${unused.component.dir}">
-						<filename name="nuxeo-platform-mail*.jar"/>
+						<filename name="nuxeo-platform-mail-types*.jar"/>
 					</fileset>
 				</move>
 			</then>
 			<else>
 				<move todir="${unused.component.dir}" verbose="true"> 
 					<fileset dir="${nuxeo.dir}/${system.path}">
-						<filename name="nuxeo-platform-mail*.jar"/>
+						<filename name="nuxeo-platform-mail-types*.jar"/>
+					</fileset>
+				</move>					
+			</else>
+		</if>
+		<if>
+			<istrue value="${use.virtual.navigation}"/>
+			<then>
+				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+					<fileset dir="${unused.component.dir}">
+						<filename name="nuxeo-platform-virtualnavigation-web*.jar"/>
+					</fileset>
+				</move>
+			</then>
+			<else>
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-platform-virtualnavigation-web*.jar"/>
 					</fileset>
 				</move>					
 			</else>

@@ -1,3 +1,7 @@
+<!-- ESUP: 
+replace nxl:documentLayout by nxl:layout name="heading" and nxl:layout name="file"
+based on document_edit.xhtml from nuxeo-platform-webapp 
+-->
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -8,10 +12,11 @@
 <h:form enctype="multipart/form-data" id="document_edit">
 
   <c:if test="#{!empty documentActions.changeableDocumentType.layout}">
-    <ui:include src="/incl/esup_document_editor.xhtml" />
+    <ui:include src="/incl/document_editor.xhtml" />
   </c:if>
   <c:if test="#{empty documentActions.changeableDocumentType.layout}">
-    <nxl:documentLayout mode="edit" value="#{changeableDocument}" />
+    <nxl:layout name="heading" mode="edit" value="#{changeableDocument}" />
+    <nxl:layout name="file" mode="edit" value="#{changeableDocument}" />
   </c:if>
 
   <table class="dataInput">

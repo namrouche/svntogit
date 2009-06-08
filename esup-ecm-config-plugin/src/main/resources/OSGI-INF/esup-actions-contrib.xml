@@ -15,6 +15,13 @@
 				</rule>
 			</filter>
 		</action>
+		
+	   	<action id="vocabularies_manager" link="#{vocabularyActions.viewAllVocabularies}" enabled="false" label="title.vocabularies"
+      	order="30">
+      		<category>USER_SERVICES</category>
+      		<filter-id>only_for_manager</filter-id>
+   	 	</action>
+
 
 		<action id="TAB_VIEW" link="/incl/tabs/esup_document_view.xhtml" />
 

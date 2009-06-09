@@ -8,25 +8,25 @@
 
 <h:form id="esup_document_version">
 
-  <h:panelGrid columns="2" styleClass="dataInput" rendered="#{renderVersioningOptionsForCurrentDocument}"
-    columnClasses="labelColumn, fieldColumn">
 
-    <h:outputLabel for="versioningOptionInstanceId" value="#{messages['label.versioning.selectVersioningOption']}" />
+<h3 class="summaryTitle"><h:outputLabel for="versioningOptionInstanceId" value="#{messages['label.versioning.selectVersioningOption']}" /></h3>
+
 
     <h:panelGroup class="dataInputGroup">
       <h:selectOneRadio id="versioningOptionInstanceId"
         value="#{esupDocumentVersioning.versioningOptionInstanceId}"
         required="true" layout="pageDirection"
         validator="#{documentVersioning.validateOptionSelection}"
-        requiredMessage="#{messages['error.versioning.none_selected']}" >
+        requiredMessage="#{messages['error.versioning.none_selected']}"
+	style="display:none;">
         <f:selectItems
           value="#{esupDocumentVersioning.availableVersioningOptionsMap}" />
       </h:selectOneRadio>
       <h:message for="versioningOptionInstanceId" styleClass="errorMessage" />
     </h:panelGroup>
 
-    <h:outputText value="" />
-    <h:outputText value="" />
+    <h:outputText value="" rendered="#{documentVersioning.displayCreateSnapshotOption}"/>
+    <h:outputText value="" rendered="#{documentVersioning.displayCreateSnapshotOption}"/>
 
     <h:selectBooleanCheckbox id="createSnapshot" 
       label="#{messages['label.versioning.createSnapshot']}" 
@@ -34,33 +34,39 @@
       rendered="#{documentVersioning.displayCreateSnapshotOption}">
     </h:selectBooleanCheckbox>
     <h:outputLabel for="createSnapshot" 
-      rendered="#{documentVersioning.displayCreateSnapshotOption}">#{messages['label.versioning.createSnapshot']}</h:outputLabel>
-    <br/>  
-  </h:panelGrid>
+      rendered="#{documentVersioning.displayCreateSnapshotOption}">#{messages['label.versioning.createSnapshot']}<br/></h:outputLabel>
+
   
-  <p class="buttonsGadget">
+ 
     <h:commandButton type="submit" value="#{messages['command.save']}"
       styleClass="button"
+      action="#{documentActions.updateDocument}" rendered="false"/>
+      
+      <h:commandButton type="submit" value="#{messages['label.versioning.option.inc_major']}"
+      styleClass="button"
       action="#{documentActions.updateDocument}" />
-  </p>
+ 
 
 </h:form>
 
    <h:panelGroup rendered="#{currentDocument.versionable}">
-	<h3><h:outputText
-		value="#{messages['label.versioning.currentVersion']}"/></h3>
-	<h:panelGrid columns="2" styleClass="dataInput"
-		columnClasses="labelColumn, fieldColumn">
-		<h:outputText value="#{messages['label.versioning.currentVersion']}"
-			rendered="#{documentVersioning.uidInfoAvailable}" />
-		<h:panelGroup>
-			<nxh:outputText
-				value="#{documentVersioning.getVersionLabel(currentDocument)}" />
-		</h:panelGroup>
-	</h:panelGrid>
+   
+	<h:panelGroup rendered="false">
+		<h3 class="summaryTitle"><h:outputText
+			value="#{messages['label.versioning.currentVersion']}"/></h3>
+		<h:panelGrid columns="2" styleClass="dataInput"
+			columnClasses="labelColumn, fieldColumn">
+			<h:outputText value="#{messages['label.versioning.currentVersion']}"
+				rendered="#{documentVersioning.uidInfoAvailable}" />
+			<h:panelGroup>
+				<nxh:outputText
+					value="#{documentVersioning.getVersionLabel(currentDocument)}" />
+			</h:panelGroup>
+		</h:panelGrid>
+	</h:panelGroup>
 
 
-	<h3><h:outputText value="#{messages['title.version']}" /></h3>
+	<h3 class="summaryTitle"><h:outputText value="#{messages['title.version']}" /></h3>
 
     <h:form rendered="${not empty versionList}">
     <h:dataTable var="versionItem" value="#{versionList}"
@@ -71,6 +77,7 @@
         </f:facet>
         <h:outputText value="#{versionItem.description}" />
       </h:column>
+
 
       <h:column>
         <f:facet name="header">

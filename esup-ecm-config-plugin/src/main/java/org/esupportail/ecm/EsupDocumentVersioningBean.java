@@ -45,9 +45,13 @@ public class EsupDocumentVersioningBean implements Serializable {
 			if (log.isDebugEnabled()) {
 				log.debug("ret("+key+") ----> " + originalMap.get(key));
 			}
-			if (!originalMap.get(key).equals(VersioningActions.ACTION_NO_INCREMENT.name())) {
+			
+			String originalValue = originalMap.get(key);
+			if (!originalValue.equals(VersioningActions.ACTION_NO_INCREMENT.name()) && !originalValue.equals(VersioningActions.ACTION_INCREMENT_MINOR.name())) {
 				ret.put(key, originalMap.get(key));
 			}
+			
+			
 		}
 		return ret;
 	}
@@ -59,7 +63,9 @@ public class EsupDocumentVersioningBean implements Serializable {
     public String getVersioningOptionInstanceId() {
     	String ret = documentVersioning.getVersioningOptionInstanceId();
     	if (ret.equals(VersioningActions.ACTION_NO_INCREMENT.name())) {
-			ret = VersioningActions.ACTION_INCREMENT_MINOR.name();
+			//ret = VersioningActions.ACTION_INCREMENT_MINOR.name();
+			ret = VersioningActions.ACTION_INCREMENT_MAJOR.name();
+			
 		} 
         return ret;
     }

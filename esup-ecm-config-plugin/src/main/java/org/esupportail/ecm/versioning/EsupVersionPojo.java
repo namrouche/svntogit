@@ -1,9 +1,10 @@
-package org.esupportail.ecm;
+package org.esupportail.ecm.versioning;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.esupportail.ecm.publishing.EsupPublishPojo;
 import org.nuxeo.ecm.core.api.VersionModel;
 
 public class EsupVersionPojo implements Serializable {

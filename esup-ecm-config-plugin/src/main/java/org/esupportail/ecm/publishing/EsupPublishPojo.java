@@ -1,4 +1,4 @@
-package org.esupportail.ecm;
+package org.esupportail.ecm.publishing;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.publishing.PublishPojo;

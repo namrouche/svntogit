@@ -1,5 +1,6 @@
 package org.esupportail.ecm;
 
+import org.esupportail.ecm.versioning.EsupDocumentVersioningBean;
 import org.jboss.seam.annotations.In;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.versioning.api.VersioningActions;

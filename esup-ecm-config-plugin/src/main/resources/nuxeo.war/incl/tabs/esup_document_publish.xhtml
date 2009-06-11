@@ -23,8 +23,8 @@
 	<div class="foldableBox">
 
 			<h3 class="unfolded"><a href="#nogo"
-				onclick="return toggleBox(this)"> Version <h:outputText
-				value="#{versionItem.versionLabel}" /> </a></h3>
+				onclick="return toggleBox(this)"><h:outputText
+				value="Version #{versionItem.versionLabel}" /> </a></h3>
 
 			<div class="boxBody">
 			
@@ -32,10 +32,10 @@
   <h:panelGroup rendered="#{!empty publishActions.sectionRootsForPublishing}">
     <h:panelGrid class="dataInput" columnClasses="labelColumn, fieldColumn" columns="2">
       <h:panelGroup>
-        <h:outputText value="#{messages['label.publish.sections']}" />
+        <h:outputText value="#{messages['label.publish.sections.title']}" />
       </h:panelGroup>
       <h:panelGroup>
-        <h:selectOneListbox class="dataInputText" size="1"
+        <h:selectOneListbox class="dataInputText" size="1" rendered="false"
           value="#{publishActions.currentSectionRootIdForPublishing}">
           <nxu:selectItems value="#{publishActions.sectionRootsForPublishing}"
             var="root"
@@ -69,12 +69,13 @@
               <h:outputText value="#{nxd:titleOrId(node.document)}" />
               <nxu:methodResult name="canPublishToSection" value="#{esupPublishActions.getCanPublishVersionToSection(versionItem.model, node.document)}">
                 <a4j:commandLink immediate="true"
-                  action="#{esupPublishActions.publishVersion(versionItem.modelLabel, node.document)}"
-                  rendered="#{canPublishToSection}"
+                  action="#{esupPublishActions.doPublish(versionItem.modelLabel, node.document)}"
+                  rendered="#{canPublishToSection==0 || canPublishToSection==1}"
                   reRender="publishingInfoList"
                   id="publishCommandLink">
                   <h:graphicImage value="/icons/back.png" />
-                  <h:outputText value="#{messages['label.publish.publish']}" />
+                  <h:outputText value="#{messages['label.publish.asktopublish']}" rendered="#{canPublishToSection==0}"/>
+                  <h:outputText value="#{messages['label.publish.publish']}" rendered="#{canPublishToSection==1}"/>
                 </a4j:commandLink>
               </nxu:methodResult>
             </rich:treeNode>
@@ -97,7 +98,7 @@
         <!-- Name -->
         <nxu:column>
           <f:facet name="header">
-            <h:outputText value="#{messages['label.content.header.title']}" />
+            <h:outputText value="#{messages['label.publish.header.sectionlink']}" />
           </f:facet>
           <nxu:methodResult name="formattedPath" value="#{publishActions.getFormattedPath(info.section)}">
             <nxd:restDocumentLink document="#{info.section}">
@@ -110,7 +111,7 @@
         <h:column>
           <f:facet name="header">
             <h:outputText
-              value="#{messages['label.publish.header.version']}" />
+              value="#{messages['label.publish.header.publishedversion']}" />
           </f:facet>
           <h:outputText value="#{info.proxyVersion}" />
         </h:column>

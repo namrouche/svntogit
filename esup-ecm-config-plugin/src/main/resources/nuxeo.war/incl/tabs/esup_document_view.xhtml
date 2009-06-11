@@ -38,7 +38,7 @@ based on document_view.xmtl from nuxeo-platform-webapp
     <ui:include src="/incl/summary/esup_metadata.xhtml" />
 
     <c:if test="#{deleteActions.trashManagementEnabled and deleteActions.canRestoreCurrentDoc}">
-      <h3>
+      <h3 class="summaryTitle">
         <h:outputText value="#{messages['label.summary.restoreDeletedDocument']}" />
       </h3>
       <h:commandButton type="submit" value="#{messages['command.undeleteDocs']}"

@@ -1,4 +1,4 @@
-package org.esupportail.ecm;
+package org.esupportail.ecm.versioning;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
 

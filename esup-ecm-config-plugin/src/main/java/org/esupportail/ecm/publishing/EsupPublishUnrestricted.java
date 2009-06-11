@@ -55,10 +55,10 @@ public class EsupPublishUnrestricted extends PublishUnrestricted {
 		log.info("run :: *** !!! *** docToPublish.isProxy() = "+docToPublish.isProxy());
 		
 		// false dans le code ecrit par Vincent
-		//boolean overwriteExistingProxy = false;
+		boolean overwriteExistingProxy = false;
 		
 		// true dans le code d'origine
-		boolean overwriteExistingProxy = true;
+		//boolean overwriteExistingProxy = true;
 		
 		newProxy = session.createProxy(sectionToPublishTo.getRef(), docToPublish.getRef(), versionModel, overwriteExistingProxy);
 		

@@ -30,12 +30,17 @@
 			
 		
   <h:panelGroup rendered="#{!empty publishActions.sectionRootsForPublishing}">
-    <h:panelGrid class="dataInput" columnClasses="labelColumn, fieldColumn" columns="2">
+    
+    <h:panelGroup>
+        <h:outputText value="#{messages['label.publish.sections.title']}" />
+      </h:panelGroup>
+    
+    <h:panelGrid class="dataInput" columnClasses="labelColumn, fieldColumn" columns="2" rendered="false">
       <h:panelGroup>
         <h:outputText value="#{messages['label.publish.sections.title']}" />
       </h:panelGroup>
       <h:panelGroup>
-        <h:selectOneListbox class="dataInputText" size="1" rendered="false"
+        <h:selectOneListbox class="dataInputText" size="1"
           value="#{publishActions.currentSectionRootIdForPublishing}">
           <nxu:selectItems value="#{publishActions.sectionRootsForPublishing}"
             var="root"

@@ -79,6 +79,9 @@
     <copy todir="build" overwrite="yes">
       <fileset dir="db-configs"/>
     </copy>
+  	<copy todir="build/mail" overwrite="yes">
+  	  <fileset dir="mail"/>
+  	</copy>
     <copy todir="build/jboss" overwrite="yes">
       <fileset dir="jboss"/>
     </copy>
@@ -188,6 +191,14 @@
       <replacefilter token="@ldapSearchBaseDn@" value="${ldap.group.searchBaseDn}" />
     </replace>
 
+	<!-- MAIL -->
+    <replace file="build/mail/mail-service.xml">
+      <replacefilter token="@mail.pop3.host@" value="${mail.pop3.host}" />
+      <replacefilter token="@mail.smtp.host@" value="${mail.smtp.host}" />
+      <replacefilter token="@mail.smtp.port@" value="${mail.smtp.port}" />
+      <replacefilter token="@mail.from@" value="${mail.from}" />
+    </replace>
+  	
     <!-- Administrator ID -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-virtual-groups-bundle.xml">
       <replacefilter token="@defaultAdministratorId@" value="${ldap.user.defaultAdministratorId}" />
@@ -264,6 +275,9 @@
     <!-- Repository backend -->
     <antcall target="deploy.sql.storage" />
 
+    <!-- Mail service -->
+    <copy file="build/mail/mail-service.xml"  tofile="${nuxeo.dir}/server/default/deploy/mail-service.xml" overwrite="yes"/>
+  	
   	<!-- jboss configuration -->
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>
     <chmod perm="+x"> 

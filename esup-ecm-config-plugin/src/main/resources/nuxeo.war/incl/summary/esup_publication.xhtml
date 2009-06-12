@@ -1,0 +1,147 @@
+<div class="publication_block"
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:nxh="http://nuxeo.org/nxweb/html"
+  xmlns:nxd="http://nuxeo.org/nxweb/document">
+
+
+
+
+
+
+
+
+	<nxu:methodResult name="currentVersionRef" value="#{documentManager.getSourceDocument(currentDocument.getRef()).getRef()}">
+		<c:set var="currentVersionLabel" value=""/>
+
+		<nxu:methodResult name="sourceDocument" value="#{documentManager.getSourceDocument(currentVersionRef)}">
+			<nxu:methodResult name="sourceDocumentRef" value="#{sourceDocument.getRef()}">
+				<c:forEach var="versionModel" items="#{documentManager.getVersionsForDocument(sourceDocumentRef)}">
+					
+					<c:set var="tempDocumentWithVersionRef" value="#{documentManager.getDocumentWithVersion(sourceDocumentRef, versionModel).ref}"/>
+					
+					<c:if test="#{currentVersionRef == tempDocumentWithVersionRef}">
+						<c:set var="currentVersionLabel" value="#{versioningManager.getVersionLabel(documentManager.getDocumentWithVersion(sourceDocumentRef, versionModel))}"/>
+					</c:if>
+				</c:forEach>
+
+
+
+  <div>
+
+  
+    <h:panelGroup rendered="#{currentVersionLabel!=''}">
+  
+      <h3 class="summaryTitle"><h:outputText value="#{messages['label.publishing.title']}" /></h3>
+  
+      <br />
+  
+      <nxu:methodResult name="canManagePublishing"
+        value="#{publishingActions.canManagePublishing()}">
+  
+  <h:panelGroup rendered="#{!publishActions.published}">
+        <h:outputFormat value="#{messages['label.document.pendingVersion']}">
+		<f:param value="#{currentVersionLabel}"/>
+	  </h:outputFormat>
+	  <br /><br />
+   </h:panelGroup>
+  
+        <h:outputText rendered="#{publishActions.hasValidationTask()}">
+          <table class="dataInput">
+            <tr>
+              <td>
+                <h:outputText class="required"
+                  value="#{messages['label.publishing.user.comment']}" />
+              </td>
+              <td>
+                <h:inputTextarea id="rejectPublishingComment"
+                  rows="5" cols="50"
+                  value="#{publishingActions.rejectPublishingComment}" />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <h:message styleClass="errorMessage"
+                  for="rejectPublishingComment" />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <h:commandButton type="submit"
+                  value="#{messages['label.publishing.accept']}"
+                  styleClass="button" rendered="#{canManagePublishing}"
+                  action="#{publishingActions.publishDocument}" />
+                <h:commandButton
+                  type="submit"
+                  value="#{messages['label.publishing.reject']}"
+                  styleClass="button" rendered="#{canManagePublishing}"
+                  action="#{publishingActions.rejectDocument}" />
+              </td>
+            </tr>
+          </table>
+        </h:outputText>
+  
+        <h:panelGroup rendered="#{publishActions.published}">
+          <h:outputFormat value="#{messages['label.document.publishedVersion']}">
+	  <f:param value="#{currentVersionLabel}"/>
+	  </h:outputFormat>
+           <br /><br />
+        </h:panelGroup>
+  
+      </nxu:methodResult>
+  
+    </h:panelGroup>
+  </div>
+
+  <c:set var="selectedSections"
+    value="#{publishActions.getPublishingInfo().toArray()}" scope="page" />
+  <h:outputText class="boldLabel"
+    value="#{messages['label.summary.publication']}" rendered="false"/>
+    
+  <nxu:dataTable id="dataTable" value="#{selectedSections}" var="proxy" rendered="#{currentVersionLabel!=''}"
+    styleClass="dataList">
+    
+    
+    <!-- id and selection -->
+    <nxu:column>
+    <f:facet name="header">
+            <h:outputText value="#{messages['label.publish.header.sectionlink']}" />
+          </f:facet>
+      <nxd:restDocumentLink document="#{proxy.section}"
+        tab="TAB_CONTENT">
+        <h:outputText value="#{proxy.section.path}" />
+      </nxd:restDocumentLink>
+    </nxu:column>
+    
+    <nxu:column>
+    <f:facet name="header">
+            <h:outputText value="#{messages['label.publish.header.publishedversion']}" />
+          </f:facet>
+      <h:outputText value="#{proxy.proxyVersion}" />
+    </nxu:column>
+    
+    <nxu:column>
+    <f:facet name="header">
+            <h:outputText value="#{messages['label.publish.header.publishedstate']}" />
+          </f:facet>
+      <h:outputText value="#{messages['label.publish.state.versioned']}" rendered="#{esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
+      <h:outputText value="#{messages['label.publish.state.pendingVersion']}" rendered="#{!esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
+    </nxu:column>
+    
+     <nxu:column>
+      <h:outputText value="#{messages['label.publish.currentVersion']}" rendered="#{proxy.proxyVersion == currentVersionLabel}"/>
+    </nxu:column>
+    
+  </nxu:dataTable>
+  
+  
+  
+			</nxu:methodResult>
+		</nxu:methodResult>
+	</nxu:methodResult>
+  
+
+</div>

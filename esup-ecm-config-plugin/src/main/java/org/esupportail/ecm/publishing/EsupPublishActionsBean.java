@@ -118,6 +118,52 @@ public class EsupPublishActionsBean implements Serializable {
        return esupVersionsMap.values();
 	}
     
+    
+    /*
+     * Called by  esup_publication.xhtml
+     * @see PublishActionsBean.isPublished
+     */
+    public boolean isPublished(DocumentModel sourceDocumentRef, String proxyVersionLabel, DocumentModel section) {
+        try {
+        	
+        	List<VersionModel> versions = documentManager.getVersionsForDocument(sourceDocumentRef.getRef());
+            for (VersionModel model : versions) {
+                DocumentModel tempDoc = documentManager.getDocumentWithVersion(sourceDocumentRef.getRef(), model);
+                if (tempDoc != null) {
+                    String versionLabel = versioningManager.getVersionLabel(tempDoc);
+                    if (proxyVersionLabel.equals(versionLabel)) {
+                    	
+	                    for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
+	                    	DocumentRef parentRef = proxy.getParentRef();
+	                    	
+	                    	if (parentRef.equals(section.getRef())) {
+	                    		log.info("isPublished :: found section prentRef :: "+parentRef);
+	                    		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+	                    		boolean isPublished = publisher.isPublished(proxy);
+	                    		log.info("isPublished :: isPublished ? "+isPublished);
+	                    		return isPublished;
+	                    	}
+	                    }
+                    }
+                }
+            }
+        	
+            log.info("isPublished :: not found, return false");
+        	return false;
+        }
+        catch (PublishingException e) {
+        	log.info("isPublished :: PublishingException", e);
+            throw new IllegalStateException("Publishing service not deployed properly.", e);
+        }
+        catch (ClientException e) {
+        	log.info("isPublished :: ClientException", e);
+            throw new IllegalStateException("Publishing service not deployed properly.", e);
+        }
+    }
+    
+    
+    
+    
     /*
      * Called by  esup_document_publish.xhtml
      * @see PublishActionsBean.getCanPublishToSection
@@ -166,23 +212,17 @@ public class EsupPublishActionsBean implements Serializable {
             }
         }
 
-        
     	
     	DocumentModel versionDocument  = documentManager.getDocumentWithVersion(currentDocument.getRef(), model);
-        
         if (publishActions.isAlreadyPublishedInSection(versionDocument, section)) {
         	return -1;
         }
-        
         if (canWrite) {
         	return 1;
         }
-        
         if (canAskForPublishing) {
         	return 0;
         }
-        
-        
         
         return -1;
     }

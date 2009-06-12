@@ -47,7 +47,7 @@ based on document_view.xmtl from nuxeo-platform-webapp
 
     <c:set var="selectedSections" value="#{publishActions.getPublishingInfo().toArray()}" scope="page" />
     <c:if test="#{!empty selectedSections}">
-      <ui:include src="/incl/summary/publication.xhtml"/>
+      <ui:include src="/incl/summary/esup_publication.xhtml"/>
     </c:if>
 
     <c:if test="#{currentDocument.hasFacet('Commentable') and (documentThreadedComments.size > 0)}">

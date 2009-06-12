@@ -55,7 +55,7 @@
     <dd class="menuForm">
       <h:panelGroup id="sectionTree">
         <rich:tree
-          icon="#{nodeState.isExpanded(rowKey)?nxd:iconExpandedPath(node.document):nxd:iconPath(node.document)}"
+          icon="#{nodeState.isExpanded(rowKey)?nxd:iconExpandedPath(currentDocument):nxd:iconPath(node.document)}"
           iconLeaf="#{nxd:iconPath(node.document)}"
           iconExpanded="/img/toggle_minus.png"
           iconCollapsed="/img/toggle_plus.png"
@@ -121,6 +121,15 @@
           <h:outputText value="#{info.proxyVersion}" />
         </h:column>
       
+      <!-- state -->
+      <nxu:column>
+    <f:facet name="header">
+            <h:outputText value="#{messages['label.publish.header.publishedstate']}" />
+          </f:facet>
+      <h:outputText value="#{messages['label.publish.state.versioned']}" rendered="#{esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}"/>
+      <h:outputText value="#{messages['label.publish.state.pendingVersion']}" rendered="#{!esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}"/>
+    </nxu:column>
+      
         <!--  Actions for the published document  -->
         <h:column >
           <f:facet name="header">
@@ -131,7 +140,7 @@
             <a4j:commandLink immediate="true"
               value="#{messages['command.document.unpublish']}"
               action="#{esupPublishActions.unPublishProxy(info.proxy)}"
-              rendered="#{nxd:hasPermission(info.section, 'Write') and section.ref != currentDocument.parentRef}"
+              rendered="#{esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section) and section.ref != currentDocument.parentRef}"
               reRender="publishingInfoList"
               ignoreDupResponses="true">
             </a4j:commandLink>

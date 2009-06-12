@@ -116,7 +116,7 @@
         <h:column>
           <f:facet name="header">
             <h:outputText
-              value="#{messages['label.publish.header.publishedversion']}" />
+              value="#{messages['label.document.version']}" />
           </f:facet>
           <h:outputText value="#{info.proxyVersion}" />
         </h:column>
@@ -124,10 +124,10 @@
       <!-- state -->
       <nxu:column>
     <f:facet name="header">
-            <h:outputText value="#{messages['label.publish.header.publishedstate']}" />
+            <h:outputText value="#{messages['label.workflow.currentLifeCycleState']}" />
           </f:facet>
-      <h:outputText value="#{messages['label.publish.state.versioned']}" rendered="#{esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}"/>
-      <h:outputText value="#{messages['label.publish.state.pendingVersion']}" rendered="#{!esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}"/>
+      <h:outputText value="#{messages['moderation_published']}" rendered="#{esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}"/>
+      <h:outputText value="#{messages['moderation_pending']}" rendered="#{!esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}"/>
     </nxu:column>
       
         <!--  Actions for the published document  -->

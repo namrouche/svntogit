@@ -118,17 +118,17 @@
     
     <nxu:column>
     <f:facet name="header">
-            <h:outputText value="#{messages['label.publish.header.publishedversion']}" />
+            <h:outputText value="#{messages['label.document.version']}" />
           </f:facet>
       <h:outputText value="#{proxy.proxyVersion}" />
     </nxu:column>
     
     <nxu:column>
     <f:facet name="header">
-            <h:outputText value="#{messages['label.publish.header.publishedstate']}" />
+            <h:outputText value="#{messages['label.workflow.currentLifeCycleState']}" />
           </f:facet>
-      <h:outputText value="#{messages['label.publish.state.versioned']}" rendered="#{esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
-      <h:outputText value="#{messages['label.publish.state.pendingVersion']}" rendered="#{!esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
+      <h:outputText value="#{messages['moderation_published']}" rendered="#{esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
+      <h:outputText value="#{messages['moderation_pending']}" rendered="#{!esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
     </nxu:column>
     
      <nxu:column>

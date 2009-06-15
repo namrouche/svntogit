@@ -38,7 +38,9 @@
 		<action id="TAB_FILES_EDIT" enabled="false" />
 
 		<action id="TAB_PUBLISH" label="esup.action.publish.content"
-			link="/incl/tabs/esup_document_publish.xhtml" />
+			link="/incl/tabs/esup_document_publish.xhtml">
+			<filter-id>edit</filter-id>			
+		</action>
 
 		<action id="TAB_RELATIONS" enabled="false" />
 

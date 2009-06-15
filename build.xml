@@ -198,6 +198,9 @@
       <replacefilter token="@mail.smtp.port@" value="${mail.smtp.port}" />
       <replacefilter token="@mail.from@" value="${mail.from}" />
     </replace>
+  	<replace file="build/mail/notification-config.xml">
+      <replacefilter token="@nuxeo.url@" value="${nuxeo.url}" />
+    </replace>
   	
     <!-- Administrator ID -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-virtual-groups-bundle.xml">
@@ -277,6 +280,7 @@
 
     <!-- Mail service -->
     <copy file="build/mail/mail-service.xml"  tofile="${nuxeo.dir}/server/default/deploy/mail-service.xml" overwrite="yes"/>
+  	<copy file="build/mail/notification-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/notification-config.xml" overwrite="yes"/>
   	
   	<!-- jboss configuration -->
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>

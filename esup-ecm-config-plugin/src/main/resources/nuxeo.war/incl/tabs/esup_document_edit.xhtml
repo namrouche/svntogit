@@ -15,8 +15,7 @@ based on document_edit.xhtml from nuxeo-platform-webapp
     <ui:include src="/incl/document_editor.xhtml" />
   </c:if>
   <c:if test="#{empty documentActions.changeableDocumentType.layout}">
-    <nxl:layout name="heading" mode="edit" value="#{changeableDocument}" />
-    <nxl:layout name="file" mode="edit" value="#{changeableDocument}" />
+    <nxl:documentLayout mode="create" value="#{changeableDocument}" />
   </c:if>
 
   <table class="dataInput">

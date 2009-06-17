@@ -4,8 +4,9 @@
 		point="actions">
 
 		<!-- nuxeo-platform: overwrite actions-contrib.xml -->
-		<action id="user_manager" link="#{userManagerActions.viewUsers}"
-			enabled="true" label="command.manageMembers" order="20">
+		
+		<action id="user_manager" link="#{userManagerActions.viewUsers}" enabled="@showUserManager@"
+			label="command.manageMembers" order="20">
 			<category>USER_SERVICES</category>
 			<filter-id>only_for_manager</filter-id>
 			<filter id="user_manager">
@@ -16,12 +17,40 @@
 			</filter>
 		</action>
 		
-	   	<action id="vocabularies_manager" link="#{vocabularyActions.viewAllVocabularies}" enabled="false" label="title.vocabularies"
+		<action id="user_dashboard" link="user_dashboard" enabled="@showUserDashBoard@"
+	      label="command.user_dashboard" order="10">
+	      <category>USER_SERVICES</category>
+	      <filter id="user_dashboard_enabled">
+	        <rule grant="true">
+	          <condition>#{userServicesContext.dashboardEnabled}</condition>
+	        </rule>
+	      </filter>
+	    </action>
+		
+	   	<action id="vocabularies_manager" link="#{vocabularyActions.viewAllVocabularies}" enabled="@showVocabulariesManager@" label="title.vocabularies"
       	order="30">
       		<category>USER_SERVICES</category>
       		<filter-id>only_for_manager</filter-id>
    	 	</action>
 
+	    <action id="SHOW_PERSONAL_WORKSPACE"
+	      link="#{userWorkspaceManagerActions.navigateToCurrentUserPersonalWorkspace}"
+	      enabled="@showPersonnalWorkspace@" label="command.user.personal.workspace" icon="/icons/show_personal_workspace.gif"
+	      order="11">
+	      <category>USER_SERVICES</category>
+	      <filter id="canAccessPersonalWorkspace">
+	        <rule grant="false">
+	          <condition>#{isInsidePersonalWorkspace}</condition>
+	        </rule>
+	      </filter>
+	      <filter-id>not_anonymous</filter-id>
+	    </action>
+
+	    <action id="themes_manager" link="#{themeEditorAction.startEditor}" enabled="@showThemesManager@" 
+	      label="command.manageThemes" order="40">
+	      <category>USER_SERVICES</category>
+	      <filter-id>only_for_manager</filter-id>
+	    </action>
 
 		<action id="TAB_VIEW" link="/incl/tabs/esup_document_view.xhtml" />
 

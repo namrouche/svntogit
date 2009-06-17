@@ -1,1 +1,1 @@
-work with nuxeo-ep-5.1.6.GA-2
+works with nuxeo-dm-5.2.0

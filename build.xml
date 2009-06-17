@@ -5,8 +5,6 @@
   <property name="jboss.log4j.level" value="INFO"/>
   <property name="nuxeo-dm.file" value="nuxeo-dm-5.2.0-jboss.zip"/>
   <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
-  <property name="nuxeo-nxshell.file" value="nuxeo-shell-5.2-20080710.zip"/>
-  <property name="nuxeo-nxshell-unziped.file" value="${nuxeo.dir.parent}/nuxeo-shell/run.sh"/>
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0"/>
   <property name="unused.component.dir" value="unused"/>
 
@@ -35,11 +33,8 @@
     <mkdir  dir="packages"/>
   	<mkdir dir="${nuxeo.dir.parent}/nuxeo-shell"/>
     <available file="packages/${nuxeo-dm.file}" property="nuxeo-dm.file.present" />
-    <available file="packages/${nuxeo-nxshell.file}" property="nuxeo-nxshell.file.present" />
     <available file="${nuxeo-dm-unziped.file}" property="nuxeo-dm.unziped.file.present" />
-    <available file="${nuxeo-nxshell-unziped.file}" property="nuxeo-nxshell.unziped" />
     <antcall target="get.nuxeo-dm.file" />
-    <antcall target="get.nuxeo-nxshell.file" />
   </target>
   	
 	  <target name="get.nuxeo-dm.file" unless="nuxeo-dm.file.present">
@@ -48,23 +43,12 @@
 	    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
 	  </target>
 
-	  <target name="get.nuxeo-nxshell.file" unless="nuxeo-nxshell.file.present">
-	    <echo message="Download ${nuxeo-nxshell.file} in the packages directory."/>
-	    <echo message="Download can last few minutes ..."/>
-	    <get src="http://download.nuxeo.org/nuxeo-shell/${nuxeo-nxshell.file}" dest="packages/${nuxeo-nxshell.file}" verbose="false"/>
-	  </target>
-
   <target name="deploy.nuxeo" depends="prepare">
-  	<antcall target="deploy.nuxeo.ep" />
-  	<antcall target="deploy.nuxeo.nxshell" />
+  	<antcall target="deploy.nuxeo.dm" />
   </target>
 	
-	<target name="deploy.nuxeo.ep" unless="nuxeo-dm.unziped.file.present">
+	<target name="deploy.nuxeo.dm" unless="nuxeo-dm.unziped.file.present">
 	    <unzip src="packages/${nuxeo-dm.file}" dest="${nuxeo.dir.parent}" />
-	</target>
-
-	<target name="deploy.nuxeo.nxshell" unless="nuxeo-nxshell-unziped.file">
-	    <unzip src="packages/${nuxeo-nxshell.file}" dest="${nuxeo.dir.parent}/nuxeo-shell" />
 	</target>
 
 	<target name="clean" description="clean build">
@@ -202,6 +186,15 @@
       <replacefilter token="@nuxeo.url@" value="${nuxeo.url}" />
     </replace>
   	
+	<!-- USER SERVICES -->
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-actions-contrib.xml">
+      <replacefilter token="@showUserManager@" value="${use.users.manager}" />
+      <replacefilter token="@showVocabulariesManager@" value="${use.vocabularies.manager}" />
+      <replacefilter token="@showThemesManager@" value="${use.themes.manager}" />
+      <replacefilter token="@showPersonnalWorkspace@" value="${show.personnal.workspace}" />
+      <replacefilter token="@showUserDashBoard@" value="${show.user.dashboard}" />
+    </replace>
+  	
     <!-- Administrator ID -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-virtual-groups-bundle.xml">
       <replacefilter token="@defaultAdministratorId@" value="${ldap.user.defaultAdministratorId}" />
@@ -318,6 +311,11 @@
       <fileset dir="nuxeo-addons"/>
     </copy>
   	
+    <!-- Nx patches --> 
+    <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system"  overwrite="yes">
+      <fileset dir="nuxeo-patches"/>
+    </copy>
+  	
     <!-- configuration plugin deploy -->
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
 
@@ -432,7 +430,6 @@
             <exclude name="**/bin/**"/>
             <exclude name="packages/${esup-ecm.file}.zip"/>
             <exclude name="packages/${nuxeo-dm.file}"/>
-            <exclude name="packages/${nuxeo-nxshell.file}"/>
 	       	<exclude name="build.properties"/>
 	       </zipfileset>
 	    </zip>

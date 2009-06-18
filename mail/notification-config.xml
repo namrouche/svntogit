@@ -5,8 +5,8 @@
     target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService"
     point="generalSettings">
     <settings>
-      <serverPrefix>@nuxeo.url@/</serverPrefix>
-      <eMailSubjectPrefix>[ESUP-ECM]</eMailSubjectPrefix>
+      <serverPrefix>@nuxeo-url@/</serverPrefix>
+      <eMailSubjectPrefix>[@productName@]</eMailSubjectPrefix>
       <mailSessionJndiName>java:/Mail</mailSessionJndiName>
     </settings>
   </extension>

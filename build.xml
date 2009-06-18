@@ -191,7 +191,8 @@
       <replacefilter token="@mail.from@" value="${mail.from}" />
     </replace>
   	<replace file="build/mail/notification-config.xml">
-      <replacefilter token="@nuxeo.url@" value="${nuxeo.url}" />
+      <replacefilter token="@nuxeo-url@" value="${nuxeo.url}" />
+  	  <replacefilter token="@productName@" value="${ecm.product.name}" />
     </replace>
   	
 	<!-- USER SERVICES -->

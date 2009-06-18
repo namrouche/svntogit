@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<component name="org.esup.ecm.publishing.permissions.contrib">
+
+  <require>org.nuxeo.ecm.platform.publishing.permissions.contrib</require>
+
+  <extension target="org.nuxeo.ecm.core.security.SecurityService"
+    point="permissions">
+    <permission name="Read">
+      <remove>CanAskForPublishing</remove>
+    </permission>
+    <permission name="Write">
+      <include>CanAskForPublishing</include>
+    </permission>
+    </extension>
+</component>

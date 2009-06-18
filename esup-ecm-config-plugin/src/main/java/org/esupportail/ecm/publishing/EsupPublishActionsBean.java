@@ -50,7 +50,7 @@ import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 @Name("esupPublishActions")
 @Scope(ScopeType.CONVERSATION)
 @Transactional
-public class EsupPublishActionsBean implements Serializable {
+public class EsupPublishActionsBean implements Serializable  {
 
 	private static final long serialVersionUID = 5062112520450522444L;
 
@@ -83,6 +83,9 @@ public class EsupPublishActionsBean implements Serializable {
 
     @In(create = true)
     protected transient ResourcesAccessor resourcesAccessor;
+    
+    
+    
     
     
     /**
@@ -119,6 +122,8 @@ public class EsupPublishActionsBean implements Serializable {
 	}
     
     
+    
+
     /*
      * Called by  esup_publication.xhtml
      * @see PublishActionsBean.isPublished
@@ -137,10 +142,10 @@ public class EsupPublishActionsBean implements Serializable {
 	                    	DocumentRef parentRef = proxy.getParentRef();
 	                    	
 	                    	if (parentRef.equals(section.getRef())) {
-	                    		log.info("isPublished :: found section prentRef :: "+parentRef);
+	                    		log.debug("isPublished :: found section prentRef :: "+parentRef);
 	                    		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
 	                    		boolean isPublished = publisher.isPublished(proxy);
-	                    		log.info("isPublished :: isPublished ? "+isPublished);
+	                    		log.debug("isPublished :: isPublished ? "+isPublished);
 	                    		return isPublished;
 	                    	}
 	                    }
@@ -148,15 +153,15 @@ public class EsupPublishActionsBean implements Serializable {
                 }
             }
         	
-            log.info("isPublished :: not found, return false");
+            log.debug("isPublished :: not found, return false");
         	return false;
         }
         catch (PublishingException e) {
-        	log.info("isPublished :: PublishingException", e);
+        	log.error("isPublished :: PublishingException", e);
             throw new IllegalStateException("Publishing service not deployed properly.", e);
         }
         catch (ClientException e) {
-        	log.info("isPublished :: ClientException", e);
+        	log.error("isPublished :: ClientException", e);
             throw new IllegalStateException("Publishing service not deployed properly.", e);
         }
     }
@@ -228,110 +233,6 @@ public class EsupPublishActionsBean implements Serializable {
     }
     
     
-    /*
-     * Called by  esup_document_publish.xhtml
-     */
-    /*public String publishVersion(String versionModelLabel, DocumentModel section) throws ClientException {
-    	
-    	// COMMENTER ou DECOMMENTER l'une ou l'autre des methodes
-    	
-    	// methode qui fonctionne sans la demande de publication 
-    	return publishVersionFonctionneSansDemandeDePublication(versionModelLabel, section);
-    	
-    	// methode en cours de developpement par Yohan pour remettre d'applom la demande de publication
-    	//return publishVersionPourCorrectionFutureDeDemandeDePublication(versionModelLabel, section);
-    }*/
-    
-    
-   /* public String publishVersionFonctionneSansDemandeDePublication(String versionModelLabel, DocumentModel section) throws ClientException {
-    	
-    	DocumentModel docToPublish = navigationContext.getCurrentDocument();
-
-        VersionModel versionModel = new VersionModelImpl();
-
-        versionModel.setCreated(Calendar.getInstance());
-        versionModel.setDescription("");
-        versionModel.setLabel(versionModelLabel);
-        
-        
-        DocumentModel proxy = documentManager.createProxy(section.getRef(), docToPublish.getRef(), versionModel, false);
-       
-        
-        Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
-        proxy.setProperty("dublincore", "dc:issued", dateFormat.getCalendar());
-
-        documentManager.save();
-
-        facesMessages.add(FacesMessage.SEVERITY_INFO,
-                    resourcesAccessor.getMessages().get("document_published"),
-                    resourcesAccessor.getMessages().get(docToPublish.getType()));
-         
-        
-        return null;
-    }*/
-    
-    
-    
-    /*
-    public String publishVersionPourCorrectionFutureDeDemandeDePublication(String versionModelLabel, DocumentModel section) throws ClientException {
-    	
-    	DocumentModel docToPublish = navigationContext.getCurrentDocument();
-
-        VersionModel versionModel = new VersionModelImpl();
-
-        versionModel.setCreated(Calendar.getInstance());
-        versionModel.setDescription("");
-        versionModel.setLabel(versionModelLabel);
-        
-        
-        // BEGIN :: code actuel ori-oai 
-        //DocumentModel proxy = documentManager.createProxy(section.getRef(), docToPublish.getRef(), versionModel, false);
-        // END :: code actuel ori-oai
-        
-        // BEGIN :: proposition de code pour moderation
-        if (!documentManager.hasPermission(section.getRef(), SecurityConstants.READ)) {
-        	throw new ClientException("Cannot publish because not enough rights");
-        }
-        
-        EsupDocumentPublisher documentPublisher = new EsupDocumentPublisher(documentManager, docToPublish, versionModel, section, "demande de publication");
-        
-        // If not enough rights to creating content, bypass rights since READ is
-        // enough for publishing.
-        if (!documentManager.hasPermission(section.getRef(), SecurityConstants.ADD_CHILDREN)) {
-        	log.info("publishVersion :: runUnrestricted :: PAS la permission de ADD_CHILDREN");
-        	documentPublisher.runUnrestricted();
-        } else {
-        	log.info("publishVersion :: run :: permission de ADD_CHILDREN");
-        	documentPublisher.run();
-        }
-
-        DocumentModel proxy =  documentManager.getDocument(documentPublisher.proxyRef);
-        
-        // teste methode d'origine
-        //publishActions.publishDocument(docToPublish, section);
-        
-        // END :: proposition de code pour moderation
-        
-        /*Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-        //DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
-        //proxy.setProperty("dublincore", "dc:issued", dateFormat.getCalendar());
-
-        // BEGIN :: proposition de code pour moderation
-        //proxy.putContextData(org.nuxeo.common.collections.ScopeType.REQUEST, VersioningDocument.CREATE_SNAPSHOT_ON_SAVE_KEY, Boolean.FALSE);
-        // END :: proposition de code pour moderation
-        
-        //documentManager.save();
-
-        //facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_published"), resourcesAccessor.getMessages().get(docToPublish.getType()));
-        
-        
-        return null;
-    }
-    */
-    
-    
-    
     
     @In(create = true)
     protected transient NuxeoPrincipal currentUser;
@@ -351,21 +252,21 @@ public class EsupPublishActionsBean implements Serializable {
     	boolean isPublished = false;
     	boolean isWaiting = false;
     	try {
-    		log.info("doPublish :: going to submitToPublication");
+    		log.debug("doPublish :: going to submitToPublication");
     		
     		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
     		publisher.submitToPublication(currentDocument, versionModel, section, currentUser);
     		
     		isPublished = true;
     		
-    		log.info("doPublish :: isPublished = true");
+    		log.debug("doPublish :: isPublished = true");
     		}
     	catch (DocumentWaitingValidationException e) {
     		isWaiting = true;
-    		log.info("doPublish :: isWaiting = true");
+    		log.debug("doPublish :: isWaiting = true");
     		}
     	catch (PublishingException e) {
-    		log.info("doPublish :: PublishingException ", e);
+    		log.debug("doPublish :: PublishingException ", e);
     		throw new PublishingWebException(e);
     		}
     	
@@ -398,5 +299,8 @@ public class EsupPublishActionsBean implements Serializable {
 
         return null;
     }
+    
+    
+    
 
 }

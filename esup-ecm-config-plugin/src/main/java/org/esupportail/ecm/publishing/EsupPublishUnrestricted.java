@@ -41,7 +41,7 @@ public class EsupPublishUnrestricted extends PublishUnrestricted {
         
         this.sectionToPublishTo = sectionToPublishTo;
         
-        log.info("EsupPublishUnrestricted :: constructor done");
+        log.debug("EsupPublishUnrestricted :: constructor done");
 	}
 	
 	
@@ -50,9 +50,9 @@ public class EsupPublishUnrestricted extends PublishUnrestricted {
 	@Override
     public void run() throws ClientException {
 		
-		log.info("run :: call method");
+		log.debug("run :: call method");
 		
-		log.info("run :: *** !!! *** docToPublish.isProxy() = "+docToPublish.isProxy());
+		log.debug("run :: *** !!! *** docToPublish.isProxy() = "+docToPublish.isProxy());
 		
 		// false dans le code ecrit par Vincent
 		boolean overwriteExistingProxy = false;
@@ -62,13 +62,13 @@ public class EsupPublishUnrestricted extends PublishUnrestricted {
 		
 		newProxy = session.createProxy(sectionToPublishTo.getRef(), docToPublish.getRef(), versionModel, overwriteExistingProxy);
 		
-		log.info("run :: newProxy="+newProxy);
+		log.debug("run :: newProxy="+newProxy);
         
         Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
         newProxy.setProperty("dublincore", "dc:issued", dateFormat.getCalendar());
 
-        log.info("run :: dc:issued added");
+        log.debug("run :: dc:issued added");
         
         session.save();
 		

@@ -12,22 +12,11 @@
 
 
 
-
-
-	<nxu:methodResult name="currentVersionRef" value="#{documentManager.getSourceDocument(currentDocument.getRef()).getRef()}">
-		<c:set var="currentVersionLabel" value=""/>
-
-		<nxu:methodResult name="sourceDocument" value="#{documentManager.getSourceDocument(currentVersionRef)}">
-			<nxu:methodResult name="sourceDocumentRef" value="#{sourceDocument.getRef()}">
-				<c:forEach var="versionModel" items="#{documentManager.getVersionsForDocument(sourceDocumentRef)}">
-					
-					<c:set var="tempDocumentWithVersionRef" value="#{documentManager.getDocumentWithVersion(sourceDocumentRef, versionModel).ref}"/>
-					
-					<c:if test="#{currentVersionRef == tempDocumentWithVersionRef}">
-						<c:set var="currentVersionLabel" value="#{versioningManager.getVersionLabel(documentManager.getDocumentWithVersion(sourceDocumentRef, versionModel))}"/>
-					</c:if>
-				</c:forEach>
-
+	<nxu:methodResult name="publishingVersion" value="#{esupViewActions.getPublishingVersion(currentDocument)}">
+		<nxu:methodResult name="sourceDocument" value="#{publishingVersion.getSourceDocument()}">
+			<nxu:methodResult name="currentVersionLabel" value="#{publishingVersion.getCurrentVersionLabel()}">
+	
+	
 
 
   <div>
@@ -127,8 +116,8 @@
     <f:facet name="header">
             <h:outputText value="#{messages['label.workflow.currentLifeCycleState']}" />
           </f:facet>
-      <h:outputText value="#{messages['moderation_published']}" rendered="#{esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
-      <h:outputText value="#{messages['moderation_pending']}" rendered="#{!esupPublishActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
+      <h:outputText value="#{messages['moderation_published']}" rendered="#{esupViewActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
+      <h:outputText value="#{messages['moderation_pending']}" rendered="#{!esupViewActions.isPublished(sourceDocument, proxy.proxyVersion, proxy.section)}"/>
     </nxu:column>
     
      <nxu:column>

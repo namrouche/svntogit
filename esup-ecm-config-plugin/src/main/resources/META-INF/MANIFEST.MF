@@ -16,5 +16,6 @@ Require-Bundle:
 Nuxeo-RequiredBy: org.nuxeo.ecm.war
 Nuxeo-Component: OSGI-INF/esup-login-contrib.xml,
  OSGI-INF/esup-theme-contrib.xml,
- OSGI-INF/esup-actions-contrib.xml
+ OSGI-INF/esup-actions-contrib.xml,
+ OSGI-INF/esup-publishing-permissions-contrib.xml
  

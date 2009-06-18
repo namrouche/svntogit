@@ -28,64 +28,64 @@ public class EsupJbpmPublisher extends JbpmPublisher {
 	
 	
 	public void submitToPublication(DocumentModel document, VersionModel versionModel, DocumentModel placeToPublishTo, NuxeoPrincipal principal) throws PublishingException, DocumentWaitingValidationException {
-		log.info("submitToPublication :: call method");
+		log.debug("submitToPublication :: call method");
 		
 		DocumentModel newProxy;
         CoreSession coreSession;
         
         try {
             coreSession = getCoreSession(document.getRepositoryName(), principal);
-            log.info("submitToPublication :: coreSession="+coreSession);
+            log.debug("submitToPublication :: coreSession="+coreSession);
         }
         catch (ClientException e2) {
-        	log.info("submitToPublication :: ", e2);
+        	log.error("submitToPublication :: ", e2);
             throw new IllegalStateException("No core session available.", e2);
         }
         
         try {
-        	log.info("submitToPublication :: going to publish");
+        	log.debug("submitToPublication :: going to publish");
             newProxy = publish(document, versionModel, placeToPublishTo, principal, coreSession);
-            log.info("submitToPublication :: newProxy = "+newProxy);
+            log.debug("submitToPublication :: newProxy = "+newProxy);
             notifyEvent(PublishingEvent.documentSubmittedForPublication, newProxy, coreSession);
-            log.info("submitToPublication :: event notified 1");
+            log.debug("submitToPublication :: event notified 1");
         }
         catch (ClientException e1) {
-        	log.info("submitToPublication :: ", e1);
+        	log.error("submitToPublication :: ", e1);
             throw new PublishingException(e1);
         }
         if (!isValidator(newProxy, principal)) {
             try {
                 notifyEvent(PublishingEvent.documentWaitingPublication, newProxy, coreSession);
-                log.info("submitToPublication :: event notified 2");
+                log.debug("submitToPublication :: event notified 2");
                 restrictPermission(newProxy, principal, coreSession);
-                log.info("submitToPublication :: restricted permission");
+                log.debug("submitToPublication :: restricted permission");
                 createTask(newProxy, coreSession, principal);
-                log.info("submitToPublication :: created task");
+                log.debug("submitToPublication :: created task");
                 throw new DocumentWaitingValidationException();
             }
             catch (PublishingValidatorException e) {
-            	log.info("submitToPublication :: ", e);
+            	log.error("submitToPublication :: ", e);
                 throw new PublishingException(e);
             }
             catch (NuxeoJbpmException e) {
-            	log.info("submitToPublication :: ", e);
+            	log.error("submitToPublication :: ", e);
                 throw new PublishingException(e);
             }
         }
         else {
             notifyEvent(PublishingEvent.documentPublished, newProxy, coreSession);
-            log.info("submitToPublication :: event notified 3");
+            log.debug("submitToPublication :: event notified 3");
         }
 	}
 	
 	
 	
 	protected DocumentModel publish(final DocumentModel document, VersionModel versionModel, final DocumentModel sectionToPublishTo, NuxeoPrincipal principal, CoreSession coreSession) throws ClientException {
-		log.info("publish :: call method");
+		log.debug("publish :: call method");
 		EsupPublishUnrestricted publisher = new EsupPublishUnrestricted(coreSession, document, versionModel, sectionToPublishTo);
-		log.info("publish :: publisher="+publisher);
+		log.debug("publish :: publisher="+publisher);
         publisher.runUnrestricted();
-        log.info("publish :: runUnrestricted done");
+        log.debug("publish :: runUnrestricted done");
         return publisher.getModel();
     }
 	

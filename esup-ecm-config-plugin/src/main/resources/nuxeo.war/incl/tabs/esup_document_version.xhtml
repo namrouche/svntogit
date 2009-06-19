@@ -6,7 +6,7 @@
   xmlns:nxl="http://nuxeo.org/nxforms/layout"
   xmlns:nxh="http://nuxeo.org/nxweb/html">
 
-<h:form id="esup_document_version">
+<h:form id="esup_document_version" rendered="#{versionedActions.canRestore}">
 
 
 <h3 class="summaryTitle"><h:outputLabel for="versioningOptionInstanceId" value="#{messages['label.versioning.selectVersioningOption']}" /></h3>

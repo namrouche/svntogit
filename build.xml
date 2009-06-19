@@ -1,6 +1,8 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
+  <property file="init-build.properties" />
+
   <property file="default.properties"/>
   <property name="jboss.log4j.level" value="INFO"/>
   <property name="nuxeo-dm.file" value="nuxeo-dm-5.2.0-jboss.zip"/>
@@ -42,6 +44,12 @@
 	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
 	    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
 	  </target>
+
+
+
+
+
+
 
   <target name="deploy.nuxeo" depends="prepare">
   	<antcall target="deploy.nuxeo.dm" />
@@ -451,6 +459,98 @@
 	    <echo message="${openoffice.home}/program/unopkg add --shared ${openoffice.home}/nxOOo/patch/nxOOoAutoListen.oxt
 "/>
     </target>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	<!-- ==================== Target :: Remplacement des paramètres depuis le fichier central =================================== -->
+	
+	<property name="commons.parameters.local.file" value="commons-parameters.properties" />
+	
+	
+	<!-- Télécharge le fichier de propriétés -->
+	<target name="download-commons.parameters.local.file" if="commons.parameters.central.file.url">
+		<echo message="je copie en local ${commons.parameters.central.file.url} ..."/>
+		<get dest="${commons.parameters.local.file}" src="${commons.parameters.central.file.url}"/>
+	</target>
+	
+	
+	<!-- Teste si le fichier de propriétés local existe -->
+	<target name="test-available-commons.parameters.local.file">
+		<available file="${commons.parameters.local.file}" property="commons.parameters.local.file.exists"/>
+		<echo message="${commons.parameters.local.file} existe ? ${commons.parameters.local.file.exists}"/>
+	</target>
+
+
+	<!-- Copie init-build.properties en build.properties -->
+	<target name="init-build.properties" depends="download-commons.parameters.local.file,test-available-commons.parameters.local.file" if="commons.parameters.local.file.exists">
+		<echo message="initialise le fichier build.properties"/>
+		
+		<echo message="${commons.parameters.local.file}"/>
+		
+		<delete file="build.properties" />
+		
+		<copy file="init-build.properties" tofile="build.properties">
+			<filterchain>
+				<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens"/>
+			</filterchain>
+			<filterset
+				begintoken="["
+				endtoken="]"
+				filtersfile="${commons.parameters.local.file}"/>
+		</copy>
+		
+		<echo message="remplacement des paramètres effectué dans build.properties !"/>
+	</target>
+
+
+	
+	
+	<!-- Replace the values -->
+	<target name="init-build" depends="init-build.properties" description="Initialise le fichier build.properties avec le remplacement des variables">
+		<if>
+			<equals arg1="${from.quick.install}" arg2="true" />
+			<then>
+				<echo message="on change la valeur de commons.parameters.central.file.url dans init-build.properties ..." />
+				<replace
+					file="init-build.properties"
+					dir="."
+					value="${commons.parameters.central.file.url}">
+					<include name="init-build.properties"/>
+					<include name="build.properties"/>
+					<replacetoken>[COMMONS_PARAMETERS_CENTRAL_FILE_URL]</replacetoken>
+				</replace>
+				<replace
+					dir="."
+					value="/">
+					<include name="init-build.properties"/>
+					<include name="build.properties"/>
+					<replacetoken>\</replacetoken>
+				</replace>
+			</then>
+			<else>
+				<echo message="on ne change pas la valeur de commons.parameters.central.file.url dans init-build.properties ..." />
+			</else>
+		</if>
+	</target>
+
+
+
+
+
+
 
 </project>
 

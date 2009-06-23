@@ -1,0 +1,27 @@
+<component name="org.esup.notification.service.NotificationContrib">
+
+	<extension target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService" point="notifications">
+	
+		<notification name="Task assigned" channel="email" enabled="false">
+			<event name="worfklowTaskAssigned"/>
+		</notification>
+		<notification	name="Esup Task assigned"
+						channel="email"
+						enabled="true"
+						availableIn="Workspace"
+						autoSubscribed="true"
+						template="workflowTaskAssigned"
+						subject="Nouvelle t&#226;che sur le document ${docTitle}"
+						label="label.nuxeo.notifications.appReviewStarted">
+			<event name="worfklowTaskAssigned"/>
+		</notification>
+		
+	</extension>
+	
+	
+	<extension target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService" point="templates">
+		<template name="workflowTaskAssigned" src="templates/esupWorkflowTaskAssigned.ftl"/>
+	</extension>
+
+
+</component>

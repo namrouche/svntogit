@@ -1,4 +1,3 @@
-Plugins compil�s via mvn install � partir des distributions mercurial,
-branche 5.1.6 
+Plugins compilés via mvn install à partir des distributions mercurial
 cf http://hg.nuxeo.org/addons
 

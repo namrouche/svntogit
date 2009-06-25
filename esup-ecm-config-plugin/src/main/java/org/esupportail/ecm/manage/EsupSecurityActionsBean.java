@@ -102,7 +102,9 @@ public class EsupSecurityActionsBean extends SecurityActionsBean {
         // calling the directory : this can be problematic for big ldaps
         // 2 - this filtering should at some point be applied to acp and saved
         // back in a batch?
-
+    	
+    	log.debug("validateUserGroupList :: group="+userManager.getDefaultGroup());
+    	
         List<String> returnList = new ArrayList<String>();
         for (String entry : usersGroups2Validate) {
         	
@@ -132,7 +134,8 @@ public class EsupSecurityActionsBean extends SecurityActionsBean {
             	returnList.add(entry);
             	addUserGroupInCache(entry);
                 continue;*/
-            } else if ("members".equals(entry)) {
+            } else if ("members".equals(entry) && "members".equals(userManager.getDefaultGroup())) {
+            	
             	returnList.add(entry);
             	addUserGroupInCache(entry);
                 continue;

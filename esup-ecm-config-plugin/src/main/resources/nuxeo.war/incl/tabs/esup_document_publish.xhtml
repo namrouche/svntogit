@@ -15,8 +15,13 @@
   <nxu:methodResult
 		value="#{esupPublishActions.getVersionsSelectModel()}" name="versions">
 		
-  <p><h:outputText rendered="${empty versions}"
-      value="#{messages['label.noversion']}"/></p>
+      
+      <br/>
+	<h:panelGroup id="help_empty" rendered="${empty versions}}">
+		<h:graphicImage value="/img/warning.gif" />
+		<h:outputText value="#{messages['label.noversion.publication']}" />
+		<br/>
+	</h:panelGroup>
       	
 <nxu:dataList id="versionList" rowIndexVar="versionRow" var="versionItem" value="${versions}" layout="none">	
 	

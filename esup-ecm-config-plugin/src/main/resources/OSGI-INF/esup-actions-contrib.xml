@@ -104,6 +104,19 @@
 		
     	<action id="TAB_CONTENT_HISTORY" enabled="false" />
 
+
+		<action id="TAB_MANAGE" link="/incl/tabs/document_manage.xhtml"
+			enabled="true" order="240" label="action.view.manage"
+			icon="/icons/file.gif">
+			<category>VIEW_ACTION_LIST</category>
+			<filter-id>manage</filter-id>
+			<filter id="folder">
+	        	<rule grant="true">
+	          		<facet>Folderish</facet>
+	        	</rule>
+	      	</filter>
+		</action>
+
 	</extension>
 
 </component>

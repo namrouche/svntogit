@@ -13,12 +13,6 @@ import org.jboss.seam.annotations.Scope;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.webapp.security.SecurityActionsBean;
-import org.nuxeo.ecm.webapp.table.cell.AbstractTableCell;
-import org.nuxeo.ecm.webapp.table.cell.IconTableCell;
-import org.nuxeo.ecm.webapp.table.cell.PermissionsTableCell;
-import org.nuxeo.ecm.webapp.table.cell.SelectionTableCell;
-import org.nuxeo.ecm.webapp.table.cell.UserTableCell;
-import org.nuxeo.ecm.webapp.table.row.UserPermissionsTableRow;
 
 /**
  * This Seam bean is used in the rights tab in Esup-ECM.
@@ -134,10 +128,10 @@ public class EsupSecurityActionsBean extends SecurityActionsBean {
                 returnList.add(entry);
                 addUserGroupInCache(entry);
                 continue;
-            } else if ("administrators".equals(entry)) {
+            /*} else if ("administrators".equals(entry)) {
             	returnList.add(entry);
             	addUserGroupInCache(entry);
-                continue;
+                continue;*/
             } else if ("members".equals(entry)) {
             	returnList.add(entry);
             	addUserGroupInCache(entry);

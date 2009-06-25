@@ -15,7 +15,7 @@
     <userManager class="org.nuxeo.ecm.platform.usermanager.UserManagerImpl">
 
       <defaultAdministratorId>@defaultAdministratorId@</defaultAdministratorId>
-      <defaultGroup>members</defaultGroup>
+      <defaultGroup>@defaultGroup@</defaultGroup>
 
     </userManager>
 

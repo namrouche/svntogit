@@ -16,11 +16,35 @@
 			<event name="worfklowTaskAssigned"/>
 		</notification>
 		
+		
+		<notification	name="Esup Publication Approved"
+						channel="email"
+						enabled="true"
+						availableIn="Section"
+						autoSubscribed="true"
+						template="publicationApproved"
+						subject="Publication de ${docTitle}"
+						label="label.nuxeo.notifications.publication">
+      		<event name="documentPublicationApproved"/>
+		</notification>
+		
+		<notification	name="Esup Publication Rejected"
+						channel="email"
+						enabled="true"
+						availableIn="Section"
+						autoSubscribed="true"
+						template="publicationRejected"
+						subject="Refus de publication de ${docTitle}"
+						label="label.nuxeo.notifications.publication">
+      		<event name="documentPublicationRejected"/>
+		</notification>
 	</extension>
 	
 	
 	<extension target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService" point="templates">
 		<template name="workflowTaskAssigned" src="templates/esupWorkflowTaskAssigned.ftl"/>
+		<template name="publicationApproved" src="templates/esupPublicationApproved.ftl" />
+		<template name="publicationRejected" src="templates/esupPublicationRejected.ftl" />
 	</extension>
 
 

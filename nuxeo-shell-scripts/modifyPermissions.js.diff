@@ -1,0 +1,64 @@
+1c1
+< // Set permissions on the document denoted by the given UUID.
+---
+> // Set "ReadWrite" permissions on the document denoted by the given UUID.
+8,9c8
+< //      = the principal which the permission is  granted to ; ("members" by default) 
+< // arg3 = permission to grant : Read, Write, ReadWrite (defaut) , Everything
+---
+> //      = the principal whose permission is  granted to ; ("members" by default) 
+12,15c11
+< // > script --file modifyPermissions.js e890dbf8-64a4-4511-b3d3-a401749898a3 test
+< // > script --file modifyPermissions.js e890dbf8-64a4-4511-b3d3-a401749898a3 admin Everything
+< // 
+< // $Id$
+---
+> // > script --file modifyPermissions.js e890dbf8-64a4-4511-b3d3-a401749898a3 
+17,31c13
+< // Exemple: 
+< // Comment repositionner les droits du workspace tmp ? 
+< // 1) utiliser nxshell 
+< //      cd <rep_nuxeo_52>/nuxeo-shell; ./nxshell.sh -h 127.0.0.1
+< // 2) dans nxshell faire :
+< // 2.1) se déplacer dans les dossiers 
+< //      cd default-domain/workspaces
+< // 2.2) retrouver UID du document 
+< //      view tmp
+< // 2.3) ajouter les droits ReadWrite sur le document pour tous ("members") :
+< //        script --file <rep_esup_ecm>/nuxeo-shell-scripts/modifyPermissions.js 4cb62b5b-7b6e-432a-8d46-76271d125ea1
+< //      ou
+< //      ajouter les droits Everything (gérer) sur le document pour l' administrateur ("admin") :
+< //        script --file <rep_esup_ecm>/nuxeo-shell-scripts/modifyPermissions.js 4cb62b5b-7b6e-432a-8d46-76271d125ea1 admin Everything
+< 
+---
+> // $Id$
+67,68d48
+< var principal = params[1];
+< var permission = params[2];
+70,71d49
+< log.info("Given principal: " + principal);
+< log.info("Given permission: " + permission);
+83d60
+< 
+85,91c62,64
+<     log.info("\n\principal: "+principal);
+<     if (principal == undefined) {
+<        principal = "members";
+<     }
+<     log.info("\n\permission: "+permission);
+<     if (permission == undefined) {
+<     	permission = "ReadWrite";
+---
+>     var principal = "members";
+>     if (params[1] != "") {
+>         principal = params[1];
+94c67,68
+<     var ace = new ACE(principal, permission, true);
+---
+>     // var ace = new ACE(principal, "Everything", true);
+>     var ace = new ACE(principal, "ReadWrite", true);
+102,103c76
+<     
+<     repo.setACP(idRef, acp, false);
+---
+>     repo.setACP(idRef, acp, true);

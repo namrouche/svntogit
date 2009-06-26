@@ -71,9 +71,6 @@
     <copy todir="build" overwrite="yes">
       <fileset dir="db-configs"/>
     </copy>
-  	<copy todir="build/mail" overwrite="yes">
-  	  <fileset dir="mail"/>
-  	</copy>
     <copy todir="build/jboss" overwrite="yes">
       <fileset dir="jboss"/>
     </copy>
@@ -191,14 +188,14 @@
       <replacefilter token="@ldapSearchBaseDn@" value="${ldap.group.searchBaseDn}" />
     </replace>
 
-	<!-- MAIL -->
-    <replace file="build/mail/mail-service.xml">
+	<!-- NOTIFICATION -->
+    <replace file="build/config/notification/mail-service.xml">
       <replacefilter token="@mail.pop3.host@" value="${mail.pop3.host}" />
       <replacefilter token="@mail.smtp.host@" value="${mail.smtp.host}" />
       <replacefilter token="@mail.smtp.port@" value="${mail.smtp.port}" />
       <replacefilter token="@mail.from@" value="${mail.from}" />
     </replace>
-  	<replace file="build/mail/notification-config.xml">
+  	<replace file="build/config/notification/notification-config.xml">
       <replacefilter token="@nuxeo-url@" value="${nuxeo.url}" />
   	  <replacefilter token="@productName@" value="${ecm.product.name}" />
     </replace>
@@ -289,9 +286,9 @@
     <!-- Repository backend -->
     <antcall target="deploy.sql.storage" />
 
-    <!-- Mail service -->
-    <copy file="build/mail/mail-service.xml"  tofile="${nuxeo.dir}/server/default/deploy/mail-service.xml" overwrite="yes"/>
-  	<copy file="build/mail/notification-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/notification-config.xml" overwrite="yes"/>
+    <!-- Notification service -->
+    <copy file="build/config/notification/mail-service.xml"  tofile="${nuxeo.dir}/server/default/deploy/mail-service.xml" overwrite="yes"/>
+  	<copy file="build/config/notification/notification-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/notification-config.xml" overwrite="yes"/>
   	
   	<!-- jboss configuration -->
     <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>

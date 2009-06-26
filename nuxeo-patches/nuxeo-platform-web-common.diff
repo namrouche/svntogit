@@ -1,0 +1,17 @@
+diff -r 9b120c9a5f82 nuxeo-platform-web-common/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/NuxeoAuthenticationFilter.java
+--- a/nuxeo-platform-web-common/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/NuxeoAuthenticationFilter.java	Fri May 15 18:33:52 2009 +0200
++++ b/nuxeo-platform-web-common/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/NuxeoAuthenticationFilter.java	Fri Jun 26 15:46:45 2009 +0200
+@@ -615,7 +615,12 @@
+         logLogout(cachedUserInfo.getUserInfo());
+ 
+         // invalidate Session !
+-        service.invalidateSession(request);
++        // vb : but keep the requestPage in memory
++        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
++        String requestPage = getSavedRequestedURL(httpServletRequest);
++        service.invalidateSession(httpServletRequest);
++        HttpSession session = httpServletRequest.getSession();
++        session.setAttribute(START_PAGE_SAVE_KEY, requestPage);
+ 
+         String pluginName = cachedUserInfo.getUserInfo().getAuthPluginName();
+ 

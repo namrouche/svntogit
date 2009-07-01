@@ -34,7 +34,7 @@
 	
 	
 	<property name="utils.dir" value="utils" />
-	<property name="maven.url" value="http://apache.cict.fr/maven/binaries" />
+	<property name="maven.url" value="http://www.apache.org/dist/maven/binaries" />
 	<property name="maven.version" value="2.2.0" />
 	<property name="maven.zipfile" value="apache-maven-${maven.version}-bin.zip" />
 	<property name="maven.bin" value="${basedir}/${utils.dir}/apache-maven-${maven.version}/bin" />

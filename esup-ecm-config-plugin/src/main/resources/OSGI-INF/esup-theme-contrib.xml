@@ -64,14 +64,22 @@
 
    <palette name="etablissement backgrounds"
       src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
-    <!--  palette name="Galaxy backgrounds"
-      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" /-->
+   <palette name="etablissement borders"
+      src="themes/palettes/esup-etablissementborders.properties" category="border" />
+    <palette name="Galaxy backgrounds"
+      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
+    <palette name="Galaxy borders"
+      src="themes/palettes/esup-etablissementborders.properties" category="border" />
     <palette name="Nuxeo default backgrounds"
       src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
+    <palette name="Nuxeo default borders"
+      src="themes/palettes/esup-etablissementborders.properties" category="border" />
     <palette name="Courrier default backgrounds"
       src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
-    <palette name="Sites backgrounds"
-      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
+    <palette name="Courrier default borders"
+      src="themes/palettes/esup-etablissementborders.properties" category="border" />
+     <!-- palette name="Sites backgrounds"
+      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" /-->
 
 </extension>
 

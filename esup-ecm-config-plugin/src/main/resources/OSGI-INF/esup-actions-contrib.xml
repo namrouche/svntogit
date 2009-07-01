@@ -38,12 +38,17 @@
 	      enabled="@showPersonnalWorkspace@" label="command.user.personal.workspace" icon="/icons/show_personal_workspace.gif"
 	      order="11">
 	      <category>USER_SERVICES</category>
-	      <filter id="canAccessPersonalWorkspace">
-	        <rule grant="false">
-	          <condition>#{isInsidePersonalWorkspace}</condition>
-	        </rule>
-	      </filter>
 	      <filter-id>not_anonymous</filter-id>
+	      <filter-id>isNotInsidePersonalWorkspace</filter-id>           	      
+	    </action>
+
+	    <action id="SHOW_REPOSITORY"
+	      link="#{userWorkspaceManagerActions.navigateToOverallWorkspace}"
+	      enabled="@showRepository@" label="command.user.return.to.repository" icon="/icons/go_to_repository.gif"
+	      order="10">
+	      <category>USER_SERVICES</category>	 	      
+	      <filter-id>not_anonymous</filter-id>	
+	      <filter-id>isNotInsidePersonalWorkspace</filter-id>           
 	    </action>
 
 	    <action id="themes_manager" link="#{themeEditorAction.startEditor}" enabled="@showThemesManager@" 
@@ -118,5 +123,14 @@
 		</action>
 
 	</extension>
+	
+	  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+	    point="filters">
+	    <filter id="isNotInsidePersonalWorkspace">
+	      <rule grant="false">
+	        <condition>#{isInsidePersonalWorkspace}</condition>
+	      </rule>
+	    </filter>
+	  </extension>
 
 </component>

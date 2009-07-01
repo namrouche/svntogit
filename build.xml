@@ -207,6 +207,7 @@
       <replacefilter token="@showThemesManager@" value="${use.themes.manager}" />
       <replacefilter token="@showPersonnalWorkspace@" value="${show.personnal.workspace}" />
       <replacefilter token="@showUserDashBoard@" value="${show.user.dashboard}" />
+      <replacefilter token="@showRepository@" value="${show.repository}" />
     </replace>
   	
     <!-- Administrator ID -->
@@ -224,6 +225,18 @@
 	<basename property="local.banner.background.name" file="${local.banner.background.path}"/>
     <replace file="build/esup-ecm-config-plugin/src/main/resources/themes/palettes/esup-etablissementbackgrounds.properties">
       <replacefilter token="@backgroundBanner@" value="${local.banner.background.name}" />
+      <replacefilter token="@cellBackgroundColor@" value="${local.cell.background.color}" />
+    </replace>
+  	
+  	<!-- borders -->
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/themes/palettes/esup-etablissementborders.properties">
+      <replacefilter token="@backgroundBanner@" value="${local.banner.background.name}" />
+      <replacefilter token="@cellBackgroundColor@" value="${local.cell.background.color}" />
+    </replace>
+
+  	<!-- startup page -->
+    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/deployment-fragment.xml">
+      <replacefilter token="@startupPage@" value="${startup.page}" />
     </replace>
 
   	

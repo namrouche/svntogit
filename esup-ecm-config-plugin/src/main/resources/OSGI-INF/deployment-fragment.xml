@@ -11,11 +11,9 @@
   </extension>
   
   <extension target="pages#PAGES">
-	<!-- redirection vers le tableau de bord au login -->
-	<page view-id="/nxstartup.xhtml" action="#{startupHelper.initDomainAndFindStartupPage('Default domain', 'user_dashboard')}"/>
+	<!-- redirection vers le tableau de bord ou vers les workspaces au login -->
+	<page view-id="/nxstartup.xhtml" action="#{startupHelper.initDomainAndFindStartupPage('Default domain', '@startupPage@')}"/>	
 	
-	<!-- redirection vers l'espace personnel au login NE FONCTIONNE PAS -->
-	<!--page view-id="/nxstartup.xhtml" action="#{userWorkspaceManagerActions.navigateToCurrentUserPersonalWorkspace()}" /--> 
   </extension>
   
   <install>

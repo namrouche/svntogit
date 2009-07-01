@@ -1210,8 +1210,8 @@
     <!-- Banner -->
     <style element="page[1]/section[1]|page[3]/section[1]">
       <selector path="" view="section frame">
-        <border-bottom preset="dark.blue.thin (Nuxeo default borders)"/>
-        <!--background preset="banner (etablissement backgrounds)"/-->
+        <!--border-bottom preset="dark.blue.thin (Nuxeo default borders)"/ -->
+        <background preset="banner (etablissement backgrounds)"/>
       </selector>
     </style>
     <!-- Logo -->

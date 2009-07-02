@@ -14,7 +14,7 @@
 
   <groupId>org.esup.ecm</groupId>
   <artifactId>esup-ecm-config</artifactId>
-  <version>1.0.0-RC-2</version>
+  <version>1.0.0-RC-3</version>
   <name>esup-ecm-config project</name>
   <description>esup-ecm-config project description</description>
 

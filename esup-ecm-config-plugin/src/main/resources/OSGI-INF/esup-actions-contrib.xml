@@ -48,7 +48,7 @@
 	      order="10">
 	      <category>USER_SERVICES</category>	 	      
 	      <filter-id>not_anonymous</filter-id>	
-	      <filter-id>isNotInsidePersonalWorkspace</filter-id>           
+	      <filter-id>isInsidePersonalWorkspace</filter-id>           
 	    </action>
 
 	    <action id="themes_manager" link="#{themeEditorAction.startEditor}" enabled="@showThemesManager@" 

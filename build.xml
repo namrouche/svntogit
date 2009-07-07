@@ -341,7 +341,7 @@
   	
     <!-- Nx patches --> 
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system"  overwrite="yes">
-      <fileset dir="nuxeo-patches"/>
+      <fileset dir="nuxeo-patches" includes="*.jar"/>
     </copy>
   	
     <!-- configuration plugin deploy -->

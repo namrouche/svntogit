@@ -88,20 +88,7 @@
     </copy>
   </target>
 
-  <!-- special stuff mysql for Jena and Compass -->
-  <target name="replace.token.config.mysql" if="isMysql" >
-
-   <echo message="Update mysql files" />
-
-    <replace dir="build" includes="config/*.xml,datasources/*.xml">
-      <replacefilter
-          token="@jdbcJenaUrl@" value="${db.mysql.jena.url}" />
-      <replacefilter
-          token="@jdbcCompassUrl@" value="${db.mysql.compass.url}" />
-    </replace>
-  </target>
-
-  <target name="replace.token.config" depends="copy.src.build,replace.token.config.mysql">
+  <target name="replace.token.config" depends="copy.src.build">
 
     <echo message="Update databases description files" />
 
@@ -115,11 +102,7 @@
       <replacefilter
           token="@jdbcUrl@" value="${db.url}" />
       <replacefilter
-          token="@jdbcJenaUrl@" value="${db.url}" />
-      <replacefilter
           token="@databaseType@" value="${db.type}" />
-      <replacefilter
-          token="@jdbcCompassUrl@" value="${db.url}" />
       <replacefilter
           token="@jdbcSchema@" value="${db.schema}" />                   
       <replacefilter

@@ -319,6 +319,9 @@
     </copy>
 
     <!-- plugins addons --> 
+    <delete>
+      <fileset dir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins" includes="**/*.jar"/>
+    </delete>
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins"  overwrite="yes">
       <fileset dir="nuxeo-addons"/>
     </copy>

@@ -134,6 +134,7 @@
  
     <replace file="build/jboss/jboss-log4j.xml">
       <replacefilter token="@threshold@" value="${jboss.log4j.level}" />
+      <replacefilter token="@serverLog@" value="${jboss.server.log}" />
     </replace>
   	
      <replace file="build/nxOOo/nxopenoffice">

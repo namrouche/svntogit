@@ -151,7 +151,7 @@
       <replacefilter token="@instanceName@" value="${ecm.instance.name}" />
       <replacefilter token="@instanceDescription@" value="${ecm.instance.description}" />
         <replacefilter token="@productName@" value="${ecm.product.name}" />
-        <replacefilter token="@productversion@" value="${esup-ecm.version}" />
+        <replacefilter token="@productVersion@" value="${esup-ecm.version}" />
     </replace>
 
     <!-- CAS -->

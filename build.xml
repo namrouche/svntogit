@@ -5,9 +5,9 @@
 
   <property file="default.properties"/>
   <property name="jboss.log4j.level" value="INFO"/>
-  <property name="nuxeo-dm.file" value="nuxeo-dm-5.2.0-jboss.zip"/>
-  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
-  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-dm-5.2.0"/>
+  <property name="nuxeo-dm.file" value="nuxeo-dm-5.3.0-GA-jboss.zip"/>
+  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
+  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0"/>
   <property name="unused.component.dir" value="unused"/>
   <property name="sql-patch.file" value="nuxeo-core-storage-sql-1.5.0"/>
 
@@ -34,7 +34,6 @@
     <mkdir  dir="build/nxOOo"/>
     <mkdir  dir="build/esup-ecm-config-plugin"/>
     <mkdir  dir="packages"/>
-  	<mkdir dir="${nuxeo.dir.parent}/nuxeo-shell"/>
     <available file="packages/${nuxeo-dm.file}" property="nuxeo-dm.file.present" />
     <available file="${nuxeo-dm-unziped.file}" property="nuxeo-dm.unziped.file.present" />
     <antcall target="get.nuxeo-dm.file" />
@@ -43,7 +42,7 @@
 	  <target name="get.nuxeo-dm.file" unless="nuxeo-dm.file.present">
 	    <echo message="Download ${nuxeo-dm.file} in the packages directory."/>
 	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
-	    <get src="http://www.nuxeo.org/static/NuxeoEP/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
+	    <get src="http://www.nuxeo.org/static/releases/nuxeo-dm-5.3.0/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
 	  </target>
 
 
@@ -296,11 +295,13 @@
          <include name="**/jbossctl"/>
       </fileset>
     </chmod>
+	<!--
     <chmod perm="+x"> 
       <fileset dir="${nuxeo.dir.parent}/nuxeo-shell">
         <include name="**/*.sh"/>
       </fileset>
     </chmod>
+    -->
     <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jboss-web.deployer/server.xml" overwrite="yes"/>
     <copy file="build/jboss/jboss-log4j.xml" tofile="${nuxeo.dir}/server/default/conf/jboss-log4j.xml" overwrite="yes"/>
 
@@ -328,6 +329,7 @@
     </copy>
   	
     <!-- Nx patches --> 
+  	<!-- RB TODO
     <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system"  overwrite="yes">
       <fileset dir="nuxeo-patches" includes="*.jar" excludes="${sql-patch.file}*.jar"/>
     </copy>
@@ -342,6 +344,7 @@
 			<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/${sql-patch.file}.jar" file="nuxeo-patches/${sql-patch.file}.jar" overwrite="yes"/>
 		</else>
 	</if>
+	-->
   	
     <!-- configuration plugin deploy -->
     <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
@@ -355,6 +358,7 @@
   </target>
 	
 	<target name="manage.nuxeo.component">
+		<!-- RB TODO
 		<property name="system.path" value="server/default/deploy/nuxeo.ear/system" />
 		<mkdir dir="${unused.component.dir}"/>
 		<if>
@@ -442,6 +446,7 @@
 				</move>					
 			</else>
 		</if>
+		-->
 	</target>
 
   <target name="deploy" depends="deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />

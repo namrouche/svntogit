@@ -41,7 +41,9 @@
 
 	<!-- ==================== depends-maven Target =================================== -->
 	<target name="depends-maven">
-		<available property="maven.dir.available" file="${maven.bin}"/>
+		<available property="maven.dir.available" file="${maven.bin}" type="dir"/>
+		<echo message="maven.dir.available = ${maven.dir.available}" />
+		<!-- TODO : RB comprendre pourquoi maven.dir.available ne semble jamais positionné -->
 	</target>
 
 	<!-- ==================== download-maven Target =================================== -->

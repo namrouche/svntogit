@@ -29,10 +29,7 @@ import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
-import org.nuxeo.ecm.platform.publishing.PublishActionsBean;
-import org.nuxeo.ecm.platform.publishing.PublishingWebException;
-import org.nuxeo.ecm.platform.publishing.api.DocumentWaitingValidationException;
-import org.nuxeo.ecm.platform.publishing.api.PublishingException;
+import org.nuxeo.ecm.platform.publisher.web.PublishActionsBean;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
 import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
@@ -111,8 +108,9 @@ public class EsupPublishActionsBean implements Serializable  {
                 for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
                 	DocumentRef parentRef = proxy.getParentRef();
                     DocumentModel section = documentManager.getDocument(parentRef);
-                    EsupPublishPojo info = new EsupPublishPojo(section, versioningManager.getVersionLabel(proxy), proxy);
-                    esupVersionsMap.get(versionLabel).getPublishingInfos().add(info);
+                    //EsupPublishPojo info = new EsupPublishPojo(section, versioningManager.getVersionLabel(proxy), proxy);
+                    //esupVersionsMap.get(versionLabel).getPublishingInfos().add(info);
+                    //TODO: find new method!
                 }
             }
             
@@ -143,8 +141,10 @@ public class EsupPublishActionsBean implements Serializable  {
 	                    	
 	                    	if (parentRef.equals(section.getRef())) {
 	                    		log.debug("isPublished :: found section prentRef :: "+parentRef);
-	                    		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-	                    		boolean isPublished = publisher.isPublished(proxy);
+	                    		//EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+	                    		//boolean isPublished = publisher.isPublished(proxy);
+	                    		//TODO: find new method!
+	                    		boolean isPublished = true;
 	                    		log.debug("isPublished :: isPublished ? "+isPublished);
 	                    		return isPublished;
 	                    	}
@@ -155,10 +155,6 @@ public class EsupPublishActionsBean implements Serializable  {
         	
             log.debug("isPublished :: not found, return false");
         	return false;
-        }
-        catch (PublishingException e) {
-        	log.error("isPublished :: PublishingException", e);
-            throw new IllegalStateException("Publishing service not deployed properly.", e);
         }
         catch (ClientException e) {
         	log.error("isPublished :: ClientException", e);
@@ -180,11 +176,12 @@ public class EsupPublishActionsBean implements Serializable  {
 	 */
     public int getCanPublishVersionToSection(VersionModel model, DocumentModel section) throws ClientException {
     	
-    	Set<String> sectionRootTypes = publishActions.getSectionRootTypes();
-
-        if (sectionRootTypes.contains(section.getType())) {
-            return -1;
-        }
+//    	Set<String> sectionRootTypes = publishActions.getSectionRootTypes();
+//
+//        if (sectionRootTypes.contains(section.getType())) {
+//            return -1;
+//        }
+    	//TODO: find new method!
 
         boolean canAskForPublishing = false;
         boolean canWrite = false;
@@ -219,9 +216,10 @@ public class EsupPublishActionsBean implements Serializable  {
 
     	
     	DocumentModel versionDocument  = documentManager.getDocumentWithVersion(currentDocument.getRef(), model);
-        if (publishActions.isAlreadyPublishedInSection(versionDocument, section)) {
-        	return -1;
-        }
+//        if (publishActions.isAlreadyPublishedInSection(versionDocument, section)) {
+//        	return -1;
+//        }
+    	//TODO: find new method!
         if (canWrite) {
         	return 1;
         }
@@ -251,25 +249,15 @@ public class EsupPublishActionsBean implements Serializable  {
     	
     	boolean isPublished = false;
     	boolean isWaiting = false;
-    	try {
-    		log.debug("doPublish :: going to submitToPublication");
-    		
-    		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-    		publisher.submitToPublication(currentDocument, versionModel, section, currentUser);
-    		
-    		isPublished = true;
-    		
-    		log.debug("doPublish :: isPublished = true");
-    		}
-    	catch (DocumentWaitingValidationException e) {
-    		isWaiting = true;
-    		log.debug("doPublish :: isWaiting = true");
-    		}
-    	catch (PublishingException e) {
-    		log.debug("doPublish :: PublishingException ", e);
-    		throw new PublishingWebException(e);
-    		}
-    	
+    	log.debug("doPublish :: going to submitToPublication");
+
+    	//EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    	//publisher.submitToPublication(currentDocument, versionModel, section, currentUser);
+    	//TODO: find new method!
+
+    	isPublished = true;
+
+    	log.debug("doPublish :: isPublished = true");
     	if (isPublished) {
     		//comment = null;
     		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_published"), resourcesAccessor.getMessages().get(currentDocument.getType()));
@@ -290,7 +278,8 @@ public class EsupPublishActionsBean implements Serializable  {
      */
     public String unPublishProxy(DocumentModel proxyToUnpublish) throws ClientException {
 
-    	publishActions.unPublishDocument(proxyToUnpublish);
+    	//publishActions.unPublishDocument(proxyToUnpublish);
+    	//TODO: find new method!
     	facesMessages.add(FacesMessage.SEVERITY_INFO,
                                 resourcesAccessor.getMessages().get(
                                         "document_unpublished"),

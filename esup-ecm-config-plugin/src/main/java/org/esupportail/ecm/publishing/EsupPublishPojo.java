@@ -1,14 +1,14 @@
 package org.esupportail.ecm.publishing;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.platform.publishing.PublishPojo;
 
-public class EsupPublishPojo extends PublishPojo {
+public class EsupPublishPojo {
 
 	DocumentModel proxy;
 	
 	public EsupPublishPojo(DocumentModel section, String proxyVersion, DocumentModel proxy) {
-		super(section, proxyVersion);
+		//super(section, proxyVersion);
+		//TODO: find new method!
 		this.proxy = proxy;
 	}
 

@@ -10,7 +10,7 @@
   <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0"/>
   <property name="unused.component.dir" value="unused"/>
   <property name="sql-patch.file" value="nuxeo-core-storage-sql-1.5.0"/>
-
+  <property name="utils.dir" value="${basedir}/utils" />
   
   <property name="jboss.home" value="${nuxeo.dir}"/>
   <property name="esup-ecm.file" value="${esup-ecm.version}" />
@@ -277,9 +277,12 @@
     <!-- Jena database type and transaction mode -->
     <copy file="build/config/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
 
-     <!-- usual nuxeo.properties -->
-    <copy file="build/config/nuxeo.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/nuxeo.properties" overwrite="yes"/>
- 
+    <!-- usual nuxeo.properties -->
+   <copy file="build/config/nuxeo.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/nuxeo.properties" overwrite="yes"/>
+
+    <!-- usual seam-debug.properties -->
+   <copy file="build/config/seam-debug.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/seam-debug.properties" overwrite="yes"/>
+
     <!-- Repository backend -->
     <antcall target="deploy.sql.storage" />
 
@@ -347,15 +350,24 @@
 	-->
   	
     <!-- configuration plugin deploy -->
-    <subant target="deploy" buildpath="build/esup-ecm-config-plugin"/>
+    <subant target="deploy" buildpath="build/esup-ecm-config-plugin">
+    	<property name="utils.dir" value="${utils.dir}" />
+    </subant>
 
   </target>
 	
-  <target name="web" description="Copy web files to a live JBoss">
-    <copy todir="${jboss.home}/server/default/deploy/nuxeo.ear/nuxeo.war" overwrite="true">
-      <fileset dir="${basedir}/esup-ecm-config-plugin/src/main/resources/nuxeo.war/" />
-    </copy>
-  </target>
+	  <target name="web" description="Copy web files to a live JBoss">
+	    <copy todir="${jboss.home}/server/default/deploy/nuxeo.ear/nuxeo.war" overwrite="true">
+	      <fileset dir="${basedir}/esup-ecm-config-plugin/src/main/resources/nuxeo.war/" />
+	    </copy>
+	  </target>
+	
+	<target name="seam" depends="copy.src.build" description="Copy seam beans a live JBoss">
+	    <subant target="seam" buildpath="build/esup-ecm-config-plugin">
+	    	<property name="utils.dir" value="${utils.dir}" />
+	    	<property name="seam.hotdeploy.dir" location="${jboss.home}/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/dev/"/>
+	    </subant>
+	</target>	
 	
 	<target name="manage.nuxeo.component">
 		<!-- RB TODO

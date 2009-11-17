@@ -33,23 +33,21 @@
 	
 	
 	
-	<property name="utils.dir" value="utils" />
+	<!-- <property name="utils.dir" value="utils" /> define if esup-ecm build.xml-->
 	<property name="maven.url" value="http://www.apache.org/dist/maven/binaries" />
 	<property name="maven.version" value="2.2.0" />
 	<property name="maven.zipfile" value="apache-maven-${maven.version}-bin.zip" />
-	<property name="maven.bin" value="${basedir}/${utils.dir}/apache-maven-${maven.version}/bin" />
+	<property name="maven.bin" value="${utils.dir}/apache-maven-${maven.version}/bin" />
 
 	<!-- ==================== depends-maven Target =================================== -->
 	<target name="depends-maven">
 		<available property="maven.dir.available" file="${maven.bin}" type="dir"/>
-		<echo message="maven.dir.available = ${maven.dir.available}" />
-		<!-- TODO : RB comprendre pourquoi maven.dir.available ne semble jamais positionné -->
 	</target>
 
 	<!-- ==================== download-maven Target =================================== -->
 	<target name="download-maven" unless="maven.dir.available">
 		<echo message="${maven.bin} non trouve, je telecharge..."/>
-		<mkdir dir="utils"/>
+		<mkdir dir="${utils.dir}"/>
 		<get src="${maven.url}/${maven.zipfile}" dest="${utils.dir}/${maven.zipfile}"/>
 		<unzip src="${utils.dir}/${maven.zipfile}" dest="${utils.dir}"/>
 		<delete file="${utils.dir}/${maven.zipfile}"/>
@@ -57,8 +55,14 @@
 		<chmod dir="${maven.bin}" perm="755" includes="**/mvn*"/>
 	</target>
 	
-	
-	
+	<target name="seam" depends="install">
+	 <copy todir="${seam.hotdeploy.dir}" flatten="false">
+	   <fileset dir="./target/classes">
+	     <include name="**/*.class"/>
+	   </fileset>
+	 </copy>
+	 <get dest="./seam_hotdeploy_result.html" src="http://127.0.0.1:8080/nuxeo/restAPI/seamReload" username="Administrator" password="Administrator"/>
+	</target>
 
 	  <target name="install" depends="depends-maven,download-maven,install-unix,install-windows" description="Build" />
 	  <target name="install-unix" if="osfamily-unix">

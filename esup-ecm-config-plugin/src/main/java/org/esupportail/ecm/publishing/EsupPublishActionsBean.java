@@ -1,5 +1,6 @@
 package org.esupportail.ecm.publishing;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -95,71 +96,28 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 	 * @see EsupVersionPojo
 	 */
 	public Collection<EsupVersionPojo> getVersionsSelectModel() throws ClientException {
-		Map<String, EsupVersionPojo> esupVersionsMap = new TreeMap<String, EsupVersionPojo>();
+		Map<String, EsupVersionPojo> ret = new TreeMap<String, EsupVersionPojo>();
+		//get current document
 		DocumentModel doc = navigationContext.getCurrentDocument();
+		//get versions of current document
 		List<VersionModel> versions = documentManager.getVersionsForDocument(doc.getRef());
-		for (VersionModel model : versions) {
-			DocumentModel tempDoc = documentManager.getDocumentWithVersion(doc.getRef(), model);
-			if (tempDoc != null) {
-				String versionLabel = versioningManager.getVersionLabel(tempDoc);
-				if(!esupVersionsMap.containsKey(versionLabel)) {
-					esupVersionsMap.put(versionLabel, new EsupVersionPojo(versionLabel, model.getLabel(), model));
-				}
-				for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
-					DocumentRef parentRef = proxy.getParentRef();
-					DocumentModel section = documentManager.getDocument(parentRef);
-					//EsupPublishPojo info = new EsupPublishPojo(section, versioningManager.getVersionLabel(proxy), proxy);
-					//esupVersionsMap.get(versionLabel).getPublishingInfos().add(info);
-					//TODO: find new method!
-				}
-			}
-		}
-		return esupVersionsMap.values();
-	}
-
-	/**
-	 * Called by  esup_publication.xhtml
-	 * @see PublishActionsBean.isPublished
-	 */
-	public boolean isPublished(DocumentModel sourceDocumentRef, String proxyVersionLabel, DocumentModel section) {
-		try {
-			List<VersionModel> versions = documentManager.getVersionsForDocument(sourceDocumentRef.getRef());
-			for (VersionModel model : versions) {
-				DocumentModel tempDoc = documentManager.getDocumentWithVersion(sourceDocumentRef.getRef(), model);
-				if (tempDoc != null) {
-					String versionLabel = versioningManager.getVersionLabel(tempDoc);
-					if (proxyVersionLabel.equals(versionLabel)) {
-						for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
-							if (isProxyPublishedInSection(proxy, section)) {
-								return true;
-							}
-						}
-					}
+		//for each version of current document
+		for (VersionModel version : versions) {
+			//get document from version
+			DocumentModel versionDoc = documentManager.getDocumentWithVersion(doc.getRef(), version);
+			if (versionDoc != null) {
+				//get label of current version
+				String versionLabel = versioningManager.getVersionLabel(versionDoc);
+				//if this version not yet in return variable 
+				if(!ret.containsKey(versionLabel)) {
+					//create an EsupVersionPojo of the current version
+					EsupVersionPojo esupVersionPojo = new EsupVersionPojo(versionLabel, version.getLabel(), version);
+					//add this version as an EsupVersionPojo in return variable
+					ret.put(versionLabel, esupVersionPojo);
 				}
 			}
-			log.debug("isPublished :: not found, return false");
-			return false;
 		}
-		catch (ClientException e) {
-			log.error("isPublished :: ClientException", e);
-			throw new IllegalStateException("Publishing service not deployed properly.", e);
-		}
-	}
-
-	/**
-	 * Return true if a proxy is published in a section
-	 * @param section
-	 * @param proxy
-	 */
-	private boolean isProxyPublishedInSection(DocumentModel proxy, DocumentModel section) {
-		boolean ret = false;
-		DocumentRef parentRef = proxy.getParentRef();
-		DocumentRef sectionRef = section.getRef(); 
-		if (parentRef.equals(sectionRef)) {
-			ret=true;
-		}
-		log.debug("isPublished :: isPublished ? "+ret);
-		return ret;
+		return ret.values();
 	}
 
 	/** 
@@ -264,17 +222,36 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
         return null;
 	}
 
-	/*
-	 * Called by document_publish.xhtml
+	/**
+	 * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#getPublishedDocuments()
 	 */
-	public String unPublishProxy(DocumentModel proxyToUnpublish) throws ClientException {
-		//publishActions.unPublishDocument(proxyToUnpublish);
-		//TODO: find new method!
-		facesMessages.add(FacesMessage.SEVERITY_INFO,
-				resourcesAccessor.getMessages().get(
-						"document_unpublished"),
-						resourcesAccessor.getMessages().get(
-								proxyToUnpublish.getType()));
-		return null;
+	public List<PublishedDocument> getPublishedDocuments(EsupVersionPojo esupVersionPojo)
+			throws ClientException {
+		List<PublishedDocument> ret = new ArrayList<PublishedDocument>();
+		//get all published documents
+		List<PublishedDocument> documents = super.getPublishedDocuments();
+		//look in each document if document version is published
+		for (PublishedDocument document : documents) {
+			if (esupVersionPojo.getVersionLabel().equals(document.getSourceVersionLabel())) {
+				ret.add(document);
+			}
+		}
+		return ret;
 	}
+	
+	/**
+	 * Return true if a proxy is published in a section
+	 * @param section
+	 * @param proxy
+	 */
+	private boolean isProxyPublishedInSection(DocumentModel proxy, DocumentModel section) {
+		boolean ret = false;
+		DocumentRef parentRef = proxy.getParentRef();
+		DocumentRef sectionRef = section.getRef(); 
+		if (parentRef.equals(sectionRef)) {
+			ret=true;
+		}
+		log.debug("isPublished :: isPublished ? "+ret);
+		return ret;
+	}	
 }

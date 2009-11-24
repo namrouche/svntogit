@@ -17,32 +17,17 @@
 				<h:outputText value="#{messages['label.noversion.publication']}" />
 				<br />
 			</h:panelGroup>
+
 			<nxu:dataList id="versionList" rowIndexVar="versionRow"
 				var="versionItem" value="${versions}" layout="none">
 				<div class="foldableBox">
+
 				<h3 class="unfolded"><a href="#nogo"
 					onclick="return toggleBox(this)"> <h:outputText
 					value="Version #{versionItem.versionLabel}" /> </a></h3>
 				<div class="boxBody"><h:panelGroup
 					rendered="#{!empty availablePublicationTrees}">
 
-					<h:panelGrid styleClass="dataInput"
-						columnClasses="labelColumn, fieldColumn" columns="2">
-						<h:panelGroup>
-							<h:outputText value="#{messages['label.publish.sections']}" />
-						</h:panelGroup>
-						<h:panelGroup>
-							<h:selectOneListbox styleClass="dataInputText" size="1"
-								value="#{publishActions.currentPublicationTreeNameForPublishing}">
-								<nxu:selectItems value="#{availablePublicationTrees}" var="tree"
-									itemValue="#{tree.name}"
-									itemLabel="#{messages[tree.title]}#{publishActions.getDomainName(tree.name)}" />
-								<a4j:support event="onchange"
-									reRender="sectionTree,publishingInfoList"
-									ignoreDupResponses="true" />
-							</h:selectOneListbox>
-						</h:panelGroup>
-					</h:panelGrid>
 
 
 					<dl>
@@ -85,77 +70,66 @@
 						rendered="#{publishActions.currentPublicationTreeForPublishing == null}" />
 
 				</h:panelGroup> <a4j:outputPanel id="publishingInfoList"
-					rendered="#{true || !empty versionItem.publishingInfos}">
-					<nxu:dataTable value="#{versionItem.publishingInfos}" var="info"
-						preserveSort="true" preserveDataModel="false"
-						rowClasses="dataRowEven,dataRowOdd" sortable="false"
-						styleClass="dataList">
+					rendered="#{publishActions.currentPublicationTreeForPublishing != null and !empty esupPublishActions.getPublishedDocuments(versionItem)}">
 
-						<!-- Name -->
-						<nxu:column>
-							<f:facet name="header">
-								<h:outputText
-									value="#{messages['label.publish.header.sectionlink']}" />
-							</f:facet>
+					<nxu:methodResult
+						value="#{esupPublishActions.getPublishedDocuments(versionItem)}"
+						name="publishedDocuments">
+						<nxu:dataTable value="#{publishedDocuments}"
+							var="publishedDocument" preserveSort="true"
+							preserveDataModel="false" rowClasses="dataRowEven,dataRowOdd"
+							sortable="false" styleClass="dataList">
 
-							<h:panelGroup
-								rendered="#{publishActions.isRemotePublishedDocument(publishedDocument)}">
-								<h:outputText value="Remote: #{publishedDocument.parentPath}" />
-							</h:panelGroup>
+							<!-- Name -->
+							<nxu:column>
+								<f:facet name="header">
+									<h:outputText value="#{messages['label.content.header.title']}" />
+								</f:facet>
 
-							<h:panelGroup
-								rendered="#{publishActions.isLocalPublishedDocument(publishedDocument) and publishActions.hasReadRight(publishedDocument.parentPath)}">
-								<nxu:methodResult name="formattedPath"
-									value="#{publishActions.getFormattedPath(info.section)}">
-									<nxd:restDocumentLink document="#{info.section}">
-										<h:outputText value="#{formattedPath}" />
+								<h:panelGroup
+									rendered="#{publishActions.isRemotePublishedDocument(publishedDocument)}">
+									<h:outputText value="Remote: #{publishedDocument.parentPath}" />
+								</h:panelGroup>
+
+								<h:panelGroup
+									rendered="#{publishActions.isLocalPublishedDocument(publishedDocument)
+                      					and publishActions.hasReadRight(publishedDocument.parentPath)}">
+									<nxd:restDocumentLink
+										document="#{publishActions.getDocumentModelFor(publishedDocument.parentPath)}">
+										<h:outputText
+											value="#{publishActions.getFormattedPath(publishedDocument.parentPath)}" />
 									</nxd:restDocumentLink>
-								</nxu:methodResult>
-							</h:panelGroup>
+								</h:panelGroup>
 
-							<h:panelGroup
-								rendered="#{publishActions.isFileSystemPublishedDocument(publishedDocument)}">
-								<h:outputText value="#{publishedDocument.parentPath}" />
-							</h:panelGroup>
-						</nxu:column>
+								<h:panelGroup
+									rendered="#{publishActions.isFileSystemPublishedDocument(publishedDocument)}">
+									<h:outputText value="#{publishedDocument.parentPath}" />
+								</h:panelGroup>
+							</nxu:column>
 
-						<!--  Version of the published document -->
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="#{messages['label.document.version']}" />
-							</f:facet>
-							<h:outputText value="#{info.proxyVersion}" />
-						</h:column>
+							<!--  Version of the published document -->
+							<h:column>
+								<f:facet name="header">
+									<h:outputText
+										value="#{messages['label.publish.header.version']}" />
+								</f:facet>
+								<h:outputText value="#{publishedDocument.sourceVersionLabel}" />
+							</h:column>
 
-						<!-- state -->
-						<nxu:column>
-							<f:facet name="header">
-								<h:outputText
-									value="#{messages['label.workflow.currentLifeCycleState']}" />
-							</f:facet>
-							<h:outputText value="#{messages['moderation_published']}"
-								rendered="#{esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}" />
-							<h:outputText value="#{messages['moderation_pending']}"
-								rendered="#{!esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section)}" />
-						</nxu:column>
-
-						<!--  Actions for the published document  -->
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Action" />
-							</f:facet>
-
-							<nxu:methodResult name="canPublishToSection"
-								value="#{publishActions.getCanPublishToSection(info.section)}">
+							<!--  Actions for the published document  -->
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Action" />
+								</f:facet>
 								<a4j:commandLink immediate="true"
 									value="#{messages['command.document.unpublish']}"
-									action="#{esupPublishActions.unPublishProxy(info.proxy)}"
-									rendered="#{esupPublishActions.isPublished(currentDocument, info.proxyVersion, info.section) and section.ref != currentDocument.parentRef}"
+									action="#{publishActions.unPublish(publishedDocument)}"
+									rendered="#{publishActions.canUnpublish(publishedDocument)}"
 									reRender="publishingInfoList" ignoreDupResponses="true">
 								</a4j:commandLink>
-							</nxu:methodResult>
-						</h:column>
-					</nxu:dataTable>
+							</h:column>
+						</nxu:dataTable>
+					</nxu:methodResult>
 
 				</a4j:outputPanel></div>
 				</div>

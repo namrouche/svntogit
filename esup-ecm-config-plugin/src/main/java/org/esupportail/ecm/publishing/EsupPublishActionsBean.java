@@ -1,16 +1,14 @@
 package org.esupportail.ecm.publishing;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +18,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -27,14 +26,19 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
 import org.nuxeo.ecm.platform.publisher.web.PublishActionsBean;
+import org.nuxeo.ecm.platform.publisher.api.PublicationNode;
 import org.nuxeo.ecm.platform.publisher.api.PublicationTree;
 import org.nuxeo.ecm.platform.publisher.api.PublishedDocument;
-import org.nuxeo.ecm.platform.publisher.helper.PublicationRelationHelper;
+import org.nuxeo.ecm.platform.publisher.api.PublishingEvent;
+import org.nuxeo.ecm.platform.publisher.impl.core.SimpleCorePublishedDocument;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
+import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
+import org.nuxeo.ecm.webapp.helpers.EventNames;
 import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 
 /**
@@ -113,7 +117,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		return esupVersionsMap.values();
 	}
 
-	/*
+	/**
 	 * Called by  esup_publication.xhtml
 	 * @see PublishActionsBean.isPublished
 	 */
@@ -126,7 +130,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 					String versionLabel = versioningManager.getVersionLabel(tempDoc);
 					if (proxyVersionLabel.equals(versionLabel)) {
 						for(DocumentModel proxy : documentManager.getProxies(tempDoc.getRef(), null)) {
-							if (isProxyPublishedInSection(section, proxy)) {
+							if (isProxyPublishedInSection(proxy, section)) {
 								return true;
 							}
 						}
@@ -149,54 +153,53 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 	 */
 	private boolean isProxyPublishedInSection(DocumentModel proxy, DocumentModel section) {
 		boolean ret = false;
-		DocumentRef parentRef = proxy.getParentRef();	                    	
-		if (parentRef.equals(section.getRef())) {
-			boolean isPublished = PublicationRelationHelper.isPublished(proxy);
-			log.debug("isPublished :: isPublished ? "+isPublished);
-			return isPublished;
+		DocumentRef parentRef = proxy.getParentRef();
+		DocumentRef sectionRef = section.getRef(); 
+		if (parentRef.equals(sectionRef)) {
+			ret=true;
 		}
+		log.debug("isPublished :: isPublished ? "+ret);
 		return ret;
 	}
 
-	/** Called by  esup_document_publish.xhtml
+	/** 
+	 * Called by  esup_document_publish.xhtml
 	 * -1 --> can not publish
 	 * 0 --> can ask to publish
 	 * 1 --> can write
 	 */
-	public int getCanPublishVersionToSection(VersionModel model, DocumentModel section) throws ClientException {
-		//    	Set<String> sectionRootTypes = publishActions.getSectionRootTypes();
-		//
-		//        if (sectionRootTypes.contains(section.getType())) {
-		//            return -1;
-		//        }
-		//TODO: find new method!
+	public int getCanPublishVersionToSection(VersionModel versionModel, PublicationNode publicationNode) throws ClientException {
+		if (publicationNode == null || publicationNode.getParent() == null) {
+			// we can't publish in the root node
+			return -1;
+		}
 		boolean canAskForPublishing = false;
 		boolean canWrite = false;
-		if (documentManager.hasPermission(section.getRef(), CAN_ASK_FOR_PUBLISHING)) {
+        DocumentRef publicationNodeRef = new PathRef(publicationNode.getPath());
+        //Do I have CAN_ASK_FOR_PUBLISHING right ?
+		if (documentManager.hasPermission(publicationNodeRef, CAN_ASK_FOR_PUBLISHING)) {
 			canAskForPublishing = true;
 		}
-		if (documentManager.hasPermission(section.getRef(), READ_WRITE)) {
+		//Do I have CAN_ASK_FOR_PUBLISHING right ?
+		if (documentManager.hasPermission(publicationNodeRef, READ_WRITE)) {
 			canWrite = true;
 		}
 		if (!canAskForPublishing && !canWrite) {
 			return -1;
 		}
-		String sectionId = section.getId();
+		//Is this version version of current document already published ?
+		//current document
 		DocumentModel currentDocument = navigationContext.getCurrentDocument();
-		if (currentDocument.hasSchema(SCHEMA_PUBLISHING)) {
-			String[] sectionIdsArray = (String[]) currentDocument
-			.getPropertyValue(SECTIONS_PROPERTY_NAME);
-			List<String> sectionIdsList = new ArrayList<String>();
-			if (sectionIdsArray != null && sectionIdsArray.length > 0) {
-				sectionIdsList = Arrays.asList(sectionIdsArray);
-			}
-			if (sectionIdsList.contains(sectionId)) {
+		//version of current document
+		DocumentModel versionDocument  = documentManager.getDocumentWithVersion(currentDocument.getRef(), versionModel);
+		//publication section
+		DocumentModel section = documentManager.getDocument(publicationNodeRef);
+		//for all proxies of version 
+		for (DocumentModel proxy : documentManager.getProxies(versionDocument.getRef(), null)) {
+			//if proxy published in section
+			if (isProxyPublishedInSection(proxy, section)) {
 				return -1;
-			}
-		}
-		DocumentModel versionDocument = documentManager.getDocumentWithVersion(currentDocument.getRef(), model);
-		if (isProxyPublishedInSection(versionDocument, section)) {
-			return -1;
+			}			
 		}
 		if (canWrite) {
 			return 1;
@@ -207,31 +210,58 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		return -1;
 	}
 
-	public String doPublish(String versionModelLabel, DocumentModel section) throws ClientException {
-		//PublicationTree tree = getCurrentPublicationTreeForPublishing();
+	/**
+	 * Publish a version to a publication node
+	 * @param versionModelLabel - label of selected version
+	 * @param publicationNode - note to publish to
+	 * @return null
+	 * @throws ClientException
+	 */
+	public String doPublish(String versionModelLabel, PublicationNode publicationNode) throws ClientException {
+		//get current document
 		DocumentModel currentDocument = navigationContext.getCurrentDocument();
+		//create a VersionModel from versionModelLabel
 		VersionModel versionModel = new VersionModelImpl();
 		versionModel.setCreated(Calendar.getInstance());
 		versionModel.setDescription("");
 		versionModel.setLabel(versionModelLabel);
-		//log.info("doPublish :: publishingService.getClass() = " + publishingService.getClass());
-		boolean isPublished = false;
-		boolean isWaiting = false;
-		log.debug("doPublish :: going to submitToPublication");
-		//EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-		//publisher.submitToPublication(currentDocument, versionModel, section, currentUser);
-		//TODO: find new method!
-		isPublished = true;
-		log.debug("doPublish :: isPublished = true");
-		if (isPublished) {
-			//comment = null;
-			facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_published"), resourcesAccessor.getMessages().get(currentDocument.getType()));
-		}
-		if (isWaiting) {
-			//comment = null;
-			facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_submitted_for_publication"),resourcesAccessor.getMessages().get(currentDocument.getType()));
-		}
-		return null;
+		//create proxy --> to publish required section  
+		DocumentRef publicationNodeRef = new PathRef(publicationNode.getPath());
+		DocumentModel newProxy = documentManager.createProxy(publicationNodeRef, currentDocument.getRef(), versionModel, false);
+		//get publication tree
+		PublicationTree tree = getCurrentPublicationTreeForPublishing();
+		//create a publishedDocument from created proxy
+		PublishedDocument publishedDocument = new SimpleCorePublishedDocument(newProxy);
+		//cut/paste of NuxeoPublishActionsBeanWithoutFactoryAnnotation#doPublish
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (publishedDocument.isPending()) {
+            String comment = ComponentUtils.translate(context,
+                    "publishing.waiting", tree.getConfigName(),
+                    publicationNode.getPath());
+            // Log event on live version
+            notifyEvent(PublishingEvent.documentWaitingPublication.name(),
+                    null, comment, null, currentDocument);
+            Events.instance().raiseEvent(
+                    EventNames.DOCUMENT_SUBMITED_FOR_PUBLICATION);
+            facesMessages.add(FacesMessage.SEVERITY_INFO,
+                    resourcesAccessor.getMessages().get(
+                            "document_submitted_for_publication"),
+                    resourcesAccessor.getMessages().get(
+                            currentDocument.getType()));
+        } else {
+            String comment = ComponentUtils.translate(context,
+                    "publishing.done", tree.getConfigName(),
+                    publicationNode.getPath());
+            // Log event on live version
+            notifyEvent(PublishingEvent.documentPublished.name(), null,
+                    comment, null, currentDocument);
+            Events.instance().raiseEvent(EventNames.DOCUMENT_PUBLISHED);
+            facesMessages.add(FacesMessage.SEVERITY_INFO,
+                    resourcesAccessor.getMessages().get("document_published"),
+                    resourcesAccessor.getMessages().get(
+                            currentDocument.getType()));
+        }
+        return null;
 	}
 
 	/*

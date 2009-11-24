@@ -62,10 +62,10 @@
 										selectedClass="treeNodeSelectedClass" id="publishTreeNode">
 										<h:outputText value="#{node.title}" />
 										<nxu:methodResult name="canPublishToSection"
-											value="#{esupPublishActions.getCanPublishVersionToSection(versionItem.model, node.document)}">
+											value="#{esupPublishActions.getCanPublishVersionToSection(versionItem.model, node)}">
 											<a4j:commandLink immediate="true"
 												action="#{esupPublishActions.doPublish(versionItem.modelLabel, node)}"
-												rendered="#{true || canPublishToSection==0 || canPublishToSection==1}"
+												rendered="#{canPublishToSection==0 || canPublishToSection==1}"
 												reRender="publishingInfoList" id="publishCommandLink">
 												<h:graphicImage value="/icons/back.png" />
 												<h:outputText

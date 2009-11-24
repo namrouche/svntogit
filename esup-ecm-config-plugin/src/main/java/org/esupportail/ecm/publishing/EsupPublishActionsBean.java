@@ -222,6 +222,51 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
         return null;
 	}
 
+    public String doPublishOld(String versionModelLabel, DocumentModel section) throws ClientException {
+    	DocumentModel currentDocument = navigationContext.getCurrentDocument();
+    	
+    	VersionModel versionModel = new VersionModelImpl();
+    	versionModel.setCreated(Calendar.getInstance());
+    	versionModel.setDescription("");
+    	versionModel.setLabel(versionModelLabel);
+    	
+    	//log.info("doPublish :: publishingService.getClass() = " + publishingService.getClass());
+    	
+    	boolean isPublished = false;
+    	boolean isWaiting = false;
+    	try {
+    		log.debug("doPublish :: going to submitToPublication");
+    		
+    		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    		publisher.submitToPublication(currentDocument, versionModel, section, currentUser);
+    		
+    		isPublished = true;
+    		
+    		log.debug("doPublish :: isPublished = true");
+    		}
+    	catch (DocumentWaitingValidationException e) {
+    		isWaiting = true;
+    		log.debug("doPublish :: isWaiting = true");
+    		}
+    	catch (PublishingException e) {
+    		log.debug("doPublish :: PublishingException ", e);
+    		throw new PublishingWebException(e);
+    		}
+    	
+    	if (isPublished) {
+    		//comment = null;
+    		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_published"), resourcesAccessor.getMessages().get(currentDocument.getType()));
+    		}
+    	
+    	if (isWaiting) {
+    		//comment = null;
+    		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_submitted_for_publication"),resourcesAccessor.getMessages().get(currentDocument.getType()));
+    		}
+    	return null;
+    }
+    
+	
+	
 	/**
 	 * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#getPublishedDocuments()
 	 */

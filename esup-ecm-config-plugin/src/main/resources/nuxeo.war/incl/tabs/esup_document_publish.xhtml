@@ -70,14 +70,17 @@
 											value="#{esupPublishActions.getCanPublishVersionToSection(versionItem.model, node)}">
 											<a4j:commandLink immediate="true"
 												action="#{esupPublishActions.doPublish(versionItem.modelLabel, node)}"
-												rendered="#{canPublishToSection==0 || canPublishToSection==1}"
+												rendered="#{canPublishToSection==1}"
 												reRender="publishingInfoList" id="publishCommandLink">
 												<h:graphicImage value="/icons/back.png" />
-												<h:outputText
-													value="#{messages['label.publish.asktopublish']}"
-													rendered="#{canPublishToSection==0}" />
-												<h:outputText value="#{messages['label.publish.publish']}"
-													rendered="#{canPublishToSection==1}" />
+												<h:outputText value="#{messages['label.publish.publish']}"/>
+											</a4j:commandLink>
+											<a4j:commandLink immediate="true"
+												action="#{esupPublishActions.askToPublish(versionItem.modelLabel, node)}"
+												rendered="#{canPublishToSection==0}"
+												reRender="publishingInfoList" id="askToPublishCommandLink">
+												<h:graphicImage value="/icons/back.png" />
+												<h:outputText value="#{messages['label.publish.asktopublish']}"/>
 											</a4j:commandLink>
 										</nxu:methodResult>
 									</rich:treeNode>
@@ -103,7 +106,7 @@
 							<!-- Name -->
 							<nxu:column>
 								<f:facet name="header">
-									<h:outputText value="#{messages['label.content.header.title']}" />
+									<h:outputText value="#{messages['label.publish.header.sectionlink']}" />
 								</f:facet>
 
 								<h:panelGroup
@@ -135,6 +138,19 @@
 								</f:facet>
 								<h:outputText value="#{publishedDocument.sourceVersionLabel}" />
 							</h:column>
+
+							<!-- state -->
+							<nxu:column>
+								<f:facet name="header">
+									<h:outputText
+										value="#{messages['label.workflow.currentLifeCycleState']}" />
+								</f:facet>
+								<h:outputText value="#{messages['moderation_published']}"
+									rendered="#{esupPublishActions.isPublished(publishedDocument)}" />
+								<h:outputText value="#{messages['moderation_pending']}"
+									rendered="#{!esupPublishActions.isPublished(publishedDocument)}" />
+							</nxu:column>
+
 
 							<!--  Actions for the published document  -->
 							<h:column>

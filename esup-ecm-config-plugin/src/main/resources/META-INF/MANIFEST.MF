@@ -19,7 +19,8 @@ Require-Bundle:
  org.nuxeo.ecm.platform.url.api,
  org.nuxeo.ecm.core.event,
  org.nuxeo.ecm.platform.notification.core,
- org.nuxeo.ecm.platform.publisher.web
+ org.nuxeo.ecm.platform.publisher.web,
+ org.nuxeo.ecm.platform.publishing.workflow
 Nuxeo-RequiredBy: org.nuxeo.ecm.war
 Nuxeo-Component: OSGI-INF/esup-login-contrib.xml,
  OSGI-INF/esup-theme-contrib.xml,

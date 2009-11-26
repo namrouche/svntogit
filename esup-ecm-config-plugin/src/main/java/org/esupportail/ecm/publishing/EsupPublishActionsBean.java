@@ -36,6 +36,8 @@ import org.nuxeo.ecm.platform.publisher.api.PublicationTree;
 import org.nuxeo.ecm.platform.publisher.api.PublishedDocument;
 import org.nuxeo.ecm.platform.publisher.api.PublishingEvent;
 import org.nuxeo.ecm.platform.publisher.impl.core.SimpleCorePublishedDocument;
+import org.nuxeo.ecm.platform.publishing.api.DocumentWaitingValidationException;
+import org.nuxeo.ecm.platform.publishing.api.PublishingException;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
@@ -222,7 +224,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
         return null;
 	}
 
-    public String doPublishOld(String versionModelLabel, DocumentModel section) throws ClientException {
+    public String askToPublish(String versionModelLabel, PublicationNode publicationNode) throws ClientException {
     	DocumentModel currentDocument = navigationContext.getCurrentDocument();
     	
     	VersionModel versionModel = new VersionModelImpl();
@@ -230,38 +232,36 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
     	versionModel.setDescription("");
     	versionModel.setLabel(versionModelLabel);
     	
-    	//log.info("doPublish :: publishingService.getClass() = " + publishingService.getClass());
-    	
     	boolean isPublished = false;
     	boolean isWaiting = false;
+    	
+    	//get section form publicationNode
+    	DocumentRef publicationNodeRef = new PathRef(publicationNode.getPath());
+    	DocumentModel section = documentManager.getDocument(publicationNodeRef);
     	try {
     		log.debug("doPublish :: going to submitToPublication");
-    		
     		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
     		publisher.submitToPublication(currentDocument, versionModel, section, currentUser);
-    		
     		isPublished = true;
-    		
     		log.debug("doPublish :: isPublished = true");
-    		}
+    	}
     	catch (DocumentWaitingValidationException e) {
     		isWaiting = true;
     		log.debug("doPublish :: isWaiting = true");
-    		}
+    	}
     	catch (PublishingException e) {
     		log.debug("doPublish :: PublishingException ", e);
-    		throw new PublishingWebException(e);
-    		}
-    	
+    		throw new PublishingException(e);
+    	}    	
     	if (isPublished) {
     		//comment = null;
     		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_published"), resourcesAccessor.getMessages().get(currentDocument.getType()));
-    		}
-    	
+    	}
+
     	if (isWaiting) {
     		//comment = null;
     		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_submitted_for_publication"),resourcesAccessor.getMessages().get(currentDocument.getType()));
-    		}
+    	}
     	return null;
     }
     
@@ -283,6 +283,36 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		}
 		return ret;
 	}
+	
+    /**
+     * @param publishedDocument
+     * @return return true if document is published, false if pending
+     */
+    public boolean isPublished(PublishedDocument publishedDocument) {
+        try {
+            for(DocumentModel proxy : documentManager.getProxies(publishedDocument.getSourceDocumentRef(), null)) {
+            	DocumentRef parentRef = proxy.getParentRef();
+//            	if (parentRef.equals(section.getRef())) {
+            		log.debug("isPublished :: found section prentRef :: "+parentRef);
+            		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+            		boolean isPublished = publisher.isPublished(proxy);
+            		log.debug("isPublished :: isPublished ? "+isPublished);
+            		return isPublished;
+//            	}
+            }
+            log.debug("isPublished :: not found, return false");
+        	return false;
+        }
+        catch (PublishingException e) {
+        	log.error("isPublished :: PublishingException", e);
+            throw new IllegalStateException("Publishing service not deployed properly.", e);
+        }
+        catch (ClientException e) {
+        	log.error("isPublished :: ClientException", e);
+            throw new IllegalStateException("Publishing service not deployed properly.", e);
+        }
+    }
+ 	
 	
 	/**
 	 * Return true if a proxy is published in a section

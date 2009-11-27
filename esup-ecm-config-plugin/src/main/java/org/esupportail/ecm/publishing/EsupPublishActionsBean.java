@@ -30,6 +30,8 @@ import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
+import org.nuxeo.ecm.core.model.DocumentVersionProxy;
+import org.nuxeo.ecm.core.utils.DocumentModelUtils;
 import org.nuxeo.ecm.platform.publisher.web.PublishActionsBean;
 import org.nuxeo.ecm.platform.publisher.api.PublicationNode;
 import org.nuxeo.ecm.platform.publisher.api.PublicationTree;
@@ -91,6 +93,8 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 
 	@In(create = true)
 	protected transient ResourcesAccessor resourcesAccessor;
+
+	private String rejectComment;
 
 	/**
 	 * @return list of EsupVersionPojo
@@ -257,7 +261,6 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
     		//comment = null;
     		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_published"), resourcesAccessor.getMessages().get(currentDocument.getType()));
     	}
-
     	if (isWaiting) {
     		//comment = null;
     		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_submitted_for_publication"),resourcesAccessor.getMessages().get(currentDocument.getType()));
@@ -265,8 +268,62 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
     	return null;
     }
     
+    /**
+     * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#hasValidationTask()
+     * but here we are looking if the bpmPublisher has a validation task
+     */
+    public boolean hasValidationTask() throws ClientException {
+    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    	return publisher.hasValidationTask(navigationContext.getCurrentDocument(), currentUser);
+    }	
 	
+    /**
+     * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#canManagePublishing()
+     * but here we are looking if current is a validator
+     */
+    public boolean canManagePublishing() throws ClientException {
+    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    	return publisher.isValidator(navigationContext.getCurrentDocument(), currentUser);
+    }
+    
+    /**
+     * publish the current pending document
+     * @return null to stay in same web page
+     * @throws ClientException
+     */
+    public String publishDocument() throws ClientException {
+    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    	publisher.validatorPublishDocument(navigationContext.getCurrentDocument(), currentUser);
+    	return null;
+    }
 	
+    /**
+     * reject the current pending document
+     * @return to currentDocument parent because current does not exist after reject
+     * @throws ClientException
+     */
+    public String rejectDocument() throws ClientException {
+    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    	DocumentModel currentDocument = navigationContext.getCurrentDocument();
+    	publisher.validatorRejectPublication(currentDocument, currentUser, rejectComment);
+    	return navigationContext.navigateToRef(currentDocument.getParentRef());
+    }
+    
+	/** 
+	 * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#isPublishedDocument()
+	 * but here we are looking if workflow is finished 
+	 */
+    public boolean isPublishedDocument() {
+    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    	try {
+    		return publisher.isPublished(navigationContext.getCurrentDocument());
+    	}
+    	catch (PublishingException e) {
+    		log.error("isPublished :: PublishingException", e);
+    		throw new IllegalStateException("Publishing service not deployed properly.", e);
+    	}
+    }
+
 	/**
 	 * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#getPublishedDocuments()
 	 */
@@ -313,7 +370,6 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
         }
     }
  	
-	
 	/**
 	 * Return true if a proxy is published in a section
 	 * @param section
@@ -328,5 +384,19 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		}
 		log.debug("isPublished :: isPublished ? "+ret);
 		return ret;
-	}	
+	}
+
+	/**
+	 * @return the rejectComment
+	 */
+	public String getRejectComment() {
+		return rejectComment;
+	}
+
+	/**
+	 * @param rejectComment the rejectComment to set
+	 */
+	public void setRejectComment(String rejectComment) {
+		this.rejectComment = rejectComment;
+	}
 }

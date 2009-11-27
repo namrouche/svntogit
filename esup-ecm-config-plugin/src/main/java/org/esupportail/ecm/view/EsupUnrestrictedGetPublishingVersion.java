@@ -17,66 +17,40 @@ import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
  *
  */
 public class EsupUnrestrictedGetPublishingVersion extends UnrestrictedSessionRunner {
-
 	private static final Log log = LogFactory.getLog(EsupUnrestrictedGetPublishingVersion.class);
-	
-
-    private VersioningManager versioningManager;
-    private EsupUnrestrictedPublishingVersionPojo publishingVersionPojo;
+	private VersioningManager versioningManager;
+	private EsupUnrestrictedPublishingVersionPojo publishingVersionPojo;
 	private DocumentModel currentDocument;
-	
-	
+
 	public EsupUnrestrictedGetPublishingVersion(CoreSession session, VersioningManager versioningManager, DocumentModel currentDocument) {
 		super(session);
 		this.currentDocument = currentDocument;
 		this.versioningManager = versioningManager;
-		
 		this.publishingVersionPojo = new EsupUnrestrictedPublishingVersionPojo();
-        log.debug("EsupUnrestrictedGetPublishingVersion :: constructor done");
+		log.debug("EsupUnrestrictedGetPublishingVersion :: constructor done");
 	}
-	
-	
-	
-	
+
 	public void run() throws ClientException {
-		
 		log.debug("run :: BEGIN method");
-		
 		DocumentRef currentVersionRef = session.getSourceDocument(currentDocument.getRef()).getRef();
 		log.debug("run :: currentVersionRef="+currentVersionRef);
-		
 		DocumentModel sourceDocument = session.getSourceDocument(currentVersionRef);
 		this.publishingVersionPojo.setSourceDocument(sourceDocument);
 		log.debug("run :: sourceDocument="+sourceDocument);
-		
 		DocumentRef sourceDocumentRef = this.publishingVersionPojo.getSourceDocument().getRef();
 		log.debug("run :: sourceDocumentRef="+sourceDocumentRef);
-		
 		for (VersionModel versionModel : session.getVersionsForDocument(sourceDocumentRef)) {
 			DocumentRef tempDocumentWithVersionRef = session.getDocumentWithVersion(sourceDocumentRef, versionModel).getRef();
-			
 			if (currentVersionRef.equals(tempDocumentWithVersionRef)) {
 				String label = versioningManager.getVersionLabel(session.getDocumentWithVersion(sourceDocumentRef, versionModel));
 				this.publishingVersionPojo.setCurrentVersionLabel(label);
 				log.debug("run :: equals :: label="+label);
 			}
 		}
-		
-    	log.debug("run :: END method");
-    }
-
-
-
+		log.debug("run :: END method");
+	}
 
 	public EsupUnrestrictedPublishingVersionPojo getPublishingVersionPojo() {
 		return publishingVersionPojo;
 	}
-
-
-
-	
-	
-	
-	
-	
 }

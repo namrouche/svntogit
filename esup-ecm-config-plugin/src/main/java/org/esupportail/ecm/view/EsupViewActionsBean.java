@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.esupportail.ecm.view.EsupUnrestrictedGetPublishingVersion;
-import org.esupportail.ecm.view.EsupUnrestrictedIsPublished;
 import org.esupportail.ecm.view.EsupUnrestrictedPublishingVersionPojo;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -30,59 +29,27 @@ import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
 @Scope(ScopeType.CONVERSATION)
 @Transactional
 public class EsupViewActionsBean implements Serializable  {
-
 	private static final long serialVersionUID = -5052825564876344766L;
-
 	private static final Log log = LogFactory.getLog(EsupViewActionsBean.class);
-
-    
-
-    @In(create = true, required = false)
-    protected transient CoreSession documentManager;
-
-    @In(create = true)
-    protected transient VersioningManager versioningManager;
-    
-    
-    
-    
-    
-    
-    /*
-     * Called by  esup_publication.xhtml
-     * @see PublishActionsBean.isPublished
-     */
-    public boolean isPublished(DocumentModel sourceDocumentRef, String proxyVersionLabel, DocumentModel section) {
-    	boolean published = false;
-    	
-    	try {
-    		EsupUnrestrictedIsPublished unrestrictedIsPublished = new EsupUnrestrictedIsPublished(documentManager, versioningManager, sourceDocumentRef, proxyVersionLabel, section);
-    		unrestrictedIsPublished.runUnrestricted();
-    		published = unrestrictedIsPublished.isPublished();
-    	}
-    	catch(ClientException e) {
-    		log.error("isPublished :: ClientException", e);
-    	}
-    	
-    	return published;
-    }
-    
-    
-    
-    
-    public EsupUnrestrictedPublishingVersionPojo getPublishingVersion(DocumentModel currentDocument) {
-    	EsupUnrestrictedPublishingVersionPojo getPublishingVersionPojo = null;
-    	
-    	try {
-    		EsupUnrestrictedGetPublishingVersion getVersionsUnrestricted = new EsupUnrestrictedGetPublishingVersion(documentManager, versioningManager, currentDocument);
-        	getVersionsUnrestricted.runUnrestricted();
-        	getPublishingVersionPojo = getVersionsUnrestricted.getPublishingVersionPojo();
-    	}
-    	catch(ClientException e) {
-    		log.error("getPublishingVersion :: ClientException", e);
-    	}
-    	
-    	return getPublishingVersionPojo;
-    }
-
+	@In(create = true, required = false)
+	protected transient CoreSession documentManager;
+	@In(create = true)
+	protected transient VersioningManager versioningManager;
+	
+	/**
+	 * @param currentDocument
+	 * @return return all versions of current document without ACL control 
+	 */
+	public EsupUnrestrictedPublishingVersionPojo getPublishingVersion(DocumentModel currentDocument) {
+		EsupUnrestrictedPublishingVersionPojo publishingVersionPojo = null;
+		try {
+			EsupUnrestrictedGetPublishingVersion versionsUnrestricted = new EsupUnrestrictedGetPublishingVersion(documentManager, versioningManager, currentDocument);
+			versionsUnrestricted.runUnrestricted();
+			publishingVersionPojo = versionsUnrestricted.getPublishingVersionPojo();
+		}
+		catch(ClientException e) {
+			log.error("getPublishingVersion :: ClientException", e);
+		}
+		return publishingVersionPojo;
+	}
 }

@@ -5,6 +5,24 @@
 
 		<!-- nuxeo-platform: overwrite actions-contrib.xml -->
 		
+	<!-- publish from clipboard -->
+    <action id="WORKLIST_PUBLISH" link="#{publishActions.publishWorkList()}"
+            label="command.clipboard.publish" icon="/icons/action_publish.gif">
+      <category>DEFAULT_LIST</category>
+      <filter id="canPublishWorkList">
+        <rule grant="false">
+          <condition>#{clipboardActions.workListEmpty}</condition>
+        </rule>
+        <rule grant="false">
+          <condition>#{esupPublishActions.canNotPublishFromClipBoard}</condition>
+        </rule>
+        <rule grant="true">
+          <type>Section</type>
+        </rule>
+      </filter>
+    </action>
+		
+		
 		<action id="user_manager" link="#{userManagerActions.viewUsers}" enabled="@showUserManager@"
 			label="command.manageMembers" order="20">
 			<category>USER_SERVICES</category>
@@ -124,13 +142,20 @@
 
 	</extension>
 	
-	  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
-	    point="filters">
-	    <filter id="isNotInsidePersonalWorkspace">
-	      <rule grant="false">
-	        <condition>#{isInsidePersonalWorkspace}</condition>
-	      </rule>
-	    </filter>
-	  </extension>
+    <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
+	  <filter id="isNotInsidePersonalWorkspace">
+	    <rule grant="false">
+	      <condition>#{isInsidePersonalWorkspace}</condition>
+	    </rule>
+	  </filter>
+	</extension>
+	  
+	<!-- use EsupCoreProxyWithWorkflowFactory to publish existing version of current document (without version creation on current live document) --> 
+	<extension target="org.nuxeo.ecm.platform.publisher.impl.service.PublisherServiceImpl"
+      point="factory">
+      <publishedDocumentFactory name="CoreProxyWithWorkflow"
+        class="org.esupportail.ecm.publishing.EsupCoreProxyWithWorkflowFactory"
+        validatorsRule="CoreValidatorsRule"/>
+    </extension>
 
 </component>

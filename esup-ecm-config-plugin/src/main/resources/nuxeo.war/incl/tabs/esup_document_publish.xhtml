@@ -76,7 +76,7 @@
 												<h:outputText value="#{messages['label.publish.publish']}"/>
 											</a4j:commandLink>
 											<a4j:commandLink immediate="true"
-												action="#{esupPublishActions.askToPublish(versionItem.modelLabel, node)}"
+												action="#{esupPublishActions.doPublish(versionItem.modelLabel, node)}"
 												rendered="#{canPublishToSection==0}"
 												reRender="publishingInfoList" id="askToPublishCommandLink">
 												<h:graphicImage value="/icons/back.png" />

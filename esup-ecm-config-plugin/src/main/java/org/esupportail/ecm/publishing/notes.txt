@@ -32,3 +32,22 @@ La pile :
 	UnrestrictedSessionRunner.runUnrestricted()
 	PublishUnrestricted.run()
 	AbstractSession.publishDocument()
+	
+	
+Particularité ESUP :
+	On créer le proxy d'une version donnée avant de publier
+	ECM 1.0 --> Ce proxy est crée dans le contrôleur EsupPublishActionsBean.doPublish()
+	ECM 1.1 --> créer ce proxy dans CoreProxyWithWorkflowFactory.publishDocument(). Comment ?
+		- On va créer un EsupCoreProxyWithWorkflowFactory qui étant CoreProxyWithWorkflowFactory pour surcharger publishDocument() afin de créer le proxy de la version ici
+		- Il faut pouvoir connaitre la version dans publishDocument() --> voir ci-dessous comment retrouver la version courante à partir d'une version :
+		
+retrouver la version courante à partir d'une version ou d'un proxy: 
+if (currentDocument.isVersion()) {
+    docIdToReplace = currentDocument.getSourceId();
+} else if (currentDocument.isProxy()) {
+    docIdToReplace = new LiveDocumentRefFinder(currentDocument).getLiveDocumentRef();
+}
+DocumentModel liveVersion = documentManager.getDocument(new IdRef(docIdToReplace));
+		
+Comment passer d'un DocumentModel représentant une version à un VersionModel :
+	session.getVersionsForDocument(DocumentRef docRef) --> renvoie les 		

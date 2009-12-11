@@ -30,16 +30,13 @@ import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.impl.VersionModelImpl;
-import org.nuxeo.ecm.core.model.DocumentVersionProxy;
-import org.nuxeo.ecm.core.utils.DocumentModelUtils;
 import org.nuxeo.ecm.platform.publisher.web.PublishActionsBean;
 import org.nuxeo.ecm.platform.publisher.api.PublicationNode;
 import org.nuxeo.ecm.platform.publisher.api.PublicationTree;
 import org.nuxeo.ecm.platform.publisher.api.PublishedDocument;
 import org.nuxeo.ecm.platform.publisher.api.PublishingEvent;
+import org.nuxeo.ecm.platform.publisher.api.PublishingException;
 import org.nuxeo.ecm.platform.publisher.impl.core.SimpleCorePublishedDocument;
-import org.nuxeo.ecm.platform.publishing.api.DocumentWaitingValidationException;
-import org.nuxeo.ecm.platform.publishing.api.PublishingException;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
 import org.nuxeo.ecm.platform.versioning.api.VersioningManager;
@@ -97,6 +94,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 	private String rejectComment;
 
 	/**
+	 * called by esup_document_publish.xml
 	 * @return list of EsupVersionPojo
 	 * @throws ClientException
 	 * @see EsupVersionPojo
@@ -127,7 +125,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 	}
 
 	/** 
-	 * Called by  esup_document_publish.xhtml
+	 * Called by esup_document_publish.xhtml
 	 * -1 --> can not publish
 	 * 0 --> can ask to publish
 	 * 1 --> can write
@@ -173,9 +171,21 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		}
 		return -1;
 	}
+	
+	/**
+	 * used by esup-actions-contrib.xml
+	 * @return true if user can not (because of "rule grant="false"" mechanism) publish a list of documents from clipBoard
+	 */
+	public boolean getCanNotPublishFromClipBoard() {
+		return true;
+		//TODO if user have write access then doPublish on all documents (but what is the version ?)
+		// if user have askToPublish access then bug workflow created but IHM can't accept or reject publishing 
+		//    (because of  org.nuxeo.ecm.platform.publishing.jbpm.JbpmPublisher and org.nuxeo.ecm.platform.publisher?)
+	}
 
 	/**
 	 * Publish a version to a publication node
+	 * called by esup_document_publish.xml
 	 * @param versionModelLabel - label of selected version
 	 * @param publicationNode - note to publish to
 	 * @return null
@@ -190,12 +200,10 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		versionModel.setDescription("");
 		versionModel.setLabel(versionModelLabel);
 		//create proxy --> to publish required section  
-		DocumentRef publicationNodeRef = new PathRef(publicationNode.getPath());
-		DocumentModel newProxy = documentManager.createProxy(publicationNodeRef, currentDocument.getRef(), versionModel, false);
+		DocumentModel version = documentManager.getDocumentWithVersion(currentDocument.getRef(), versionModel);
 		//get publication tree
 		PublicationTree tree = getCurrentPublicationTreeForPublishing();
-		//create a publishedDocument from created proxy
-		PublishedDocument publishedDocument = new SimpleCorePublishedDocument(newProxy);
+        PublishedDocument publishedDocument = tree.publish(version, publicationNode);
 		//cut/paste of NuxeoPublishActionsBeanWithoutFactoryAnnotation#doPublish
         FacesContext context = FacesContext.getCurrentInstance();
         if (publishedDocument.isPending()) {
@@ -227,104 +235,60 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
         }
         return null;
 	}
-
-    public String askToPublish(String versionModelLabel, PublicationNode publicationNode) throws ClientException {
-    	DocumentModel currentDocument = navigationContext.getCurrentDocument();
-    	
-    	VersionModel versionModel = new VersionModelImpl();
-    	versionModel.setCreated(Calendar.getInstance());
-    	versionModel.setDescription("");
-    	versionModel.setLabel(versionModelLabel);
-    	
-    	boolean isPublished = false;
-    	boolean isWaiting = false;
-    	
-    	//get section form publicationNode
-    	DocumentRef publicationNodeRef = new PathRef(publicationNode.getPath());
-    	DocumentModel section = documentManager.getDocument(publicationNodeRef);
-    	try {
-    		log.debug("doPublish :: going to submitToPublication");
-    		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-    		publisher.submitToPublication(currentDocument, versionModel, section, currentUser);
-    		isPublished = true;
-    		log.debug("doPublish :: isPublished = true");
-    	}
-    	catch (DocumentWaitingValidationException e) {
-    		isWaiting = true;
-    		log.debug("doPublish :: isWaiting = true");
-    	}
-    	catch (PublishingException e) {
-    		log.debug("doPublish :: PublishingException ", e);
-    		throw new PublishingException(e);
-    	}    	
-    	if (isPublished) {
-    		//comment = null;
-    		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_published"), resourcesAccessor.getMessages().get(currentDocument.getType()));
-    	}
-    	if (isWaiting) {
-    		//comment = null;
-    		facesMessages.add(FacesMessage.SEVERITY_INFO, resourcesAccessor.getMessages().get("document_submitted_for_publication"),resourcesAccessor.getMessages().get(currentDocument.getType()));
-    	}
-    	return null;
-    }
-    
-    /**
+	
+	/**
+     * called by esup_publication.xhtml
      * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#hasValidationTask()
      * but here we are looking if the bpmPublisher has a validation task
      */
     public boolean hasValidationTask() throws ClientException {
-    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-    	return publisher.hasValidationTask(navigationContext.getCurrentDocument(), currentUser);
+    	PublicationTree tree = getCurrentPublicationTreeForPublishing();
+    	PublishedDocument publishedDocument = new SimpleCorePublishedDocument(navigationContext.getCurrentDocument());
+    	return tree.hasValidationTask(publishedDocument);
     }	
 	
     /**
+     * called by esup_publication.xhtml
      * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#canManagePublishing()
      * but here we are looking if current is a validator
      */
     public boolean canManagePublishing() throws ClientException {
-    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-    	return publisher.isValidator(navigationContext.getCurrentDocument(), currentUser);
+    	PublicationTree tree = getCurrentPublicationTreeForPublishing();
+    	PublishedDocument publishedDocument = new SimpleCorePublishedDocument(navigationContext.getCurrentDocument());
+    	return true; //TODO comment gérer cette info qui est dans le factory alors que l'on n'a accès qu'à l'arbre ?
+//    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+//    	return publisher.isValidator(navigationContext.getCurrentDocument(), currentUser);
     }
     
     /**
      * publish the current pending document
+     * called by esup_publication.xhtml
      * @return null to stay in same web page
      * @throws ClientException
      */
     public String publishDocument() throws ClientException {
-    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-    	publisher.validatorPublishDocument(navigationContext.getCurrentDocument(), currentUser);
+    	PublicationTree tree = getCurrentPublicationTreeForPublishing();
+    	PublishedDocument publishedDocument = new SimpleCorePublishedDocument(navigationContext.getCurrentDocument());
+    	tree.validatorPublishDocument(publishedDocument);
     	return null;
     }
 	
     /**
      * reject the current pending document
+     * called by esup_publication.xhtml
      * @return to currentDocument parent because current does not exist after reject
      * @throws ClientException
      */
     public String rejectDocument() throws ClientException {
-    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+    	PublicationTree tree = getCurrentPublicationTreeForPublishing();
+    	PublishedDocument publishedDocument = new SimpleCorePublishedDocument(navigationContext.getCurrentDocument());
+    	tree.validatorRejectPublication(publishedDocument, rejectComment);
     	DocumentModel currentDocument = navigationContext.getCurrentDocument();
-    	publisher.validatorRejectPublication(currentDocument, currentUser, rejectComment);
     	return navigationContext.navigateToRef(currentDocument.getParentRef());
     }
     
-	/** 
-	 * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#isPublishedDocument()
-	 * but here we are looking if workflow is finished 
-	 */
-    public boolean isPublishedDocument() {
-    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-    	try {
-    		return publisher.isPublished(navigationContext.getCurrentDocument());
-    	}
-    	catch (PublishingException e) {
-    		log.error("isPublished :: PublishingException", e);
-    		throw new IllegalStateException("Publishing service not deployed properly.", e);
-    	}
-    }
-
 	/**
+	 * called by esup_document_publish.xml
 	 * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#getPublishedDocuments()
 	 */
 	public List<PublishedDocument> getPublishedDocuments(EsupVersionPojo esupVersionPojo)
@@ -342,32 +306,13 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 	}
 	
     /**
+     * called by esup_document_publish.xml
      * @param publishedDocument
      * @return return true if document is published, false if pending
+     * @throws ClientException 
      */
-    public boolean isPublished(PublishedDocument publishedDocument) {
-        try {
-            for(DocumentModel proxy : documentManager.getProxies(publishedDocument.getSourceDocumentRef(), null)) {
-            	DocumentRef parentRef = proxy.getParentRef();
-//            	if (parentRef.equals(section.getRef())) {
-            		log.debug("isPublished :: found section prentRef :: "+parentRef);
-            		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-            		boolean isPublished = publisher.isPublished(proxy);
-            		log.debug("isPublished :: isPublished ? "+isPublished);
-            		return isPublished;
-//            	}
-            }
-            log.debug("isPublished :: not found, return false");
-        	return false;
-        }
-        catch (PublishingException e) {
-        	log.error("isPublished :: PublishingException", e);
-            throw new IllegalStateException("Publishing service not deployed properly.", e);
-        }
-        catch (ClientException e) {
-        	log.error("isPublished :: ClientException", e);
-            throw new IllegalStateException("Publishing service not deployed properly.", e);
-        }
+    public boolean isPublished(PublishedDocument publishedDocument) throws ClientException {
+    	return !publishedDocument.isPending();
     }
  	
 	/**
@@ -387,6 +332,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 	}
 
 	/**
+	 * used by esup_publication.xhtml
 	 * @return the rejectComment
 	 */
 	public String getRejectComment() {
@@ -394,6 +340,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 	}
 
 	/**
+	 * used by esup_publication.xhtml
 	 * @param rejectComment the rejectComment to set
 	 */
 	public void setRejectComment(String rejectComment) {

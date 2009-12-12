@@ -35,7 +35,6 @@ import org.nuxeo.ecm.platform.publisher.api.PublicationNode;
 import org.nuxeo.ecm.platform.publisher.api.PublicationTree;
 import org.nuxeo.ecm.platform.publisher.api.PublishedDocument;
 import org.nuxeo.ecm.platform.publisher.api.PublishingEvent;
-import org.nuxeo.ecm.platform.publisher.api.PublishingException;
 import org.nuxeo.ecm.platform.publisher.impl.core.SimpleCorePublishedDocument;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
@@ -199,7 +198,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		versionModel.setCreated(Calendar.getInstance());
 		versionModel.setDescription("");
 		versionModel.setLabel(versionModelLabel);
-		//create proxy --> to publish required section  
+		//create document version --> to publish required section  
 		DocumentModel version = documentManager.getDocumentWithVersion(currentDocument.getRef(), versionModel);
 		//get publication tree
 		PublicationTree tree = getCurrentPublicationTreeForPublishing();
@@ -247,19 +246,6 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
     	return tree.hasValidationTask(publishedDocument);
     }	
 	
-    /**
-     * called by esup_publication.xhtml
-     * @see org.esupportail.ecm.publishing.NuxeoPublishActionsBeanWithoutFactoryAnnotation#canManagePublishing()
-     * but here we are looking if current is a validator
-     */
-    public boolean canManagePublishing() throws ClientException {
-    	PublicationTree tree = getCurrentPublicationTreeForPublishing();
-    	PublishedDocument publishedDocument = new SimpleCorePublishedDocument(navigationContext.getCurrentDocument());
-    	return true; //TODO comment gérer cette info qui est dans le factory alors que l'on n'a accès qu'à l'arbre ?
-//    	EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-//    	return publisher.isValidator(navigationContext.getCurrentDocument(), currentUser);
-    }
-    
     /**
      * publish the current pending document
      * called by esup_publication.xhtml

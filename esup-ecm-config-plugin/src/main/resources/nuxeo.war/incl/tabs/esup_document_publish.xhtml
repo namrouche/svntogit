@@ -9,25 +9,6 @@
 	ajaxRendered="true">
 	<a4j:form ajaxSubmit="true" id="publishTreeForm">
 
-        <h:panelGrid styleClass="dataInput"
-                     columnClasses="labelColumn, fieldColumn" columns="2">
-          <h:panelGroup>
-            <h:outputText value="#{messages['label.publish.sections']}"/>
-          </h:panelGroup>
-          <h:panelGroup>
-            <h:selectOneListbox styleClass="dataInputText" size="1"
-                                value="#{publishActions.currentPublicationTreeNameForPublishing}">
-              <nxu:selectItems value="#{availablePublicationTrees}"
-                               var="tree"
-                               itemValue="#{tree.name}"
-                               itemLabel="#{messages[tree.title]}#{publishActions.getDomainName(tree.name)}"/>
-              <a4j:support event="onchange"
-                           reRender="sectionTree,publishingInfoList"
-                           ignoreDupResponses="true"/>
-            </h:selectOneListbox>
-          </h:panelGroup>
-        </h:panelGrid>
-
 		<nxu:methodResult
 			value="#{esupPublishActions.getVersionsSelectModel()}"
 			name="versions">
@@ -103,7 +84,7 @@
 							preserveDataModel="false" rowClasses="dataRowEven,dataRowOdd"
 							sortable="false" styleClass="dataList">
 
-							<!-- Name -->
+							<!-- Section name -->
 							<nxu:column>
 								<f:facet name="header">
 									<h:outputText value="#{messages['label.publish.header.sectionlink']}" />

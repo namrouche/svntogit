@@ -15,41 +15,38 @@
 				<h3 class="summaryTitle"><h:outputText
 					value="#{messages['label.publishing.title']}" /></h3>
 				<br />
-				<nxu:methodResult name="canManagePublishing"
-					value="#{esupPublishActions.canManagePublishing()}">
-					<h:panelGroup rendered="#{!esupPublishActions.publishedDocument}">
-						<h:outputFormat
-							value="#{messages['label.document.pendingVersion']}">
-							<f:param value="#{currentVersionLabel}" />
-						</h:outputFormat>
-						<br />
-						<br />
-					</h:panelGroup>
-					<h:outputText rendered="#{esupPublishActions.hasValidationTask()}">
-						<table class="dataInput">
-							<tr>
-								<td><h:outputText class="required"
-									value="#{messages['label.publishing.user.comment']}" /></td>
-								<td><h:inputTextarea id="rejectComment" rows="5"
-									cols="50" value="#{esupPublishActions.rejectComment}" required="true"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2"><h:message styleClass="errorMessage"
-									for="rejectComment" /></td>
-							</tr>
-							<tr>
-								<td colspan="2"><h:commandButton type="submit"
-									value="#{messages['label.publishing.accept']}"
-									styleClass="button" rendered="#{canManagePublishing}"
-									action="#{esupPublishActions.publishDocument}" /> <h:commandButton
-									type="submit" value="#{messages['label.publishing.reject']}"
-									styleClass="button" rendered="#{canManagePublishing}"
-									action="#{esupPublishActions.rejectDocument}" /></td>
-							</tr>
-						</table>
-					</h:outputText>
-				</nxu:methodResult>
+				<h:panelGroup rendered="#{!esupPublishActions.publishedDocument}">
+					<h:outputFormat
+						value="#{messages['label.document.pendingVersion']}">
+						<f:param value="#{currentVersionLabel}" />
+					</h:outputFormat>
+					<br />
+					<br />
+				</h:panelGroup>
+				<h:outputText rendered="#{esupPublishActions.hasValidationTask()}">
+					<table class="dataInput">
+						<tr>
+							<td><h:outputText class="required"
+								value="#{messages['label.publishing.user.comment']}" /></td>
+							<td><h:inputTextarea id="rejectComment" rows="5"
+								cols="50" value="#{esupPublishActions.rejectComment}" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"><h:message styleClass="errorMessage"
+								for="rejectComment" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><h:commandButton type="submit"
+								value="#{messages['label.publishing.accept']}"
+								styleClass="button"
+								action="#{esupPublishActions.publishDocument}" /> <h:commandButton
+								type="submit" value="#{messages['label.publishing.reject']}"
+								styleClass="button"
+								action="#{esupPublishActions.rejectDocument}" /></td>
+						</tr>
+					</table>
+				</h:outputText>
 				<h:panelGroup rendered="#{esupPublishActions.publishedDocument}">
 					<h:outputFormat
 						value="#{messages['label.document.publishedVersion']}">

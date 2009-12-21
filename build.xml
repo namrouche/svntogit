@@ -4,15 +4,11 @@
   <property file="init-build.properties" />
 
   <property file="default.properties"/>
-  <property name="jboss.log4j.level" value="INFO"/>
-  <property name="nuxeo-dm.file" value="nuxeo-dm-5.3.0-GA-jboss.zip"/>
-  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
-  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0"/>
   <property name="unused.component.dir" value="unused"/>
   <property name="sql-patch.file" value="nuxeo-core-storage-sql-1.5.0"/>
   <property name="utils.dir" value="${basedir}/utils" />
-  
-  <property name="jboss.home" value="${nuxeo.dir}"/>
+  <property name="jboss.log4j.level" value="INFO"/>
+  <property name="jboss.home" value="${nuxeo.dir}"/>  
   <property name="esup-ecm.file" value="${esup-ecm.version}" />
   <condition property="isMysql" value="true">
         <equals arg1="${db.type}" arg2="MySQL"/>
@@ -25,12 +21,47 @@
   <taskdef 
       resource="net/sf/antcontrib/antlib.xml" 
       classpath="ant-utils/ant-contrib-1.0.jar"/>
+	
+  <target name="server">
+    <if>
+    	<equals arg1="${server}" arg2="jboss"/>
+    	<then>
+    	  <property name="nuxeo-dm.file" value="nuxeo-dm-5.3.0-GA-jboss.zip"/>
+    	  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
+    	  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0"/>
+    	  <property name="plugins.dir" value="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins"/>
+    	  <property name="config.dir" value="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config"/>
+    	</then>
+    </if>
+    <if>
+    	<equals arg1="${server}" arg2="tomcat"/>
+    	<then>
+      	  <echo message="**************************************************************************************************************"/>
+      	  <echo message="**************************************************************************************************************"/>
+       	  <echo message="*********                                                                                         ************"/>
+       	  <echo message="*********                                                                                         ************"/>
+       	  <echo message="*********                                -- TOMCAT --                                             ************"/>
+       	  <echo message="*********                                                                                         ************"/>
+       	  <echo message="*********                            DO NOT USE IN PRODUCTION                                     ************"/>
+       	  <echo message="*********                                                                                         ************"/>
+       	  <echo message="*********                                                                                         ************"/>
+      	  <echo message="**************************************************************************************************************"/>
+      	  <echo message="**************************************************************************************************************"/>
+    	  <property name="nuxeo-dm.file" value="nuxeo-dm-5.3.0-GA-tomcat.zip"/>
+    	  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-distribution-tomcat/nxserver/nuxeo.war/WEB-INF/web.xml"/>
+    	  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-distribution-tomcat"/>
+      	  <property name="plugins.dir" value="${nuxeo.dir}/nxserver/bundles"/>
+      	  <property name="config.dir" value="${nuxeo.dir}/nxserver/config"/>
+    	</then>
+    </if>
+  </target>
 
-  <target name="prepare">
+  <target name="prepare" depends="server">
   	<mkdir dir="${unused.component.dir}"/>
     <mkdir  dir="build"/>
     <mkdir  dir="build"/>
     <mkdir  dir="build/jboss"/>
+    <mkdir  dir="build/tomcat"/>
     <mkdir  dir="build/nxOOo"/>
     <mkdir  dir="build/esup-ecm-config-plugin"/>
     <mkdir  dir="packages"/>
@@ -39,17 +70,11 @@
     <antcall target="get.nuxeo-dm.file" />
   </target>
   	
-	  <target name="get.nuxeo-dm.file" unless="nuxeo-dm.file.present">
-	    <echo message="Download ${nuxeo-dm.file} in the packages directory."/>
-	    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
-	    <get src="http://www.nuxeo.org/static/releases/nuxeo-dm-5.3.0/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
-	  </target>
-
-
-
-
-
-
+  <target name="get.nuxeo-dm.file" unless="nuxeo-dm.file.present">
+    <echo message="Download ${nuxeo-dm.file} in the packages directory."/>
+    <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
+    <get src="http://www.nuxeo.org/static/releases/nuxeo-dm-5.3.0/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
+  </target>
 
   <target name="deploy.nuxeo" depends="prepare">
   	<antcall target="deploy.nuxeo.dm" />
@@ -66,13 +91,15 @@
 		<delete dir="${unused.component.dir}" />
 	</target>
 
-
   <target name="copy.src.build" depends="prepare">
     <copy todir="build" overwrite="yes">
       <fileset dir="db-configs"/>
     </copy>
     <copy todir="build/jboss" overwrite="yes">
       <fileset dir="jboss"/>
+    </copy>
+    <copy todir="build/tomcat" overwrite="yes">
+      <fileset dir="tomcat"/>
     </copy>
   	<!-- delete to avoid unexpected deleted files -->
   	<delete dir="build/esup-ecm-config-plugin"/>
@@ -91,7 +118,7 @@
 
     <echo message="Update databases description files" />
 
-    <replace dir="build" includes="config/*.xml,config/sql.properties,datasources/*.xml">
+    <replace dir="build" includes="config/*.xml,config/sql.properties,datasources/*.xml,tomcat/*.xml">
       <replacefilter
           token="@jdbcUser@" value="${db.user}" />
       <replacefilter
@@ -118,7 +145,7 @@
 
     <echo message="Update configuration plugin files" />
     <!-- tools -->
-    <replace file="build/jboss/jbossctl">
+    <replace file="build/jboss/jbossctl" >
       <replacefilter token="@jbossUser@" value="${jboss.user}" />
         <replacefilter token="@jbossHome@" value="${jboss.home}" />
     	<replacefilter token="@jbossBindAdress@" value="${jboss.bind.address}" />
@@ -129,6 +156,10 @@
     <replace file="build/jboss/server.xml">
       <replacefilter token="@tomcatPortHttp@" value="${tomcat.port.http}" />
       <replacefilter token="@tomcatPortJk@" value="${tomcat.port.jk}" />
+    </replace>
+    <replace file="build/tomcat/server.xml">
+        <replacefilter token="@tomcatPortHttp@" value="${tomcat.port.http}" />
+        <replacefilter token="@tomcatPortJk@" value="${tomcat.port.jk}" />
     </replace>
  
     <replace file="build/jboss/jboss-log4j.xml">
@@ -143,7 +174,11 @@
   	
   	<!-- build.properties -->
     <replace file="build/esup-ecm-config-plugin/build.properties" 
-	     token="@nuxeo-dir@" value="${nuxeo.dir}" />
+	     token="@nuxeo.dir@" value="${nuxeo.dir}" />
+    <replace file="build/esup-ecm-config-plugin/build.properties" 
+	     token="@server@" value="${server}" />
+    <replace file="build/esup-ecm-config-plugin/build.properties" 
+	     token="@plugins.dir@" value="${plugins.dir}" />
   	
   	<!-- Nuxeo properties -->
     <replace file="build/config/nuxeo.properties">
@@ -153,7 +188,28 @@
         <replacefilter token="@productVersion@" value="${esup-ecm.version}" />
     </replace>
 
-    <!-- CAS -->
+    <!-- auth -->
+	<if>
+		<equals arg1="${auth.plugin}" arg2="ldap"/>
+		<then>
+		    <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-login-contrib.xml">
+				<replacefilter token="@begin.use.cas@" value="&lt;!-- " />
+				<replacefilter token="@end.use.cas@" value=" --&gt;" />
+				<replacefilter token="@begin.use.ldap@" value="" />
+				<replacefilter token="@end.use.ldap@" value="" />
+		    </replace>
+		</then>
+		<else>
+	        <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-login-contrib.xml">
+				<replacefilter token="@begin.use.cas@" value="" />
+				<replacefilter token="@end.use.cas@" value="" />
+				<replacefilter token="@begin.use.ldap@" value="&lt;!-- " />
+				<replacefilter token="@end.use.ldap@" value=" --&gt;" />
+	        </replace>
+		</else>
+	</if>
+
+  	<!-- CAS -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-login-contrib.xml" 
 	     token="@sso-cas-url@" value="${cas.url}" />
     <replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-login-contrib.xml" 
@@ -248,23 +304,42 @@
    <echo message="Install sql-storage repository" />
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-mysql-ds.xml"/>
          <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-versioning-config.xml"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/${nuxeo.core.jcr.connector}"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/${nuxeo.core.jca}"/>
-         <copy file="build/config/sql-storage-repository-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml" overwrite="yes"/> 		
   </target>
   
   <!-- sqlStorage with mysql -->
   <target name="deploy.sql.storage.config.mysql" if="isMysql" >
-   <echo message="Install sql-storage mysql" />
-    <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
+    <echo message="Install sql-storage mysql" />
+    <if>
+    	<equals arg1="${server}" arg2="jboss"/>
+    	<then>  	
+    	  <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${config.dir}/default-repository-ds.xml"  overwrite="yes"/>
+		</then>
+	</if>
+    <if>
+    	<equals arg1="${server}" arg2="tomcat"/>
+    	<then>  	
+      	  <copy file="build/tomcat/sql-storage-repository-mysql-ds.xml" tofile="${config.dir}/default-repository-config.xml"  overwrite="yes"/>
+    	  <copy file="build/tomcat/nuxeo.xml" tofile="${nuxeo.dir}/conf/Catalina/localhost/nuxeo.xml"  overwrite="yes"/>
+		</then>
+	</if>
   </target>
   
   <!-- sqlStorage  with postgresql -->
   <target name="deploy.sql.storage.config.postgresql" if="isPostGresSql">
     <echo message="Install sql-storage postgresql" />
-    <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
+    <if>
+    	<equals arg1="${server}" arg2="jboss"/>
+    	<then>  	
+    	  <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${config.dir}/default-repository-ds.xml"  overwrite="yes"/>
+		</then>
+	</if>
+    <if>
+    	<equals arg1="${server}" arg2="tomcat"/>
+    	<then>  	
+       	  <copy file="build/tomcat/sql-storage-repository-postgresql-ds.xml" tofile="${config.dir}/default-repository-config.xml"  overwrite="yes"/>
+    	  <copy file="build/tomcat/nuxeo.xml" tofile="${nuxeo.dir}/conf/Catalina/localhost/nuxeo.xml"  overwrite="yes"/>
+		</then>
+	</if>
   </target>
 
   <target name="deploy.plugin" depends="replace.token.config">
@@ -275,38 +350,54 @@
     </copy>
 
     <!-- Jena database type and transaction mode -->
-    <copy file="build/config/sql.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/sql.properties" overwrite="yes"/>
+    <copy file="build/config/sql.properties"  tofile="${config.dir}/sql.properties" overwrite="yes"/>
 
     <!-- usual nuxeo.properties -->
-   <copy file="build/config/nuxeo.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/nuxeo.properties" overwrite="yes"/>
+   <copy file="build/config/nuxeo.properties"  tofile="${config.dir}/nuxeo.properties" overwrite="yes"/>
+  	<!-- Patch : nuxeo 5.3 tomcat distribution does not used sql.properties -->
+    <if>
+    	<equals arg1="${server}" arg2="tomcat"/>
+    	<then>  	
+ 		   <replace file="${config.dir}/nxrelations-default-jena-bundle.xml" >
+ 		      <replacefilter token="Derby" value="$${org.nuxeo.ecm.sql.jena.databaseType}" />
+ 		   </replace>
+ 		   <replace file="${config.dir}/commentService-config-bundle.xml" >
+ 		      <replacefilter token="Derby" value="$${org.nuxeo.ecm.sql.jena.databaseType}" />
+ 		   </replace>
+		</then>
+	</if>
 
     <!-- usual seam-debug.properties -->
-   <copy file="build/config/seam-debug.properties"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/seam-debug.properties" overwrite="yes"/>
+   <copy file="build/config/seam-debug.properties"  tofile="${config.dir}/seam-debug.properties" overwrite="yes"/>
 
     <!-- Repository backend -->
     <antcall target="deploy.sql.storage" />
 
     <!-- Notification service -->
     <copy file="build/config/notification/mail-service.xml"  tofile="${nuxeo.dir}/server/default/deploy/mail-service.xml" overwrite="yes"/>
-  	<copy file="build/config/notification/notification-config.xml"  tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/notification-config.xml" overwrite="yes"/>
+  	<copy file="build/config/notification/notification-config.xml"  tofile="${config.dir}/notification-config.xml" overwrite="yes"/>
   	
-  	<!-- jboss configuration -->
-    <copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>
-    <chmod perm="+x"> 
-      <fileset dir="${nuxeo.dir}/bin">
-        <include name="**/*.sh"/>
-         <include name="**/jbossctl"/>
-      </fileset>
-    </chmod>
-	<!--
-    <chmod perm="+x"> 
-      <fileset dir="${nuxeo.dir.parent}/nuxeo-shell">
-        <include name="**/*.sh"/>
-      </fileset>
-    </chmod>
-    -->
-    <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jboss-web.deployer/server.xml" overwrite="yes"/>
-    <copy file="build/jboss/jboss-log4j.xml" tofile="${nuxeo.dir}/server/default/conf/jboss-log4j.xml" overwrite="yes"/>
+  	<!-- server configuration -->
+    <if>
+    	<equals arg1="${server}" arg2="jboss"/>
+    	<then>  	
+    	  	<copy file="build/jboss/jbossctl" todir="${nuxeo.dir}/bin" overwrite="yes"/>
+    	    <chmod perm="+x"> 
+    	      <fileset dir="${nuxeo.dir}/bin">
+    	        <include name="**/*.sh"/>
+    	         <include name="**/jbossctl"/>
+    	      </fileset>
+    	    </chmod>
+    	    <copy file="build/jboss/server.xml" tofile="${nuxeo.dir}/server/default/deploy/jboss-web.deployer/server.xml" overwrite="yes"/>
+    	    <copy file="build/jboss/jboss-log4j.xml" tofile="${nuxeo.dir}/server/default/conf/jboss-log4j.xml" overwrite="yes"/>
+		</then>
+	</if>
+    <if>
+    	<equals arg1="${server}" arg2="tomcat"/>
+    	<then>  	
+    	  <copy file="build/tomcat/server.xml" tofile="${nuxeo.dir}/conf/server.xml"  overwrite="yes"/>
+		</then>
+	</if>
 
   	<!-- openoffice configuration -->
     <copy todir="${openoffice.home}/nxOOo"  overwrite="yes">
@@ -319,15 +410,34 @@
     </chmod>
 
     <!-- others librairies  [drivers postgres,mysql] -->
-    <copy todir="${nuxeo.dir}/server/default/lib"  overwrite="yes">
-      <fileset dir="lib"/>
-    </copy>
+    <if>
+    	<equals arg1="${server}" arg2="jboss"/>
+    	<then>  	
+    	    <copy todir="${nuxeo.dir}/server/default/lib"  overwrite="yes">
+    	      <fileset dir="lib"/>
+    	    </copy>
+		</then>
+	</if>
+    <if>
+    	<equals arg1="${server}" arg2="tomcat"/>
+    	<then>  	
+    	    <copy todir="${nuxeo.dir}/lib"  overwrite="yes">
+    	      <fileset dir="lib"/>
+    	    </copy>
+		</then>
+	</if>
 
     <!-- plugins addons --> 
-    <delete>
-      <fileset dir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins" includes="**/*.jar"/>
-    </delete>
-    <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins"  overwrite="yes">
+	<!-- do not delete with tomcat because plungins with nuxeo jar -->
+    <if>
+    	<equals arg1="${server}" arg2="jboss"/>
+    	<then>  	
+   	      <delete>
+   	        <fileset dir="${plugins.dir}" includes="**/*.jar"/>
+    	  </delete>
+		</then>
+	</if>
+    <copy todir="${plugins.dir}"  overwrite="yes">
       <fileset dir="nuxeo-addons"/>
     </copy>
   	
@@ -486,26 +596,9 @@
 	    <echo message="${openoffice.home}/program/unopkg add --shared ${openoffice.home}/nxOOo/patch/nxOOoAutoListen.oxt
 "/>
     </target>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
 	<!-- ==================== Target :: Remplacement des paramètres depuis le fichier central =================================== -->
-	
 	<property name="commons.parameters.local.file" value="commons-parameters.properties" />
-	
 	
 	<!-- Télécharge le fichier de propriétés -->
 	<target name="download-commons.parameters.local.file" if="commons.parameters.central.file.url">
@@ -513,13 +606,11 @@
 		<get dest="${commons.parameters.local.file}" src="${commons.parameters.central.file.url}"/>
 	</target>
 	
-	
 	<!-- Teste si le fichier de propriétés local existe -->
 	<target name="test-available-commons.parameters.local.file">
 		<available file="${commons.parameters.local.file}" property="commons.parameters.local.file.exists"/>
 		<echo message="${commons.parameters.local.file} existe ? ${commons.parameters.local.file.exists}"/>
 	</target>
-
 
 	<!-- Copie init-build.properties en build.properties -->
 	<target name="init-build.properties" depends="download-commons.parameters.local.file,test-available-commons.parameters.local.file" if="commons.parameters.local.file.exists">
@@ -541,9 +632,6 @@
 		
 		<echo message="remplacement des paramètres effectué dans build.properties !"/>
 	</target>
-
-
-	
 	
 	<!-- Replace the values -->
 	<target name="init-build" depends="init-build.properties" description="Initialise le fichier build.properties avec le remplacement des variables">
@@ -572,12 +660,6 @@
 			</else>
 		</if>
 	</target>
-
-
-
-
-
-
 
 </project>
 

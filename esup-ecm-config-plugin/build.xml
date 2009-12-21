@@ -88,11 +88,11 @@
 	  </target>
 
 	  <target name="copy" description="Copy files to JBoss">
-	    <delete>
+	  	<delete>
 	      <!-- delete old versions of the project -->
-	      <fileset file="${deploy.dir}/${nuxeo.ear}/plugins/${name}-*.jar" />
+	      <fileset file="${plugins.dir}/${name}-*.jar" />
 	    </delete>
-	    <copy todir="${deploy.dir}/${nuxeo.ear}/plugins/" overwrite="true">
+	  	<copy todir="${plugins.dir}" overwrite="true">
 	      <fileset dir="${build.dir}" casesensitive="yes">
 	        <include name="${name}-*.jar" />
 	        <exclude name="${name}-*-sources.jar" />

@@ -37,6 +37,7 @@
 	</extension>
 
 	<!-- configure authentication chain -->
+	@begin.use.cas@
 	<extension
 		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
 		point="chain">
@@ -44,12 +45,25 @@
 			<plugins>
 				<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
 				<plugin>BASIC_AUTH</plugin>
-				<!-- plugin>FORM_AUTH</plugin -->
 				<plugin>CAS2_AUTH</plugin>
 				<plugin>ANONYMOUS_AUTH_FOR_CAS2</plugin>
 			</plugins>
 		</authenticationChain>
 	</extension>
+	@end.use.cas@
+	@begin.use.ldap@
+	<extension
+		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+		point="chain">
+		<authenticationChain>
+			<plugins>
+				<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
+				<plugin>BASIC_AUTH</plugin>
+				<plugin>FORM_AUTH</plugin>
+			</plugins>
+		</authenticationChain>
+	</extension>
+	@end.use.ldap@
 
 	<!-- configure anonymousUser -->
 	<extension target="org.nuxeo.ecm.platform.usermanager.UserService"

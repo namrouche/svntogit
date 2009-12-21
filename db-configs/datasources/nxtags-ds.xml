@@ -5,7 +5,7 @@
     See unified-nuxeo-ds.xml to set a different database
   -->
     <mbean code="org.jboss.naming.NamingAlias"
-    name="jboss.jca:name=nxworkflowjbpm,service=DataSourceBinding">
+    name="jboss.jca:name=nxtags,service=DataSourceBinding">
     <attribute name="ToName">java:/NuxeoDS</attribute>
     <attribute name="FromName">java:/nxtags</attribute>
     </mbean>

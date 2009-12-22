@@ -3,9 +3,12 @@
 <component name="org.esup.ecm.login">
 
 	<require>org.nuxeo.ecm.platform.ui.web.auth.defaultConfig</require>
+	@begin.use.cas@
 	<require>org.nuxeo.ecm.platform.login.Cas2SSO</require>
+	@end.use.cas@
 
 	<!--  configure your CAS server parameters -->
+	@begin.use.cas@
 	<extension
 		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
 		point="authenticators">
@@ -35,15 +38,16 @@
     	</authenticationPlugin>
 		
 	</extension>
+	@end.use.cas@
 
 	<!-- configure authentication chain -->
+	<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
 	@begin.use.cas@
 	<extension
 		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
 		point="chain">
 		<authenticationChain>
 			<plugins>
-				<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
 				<plugin>BASIC_AUTH</plugin>
 				<plugin>CAS2_AUTH</plugin>
 				<plugin>ANONYMOUS_AUTH_FOR_CAS2</plugin>
@@ -51,13 +55,13 @@
 		</authenticationChain>
 	</extension>
 	@end.use.cas@
+
 	@begin.use.ldap@
 	<extension
 		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
 		point="chain">
 		<authenticationChain>
 			<plugins>
-				<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
 				<plugin>BASIC_AUTH</plugin>
 				<plugin>FORM_AUTH</plugin>
 			</plugins>

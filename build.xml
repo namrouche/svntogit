@@ -1,9 +1,9 @@
 <project name="esup-ecm-config" default="deploy">
 
   <property file="build.properties"/>
-  <property file="init-build.properties" />
-
   <property file="default.properties"/>
+  <property file="ori.properties" />
+	
   <property name="unused.component.dir" value="unused"/>
   <property name="sql-patch.file" value="nuxeo-core-storage-sql-1.5.0"/>
   <property name="utils.dir" value="${basedir}/utils" />
@@ -302,8 +302,10 @@
   <!-- sqlStorage Repository -->
   <target name="deploy.sql.storage" depends="deploy.sql.storage.config.postgresql,deploy.sql.storage.config.mysql">
    <echo message="Install sql-storage repository" />
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-mysql-ds.xml"/>
-         <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
+    <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-mysql-ds.xml"/>
+    <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
+    <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-mysql-ds.xml"/>
+    <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-postgresql-ds.xml"/>
   </target>
   
   <!-- sqlStorage with mysql -->
@@ -312,13 +314,14 @@
     <if>
     	<equals arg1="${server}" arg2="jboss"/>
     	<then>  	
-    	  <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${config.dir}/default-repository-ds.xml"  overwrite="yes"/>
+      	  <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
+      	  <copy file="build/datasources/nxtags-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
 		</then>
 	</if>
     <if>
     	<equals arg1="${server}" arg2="tomcat"/>
     	<then>  	
-      	  <copy file="build/tomcat/sql-storage-repository-mysql-ds.xml" tofile="${config.dir}/default-repository-config.xml"  overwrite="yes"/>
+      	  <copy file="build/tomcat/default-repository-config-mysql.xml" tofile="${config.dir}/default-repository-config.xml"  overwrite="yes"/>
     	  <copy file="build/tomcat/nuxeo.xml" tofile="${nuxeo.dir}/conf/Catalina/localhost/nuxeo.xml"  overwrite="yes"/>
 		</then>
 	</if>
@@ -330,7 +333,8 @@
     <if>
     	<equals arg1="${server}" arg2="jboss"/>
     	<then>  	
-    	  <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${config.dir}/default-repository-ds.xml"  overwrite="yes"/>
+    	  <copy file="build/datasources/default-repository-config-postgresql.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
+        	  <copy file="build/datasources/nxtags-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
 		</then>
 	</if>
     <if>
@@ -412,7 +416,11 @@
     <!-- others librairies  [drivers postgres,mysql] -->
     <if>
     	<equals arg1="${server}" arg2="jboss"/>
-    	<then>  	
+    	<then>  
+    		<!-- remove bad mySQL Driver from nuxeo 5.3 -->
+    		<delete>
+    			<fileset dir="${nuxeo.dir}/server/default/lib" includes="mysql-connector*"/>
+    		</delete>
     	    <copy todir="${nuxeo.dir}/server/default/lib"  overwrite="yes">
     	      <fileset dir="lib"/>
     	    </copy>
@@ -421,6 +429,10 @@
     <if>
     	<equals arg1="${server}" arg2="tomcat"/>
     	<then>  	
+    		<!-- remove bad mySQL Driver from nuxeo 5.3 -->
+    		<delete>
+    			<fileset dir="${nuxeo.dir}/server/default/lib" includes="mysql-connector*"/>
+    		</delete>
     	    <copy todir="${nuxeo.dir}/lib"  overwrite="yes">
     	      <fileset dir="lib"/>
     	    </copy>
@@ -571,7 +583,11 @@
 		-->
 	</target>
 
-  <target name="deploy" depends="deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />
+    <target name="undeploy" depends="server" description="Undeploy">
+    	<delete dir="${nuxeo.dir}" />
+    </target>
+
+	<target name="deploy" depends="deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />
 
     <target name="buildzip" depends="prepare" description="Construct ${esup-ecm.file}.zip">
 	    <echo message="Construct ${esup-ecm.file}.zip ...."/>

@@ -3,7 +3,6 @@ package org.esupportail.ecm;
 import org.esupportail.ecm.versioning.EsupDocumentVersioningBean;
 import org.jboss.seam.annotations.In;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.platform.versioning.api.VersioningActions;
 
 public class TestEsupDocumentVersioningBean extends TestAbstractDocument {
 	
@@ -14,7 +13,7 @@ public class TestEsupDocumentVersioningBean extends TestAbstractDocument {
 	public void setUp() throws Exception {
 		super.setUp();
 	}
-	
+
 	/* TODO : get esupDocumentVersioning seam bean so that we can test it */
 	public void testAvailableVersioningOptionsMap() throws Exception {
     	DocumentModel doc =  coreSession.getDocument(createSampleFile());

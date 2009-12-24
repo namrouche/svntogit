@@ -79,6 +79,8 @@
 
 		<action id="TAB_EDIT" link="/incl/tabs/esup_document_edit.xhtml" />
 
+		<action id="TAB_SECTION_CONTENT" link="/incl/tabs/esup_section_content.xhtml" />
+
 		<action id="TAB_METADATA_VIEW" enabled="false" />
 		
 		<action id="TAB_METADATA_EDIT" enabled="false" />

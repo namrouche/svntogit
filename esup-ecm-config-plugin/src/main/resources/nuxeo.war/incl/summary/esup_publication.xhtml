@@ -15,7 +15,7 @@
 				<h3 class="summaryTitle"><h:outputText
 					value="#{messages['label.publishing.title']}" /></h3>
 				<br />
-				<h:panelGroup rendered="#{!esupPublishActions.publishedDocument}">
+				<h:panelGroup rendered="#{publishActions.pending}">
 					<h:outputFormat
 						value="#{messages['label.document.pendingVersion']}">
 						<f:param value="#{currentVersionLabel}" />
@@ -23,7 +23,7 @@
 					<br />
 					<br />
 				</h:panelGroup>
-				<h:outputText rendered="#{esupPublishActions.hasValidationTask()}">
+				<h:outputText rendered="#{publishActions.hasValidationTask()}">
 					<table class="dataInput">
 						<tr>
 							<td><h:outputText class="required"
@@ -47,7 +47,7 @@
 						</tr>
 					</table>
 				</h:outputText>
-				<h:panelGroup rendered="#{esupPublishActions.publishedDocument}">
+				<h:panelGroup rendered="#{!publishActions.pending}">
 					<h:outputFormat
 						value="#{messages['label.document.publishedVersion']}">
 						<f:param value="#{currentVersionLabel}" />

@@ -13,9 +13,9 @@
 			value="#{esupPublishActions.getVersionsSelectModel()}"
 			name="versions">
 			<br />
-			<h:panelGroup id="help_empty" rendered="${empty versions}}">
+			<h:panelGroup id="help_empty" rendered="${empty versions}">
 				<h:graphicImage value="/img/warning.gif" />
-				<h:outputText value="#{messages['label.noversion.publication']}" />
+				<h:outputText value=" #{messages['label.noversion.publication']}" />
 				<br />
 			</h:panelGroup>
 

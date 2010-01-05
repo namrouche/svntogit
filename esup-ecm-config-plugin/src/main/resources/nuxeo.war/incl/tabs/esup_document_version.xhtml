@@ -83,15 +83,6 @@
           <h:outputText value="#{messages['label.version']}" />
         </f:facet>
         <h:outputText value="#{versionItem.description}" />
-        <!-- esupversion link -->
-        <nxu:methodResult
-						value="#{esupDocumentVersioning.getEsupVersionURL(versionItem)}"
-						name="esupVersionURL">
-        <nxh:outputLink value="#{esupVersionURL}" target="_tab">
-            <nxh:graphicImage value="/icons/sh.png" style="vertical-align:middle"
-              title="#{messages['label.version.esupversions']}" />
-        </nxh:outputLink>
-        </nxu:methodResult>
       </h:column>
 
 

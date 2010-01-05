@@ -90,7 +90,7 @@ public class EsupDocumentVersioningBean implements Serializable {
     }
     
 	/**
-	 * @return the esupVersionURL
+	 * @return the esupVersionURL from a versionModel
 	 */
 	public String getEsupVersionURL(VersionModel versionModel) throws ClientException {
 		//find uid of version
@@ -99,6 +99,18 @@ public class EsupDocumentVersioningBean implements Serializable {
 		//get document from version
 		DocumentModel versionDoc = documentManager.getDocumentWithVersion(doc.getRef(), versionModel);
 		String docID = versionDoc.getId();
+		return "site/esupversions/" + docID;
+	}    
+	
+	/**
+	 * @return the esupVersionURL from current document
+	 */
+	public String getEsupVersionURL() throws ClientException {
+		//find uid of current document
+		//get current document
+		DocumentModel doc = navigationContext.getCurrentDocument();
+		//get document from version
+		String docID = doc.getId();
 		return "site/esupversions/" + docID;
 	}    
 	

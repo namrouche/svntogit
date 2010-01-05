@@ -98,14 +98,16 @@
       </nxu:column>
 
       <!--  Version -->
+      <-- TODO: replace ???VERSION??? with version number (do not display anything in case of folder)
       <nxu:column>
         <f:facet name="header">
           <h:panelGroup>
-          <h:outputText value="???VERSION???"/>
+          <h:outputText value="#{messages['label.section.header.version']}"/>
           </h:panelGroup>
         </f:facet>
         <h:outputText value="???VERSION???" />
       </nxu:column>
+      -->
 
       <!-- Locking Icon -->
       <nxu:column styleClass="iconColumn">

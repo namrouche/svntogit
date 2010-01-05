@@ -109,6 +109,9 @@ public class EsupDocumentVersioningBean implements Serializable {
 		//find uid of current document
 		//get current document
 		DocumentModel doc = navigationContext.getCurrentDocument();
+		if (doc.isProxy()) {
+			doc = documentManager.getSourceDocument(doc.getRef());
+		}
 		//get document from version
 		String docID = doc.getId();
 		return "site/esupversions/" + docID;

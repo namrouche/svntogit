@@ -4,61 +4,52 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:nxh="http://nuxeo.org/nxweb/html"
-	xmlns:nxd="http://nuxeo.org/nxweb/document"><nxu:methodResult
-	name="publishingVersion"
-	value="#{esupViewActions.getPublishingVersion(currentDocument)}">
-	<nxu:methodResult name="sourceDocument"
-		value="#{publishingVersion.getSourceDocument()}">
-		<nxu:methodResult name="currentVersionLabel"
-			value="#{publishingVersion.getCurrentVersionLabel()}">
-			<div><h:panelGroup rendered="#{currentVersionLabel!=''}">
-				<h3 class="summaryTitle"><h:outputText
-					value="#{messages['label.publishing.title']}" /></h3>
-				<br />
-				<h:panelGroup rendered="#{publishActions.pending}">
-					<h:outputFormat
-						value="#{messages['label.document.pendingVersion']}">
-						<f:param value="#{currentVersionLabel}" />
-					</h:outputFormat>
-					<br />
-					<br />
-				</h:panelGroup>
-				<h:outputText rendered="#{publishActions.hasValidationTask()}">
-					<table class="dataInput">
-						<tr>
-							<td><h:outputText class="required"
-								value="#{messages['label.publishing.user.comment']}" /></td>
-							<td><h:inputTextarea id="rejectComment" rows="5"
-								cols="50" value="#{esupPublishActions.rejectComment}" required="true"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2"><h:message styleClass="errorMessage"
-								for="rejectComment" /></td>
-						</tr>
-						<tr>
-							<td colspan="2"><h:commandButton type="submit"
-								value="#{messages['label.publishing.accept']}"
-								styleClass="button"
-								action="#{esupPublishActions.publishDocument}" /> <h:commandButton
-								type="submit" value="#{messages['label.publishing.reject']}"
-								styleClass="button"
-								action="#{esupPublishActions.rejectDocument}" /></td>
-						</tr>
-					</table>
-				</h:outputText>
-				<h:panelGroup rendered="#{!publishActions.pending}">
-					<h:outputFormat
-						value="#{messages['label.document.publishedVersion']}">
-						<f:param value="#{currentVersionLabel}" />
-					</h:outputFormat>
-					<br />
-					<br />
-				</h:panelGroup>
-			</h:panelGroup></div>
-			<!-- TODO if necessary (?)  
-			????
-			-->
-		</nxu:methodResult>
-	</nxu:methodResult>
-</nxu:methodResult></div>
+	xmlns:nxd="http://nuxeo.org/nxweb/document">
+	<div>
+	  <h:panelGroup rendered="#{publishActions.publishedDocument}">
+		<h3 class="summaryTitle"><h:outputText
+			value="#{messages['label.publishing.title']}" /></h3>
+		<br />
+		<h:panelGroup rendered="#{publishActions.pending}">
+			<h:outputFormat
+				value="#{messages['label.document.pendingVersion']}">
+				<f:param value="#{currentDocumentVersionInfo.versionLabel}" />
+			</h:outputFormat>
+			<br />
+			<br />
+		</h:panelGroup>
+		<h:outputText rendered="#{publishActions.hasValidationTask()}">
+			<table class="dataInput">
+				<tr>
+					<td><h:outputText class="required"
+						value="#{messages['label.publishing.user.comment']}" /></td>
+					<td><h:inputTextarea id="rejectComment" rows="5"
+						cols="50" value="#{esupPublishActions.rejectComment}" required="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><h:message styleClass="errorMessage"
+						for="rejectComment" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><h:commandButton type="submit"
+						value="#{messages['label.publishing.accept']}"
+						styleClass="button"
+						action="#{esupPublishActions.publishDocument}" /> <h:commandButton
+						type="submit" value="#{messages['label.publishing.reject']}"
+						styleClass="button"
+						action="#{esupPublishActions.rejectDocument}" /></td>
+				</tr>
+			</table>
+		</h:outputText>
+		<h:panelGroup rendered="#{!publishActions.pending}">
+			<h:outputFormat
+				value="#{messages['label.document.publishedVersion']}">
+				<f:param value="#{currentDocumentVersionInfo.versionLabel}" />
+			</h:outputFormat>
+			<br />
+			<br />
+		</h:panelGroup>
+	</h:panelGroup>
+  </div>
+</div>

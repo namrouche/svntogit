@@ -224,6 +224,25 @@
       <replacefilter token="@ldapCompagny@" value="${ldap.user.company}" />
       <replacefilter token="@ldapEmail@" value="${ldap.user.email}" />
     </replace>
+  	<!-- not a anonymous LDAP access -->
+	<if>
+		<equals arg1="${ldap.bind}" arg2="true"/>
+		<then>
+		    <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml">
+				<replacefilter token="@begin.ldap.bind@" value="" />
+				<replacefilter token="@end.ldap.bind@" value="" />
+				<replacefilter token="@ldap.bindDn@" value="${ldap.bindDn}" />
+				<replacefilter token="@ldap.bindPassword@" value="${ldap.bindPassword}" />
+		    </replace>
+		</then>
+		<else>
+	        <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-users-directory-bundle.xml">
+				<replacefilter token="@begin.ldap.bind@" value="&lt;!-- " />
+				<replacefilter token="@end.ldap.bind@" value=" --&gt;" />
+	        </replace>
+		</else>
+	</if>
+  	
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-ldap-groups-directory-bundle.xml">
       <replacefilter token="@ldapSearchBaseDn@" value="${ldap.group.searchBaseDn}" />
     </replace>

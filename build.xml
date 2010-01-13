@@ -57,6 +57,7 @@
 
   <target name="prepare" depends="server">
   	<mkdir dir="${unused.component.dir}"/>
+  	<touch file="${unused.component.dir}/doNotDelete"/>
     <mkdir  dir="build"/>
     <mkdir  dir="build"/>
     <mkdir  dir="build/jboss"/>
@@ -266,7 +267,23 @@
       <replacefilter token="@showPersonnalWorkspace@" value="${show.personnal.workspace}" />
       <replacefilter token="@showUserDashBoard@" value="${show.user.dashboard}" />
       <replacefilter token="@showRepository@" value="${show.repository}" />
+      <replacefilter token="@show.tab.theme@" value="${show.tab.theme}" />
     </replace>
+    <if> <!-- needed for userWorkspaceManagerActions evaluation in esup-actions-contrib.xml -->
+	  	<equals arg1="${show.personnal.workspace}" arg2="true"/>
+    	<then>
+    		<replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-actions-contrib.xml">
+				<replacefilter token="@begin.show.personnal.workspace@" value="" />
+				<replacefilter token="@end.show.personnal.workspace@" value="" />
+			</replace>
+		</then>
+    	<else>
+    		<replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-actions-contrib.xml">
+				<replacefilter token="@begin.show.personnal.workspace@" value="&lt;!-- " />
+				<replacefilter token="@end.show.personnal.workspace@" value=" --&gt;" />
+			</replace>
+    	</else>
+	</if>
   	
     <!-- Administrator ID -->
     <replace file="build/esup-ecm-config-plugin/src/main/resources/config/default-virtual-groups-bundle.xml">
@@ -509,9 +526,36 @@
 	</target>	
 	
 	<target name="manage.nuxeo.component">
-		<!-- RB TODO
 		<property name="system.path" value="server/default/deploy/nuxeo.ear/system" />
-		<mkdir dir="${unused.component.dir}"/>
+		<!-- personnal Workspace -->
+		<if>
+			<istrue value="${show.personnal.workspace}"/>
+			<then>
+				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+					<fileset dir="${unused.component.dir}">
+						<filename name="nuxeo-platform-userworkspace*.jar"/>
+					</fileset>
+				</move>
+				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+					<fileset dir="${unused.component.dir}">
+						<filename name="nuxeo-opensocial*.jar"/>
+					</fileset>
+				</move>
+			</then>
+			<else>
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-platform-userworkspace*.jar"/>
+					</fileset>
+				</move>					
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-opensocial*.jar"/>
+					</fileset>
+				</move>					
+			</else>
+		</if>		
+		<!-- website document -->
 		<if>
 			<istrue value="${use.website.type}"/>
 			<then>
@@ -520,6 +564,16 @@
 						<filename name="nuxeo-webengine-sites*.jar"/>
 					</fileset>
 				</move>	
+				<if>
+					<istrue value="${use.blog.type}"/>
+						<then>
+							<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
+								<fileset dir="${unused.component.dir}">
+									<filename name="nuxeo-webengine-blogs*.jar"/>
+								</fileset>
+							</move>
+						</then>
+				</if>	
 			</then>
 			<else>
 				<move todir="${unused.component.dir}" verbose="true"> 
@@ -527,8 +581,14 @@
 						<filename name="nuxeo-webengine-sites*.jar"/>
 					</fileset>
 				</move>					
+				<move todir="${unused.component.dir}" verbose="true"> 
+					<fileset dir="${nuxeo.dir}/${system.path}">
+						<filename name="nuxeo-webengine-blogs*.jar"/>
+					</fileset>
+				</move>					
 			</else>
 		</if>
+		<!-- image document -->
 		<if>
 			<istrue value="${use.image.type}"/>
 			<then>
@@ -546,6 +606,7 @@
 				</move>					
 			</else>
 		</if>
+		<!-- forum document -->
 		<if>
 			<istrue value="${use.forum.type}"/>
 			<then>
@@ -563,6 +624,7 @@
 				</move>					
 			</else>
 		</if>
+		<!-- mail document -->
 		<if>
 			<istrue value="${use.mail.type}"/>
 			<then>
@@ -580,6 +642,7 @@
 				</move>					
 			</else>
 		</if>
+		<!-- virtual navigation -->
 		<if>
 			<istrue value="${use.virtual.navigation}"/>
 			<then>
@@ -597,7 +660,6 @@
 				</move>					
 			</else>
 		</if>
-		-->
 	</target>
 
     <target name="undeploy" depends="server" description="Undeploy">

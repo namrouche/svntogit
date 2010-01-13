@@ -44,12 +44,21 @@
 	      </filter>
 	    </action>
 		
-	   	<action id="vocabularies_manager" link="#{vocabularyActions.viewAllVocabularies}" enabled="@showVocabulariesManager@" label="title.vocabularies"
-      	order="30">
-      		<category>USER_SERVICES</category>
-      		<filter-id>only_for_manager</filter-id>
-   	 	</action>
+	    <!-- deprecated: see directories_manager -->
+	    <action id="vocabularies_manager"
+	      link="#{vocabularyActions.viewAllVocabularies}" label="title.vocabularies"
+	      order="30" enabled="false">
+	      <category>USER_SERVICES</category>
+	      <filter-id>only_for_manager</filter-id>
+	    </action>
+	
+	    <action id="directories_manager" link="view_directories" enabled="@showVocabulariesManager@" 
+	      label="title.vocabularies" order="30">
+	      <category>USER_SERVICES</category>
+	      <filter-id>only_for_manager</filter-id>
+	    </action>   	 	
 
+		@begin.show.personnal.workspace@
 	    <action id="SHOW_PERSONAL_WORKSPACE"
 	      link="#{userWorkspaceManagerActions.navigateToCurrentUserPersonalWorkspace}"
 	      enabled="@showPersonnalWorkspace@" label="command.user.personal.workspace" icon="/icons/show_personal_workspace.gif"
@@ -67,6 +76,7 @@
 	      <filter-id>not_anonymous</filter-id>	
 	      <filter-id>isInsidePersonalWorkspace</filter-id>           
 	    </action>
+	    @end.show.personnal.workspace@
 
 	    <action id="themes_manager" link="#{themeEditorAction.startEditor}" enabled="@showThemesManager@" 
 	      label="command.manageThemes" order="40">
@@ -81,7 +91,7 @@
 		<action id="TAB_SECTION_CONTENT" link="/incl/tabs/esup_section_content.xhtml" />
 		
 		<!-- theme editor -->
-		<action id="TAB_THEME" enabled="false" />
+		<action id="TAB_THEME" enabled="@show.tab.theme@" />
 
 		<action id="TAB_METADATA_VIEW" enabled="false" />
 		

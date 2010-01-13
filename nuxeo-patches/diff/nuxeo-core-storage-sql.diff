@@ -1,0 +1,89 @@
+diff -r ce108e0ce668 nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/NXQLQueryMaker.java
+--- a/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/NXQLQueryMaker.java	Tue Oct 27 14:39:51 2009 +0100
++++ b/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/NXQLQueryMaker.java	Wed Jan 13 14:34:10 2010 +0100
+@@ -27,6 +27,8 @@
+ import java.util.List;
+ import java.util.Set;
+ 
++import org.apache.commons.logging.Log;
++import org.apache.commons.logging.LogFactory;
+ import org.nuxeo.common.utils.StringUtils;
+ import org.nuxeo.ecm.core.api.impl.FacetFilter;
+ import org.nuxeo.ecm.core.query.QueryFilter;
+@@ -128,7 +130,8 @@
+  */
+ public class NXQLQueryMaker implements QueryMaker {
+ 
+-    /**
++	private static final Log log = LogFactory.getLog(NXQLQueryMaker.class);
++	/**
+      * Name of the Immutable facet, added by {@code DocumentModelFactory} when
+      * instantiating a proxy or a version.
+      */
+@@ -453,7 +456,8 @@
+             /*
+              * Security check.
+              */
+-
++            // begin ori-oai
++            /*
+             if (queryFilter.getPrincipals() != null) {
+                 Serializable principals = queryFilter.getPrincipals();
+                 Serializable permissions = queryFilter.getPermissions();
+@@ -462,7 +466,6 @@
+                     permissions = StringUtils.join((String[]) permissions, '|');
+                 }
+                 if (dialect.supportsReadAcl()) {
+-                    /* optimized read acl */
+                     whereClauses.add(dialect.getReadAclsCheckSql("r.acl_id"));
+                     whereParams.add(principals);
+                     joins.add(String.format("%s AS r ON %s = r.id",
+@@ -473,6 +476,8 @@
+                     whereParams.add(permissions);
+                 }
+             }
++    		*/
++    		// end ori-oai
+ 
+             /*
+              * Columns on which to do ordering.
+@@ -532,10 +537,37 @@
+         }
+         select.setOrderBy(orderBy);
+ 
++        // begin ori-oai
++        String sql = select.getStatement();
++        log.debug("makeQuery :: before ori-oai patch sql="+sql);
++        if (queryFilter.getPrincipals() != null) {
++        	String selectName = "orioaiselect";
++        	String securityCheckSql = dialect.getSecurityCheckSql("`"+selectName+"`.`id`");
++        	Serializable principals;
++            Serializable permissions;
++            if (dialect.supportsArrays()) {
++                principals = queryFilter.getPrincipals();
++                permissions = queryFilter.getPermissions();
++            } else {
++                principals = StringUtils.join(queryFilter.getPrincipals(), '|');
++                permissions = StringUtils.join(queryFilter.getPermissions(),
++                        '|');
++            }
++            selectParams.add(principals);
++            selectParams.add(permissions);
++        	log.debug("makeQuery :: securityCheckSql="+securityCheckSql);
++        	log.debug("makeQuery :: selectParams="+selectParams);
++        	sql = "SELECT id FROM (" + sql + ") AS " + selectName + " WHERE " + securityCheckSql;
++        	log.debug("makeQuery :: after ori-oai patch sql="+sql);
++        }
++        // end ori-oai
++
+         List<Column> whatColumns = Collections.singletonList(hier.getColumn(model.MAIN_KEY));
+         Query q = new Query();
+-        q.selectInfo = new SQLInfoSelect(select.getStatement(), whatColumns,
+-                null, null);
++        // begin ori-oai
++        // q.selectInfo = new SQLInfoSelect(select.getStatement(), whatColumns, null, null);
++        q.selectInfo = new SQLInfoSelect(sql, whatColumns, null, null);
++        // end ori-oai
+         q.selectParams = selectParams;
+         return q;
+     }

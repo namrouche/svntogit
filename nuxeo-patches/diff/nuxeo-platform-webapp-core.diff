@@ -1,0 +1,12 @@
+diff -r 7cec64741b82 nuxeo-platform-webapp-core/src/main/resources/themes/theme-galaxy.xml
+--- a/nuxeo-platform-webapp-core/src/main/resources/themes/theme-galaxy.xml	Tue Oct 27 14:39:54 2009 +0100
++++ b/nuxeo-platform-webapp-core/src/main/resources/themes/theme-galaxy.xml	Wed Jan 13 14:50:52 2010 +0100
+@@ -337,7 +337,7 @@
+         <border-color>#92999e</border-color>
+       </selector>
+       <selector path="input.button[disabled=disabled], input.button[disabled=disabled]:hover">
+-        <color>#ccc</color>
++        <color>grey</color>
+       </selector>
+     </style>
+     <style name="breadcrumbs style">

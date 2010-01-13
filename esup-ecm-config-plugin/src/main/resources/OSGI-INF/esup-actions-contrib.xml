@@ -5,24 +5,23 @@
 
 		<!-- nuxeo-platform: overwrite actions-contrib.xml -->
 		
-	<!-- publish from clipboard -->
-    <action id="WORKLIST_PUBLISH" link="#{publishActions.publishWorkList()}"
-            label="command.clipboard.publish" icon="/icons/action_publish.gif">
-      <category>DEFAULT_LIST</category>
-      <filter id="canPublishWorkList">
-        <rule grant="false">
-          <condition>#{clipboardActions.workListEmpty}</condition>
-        </rule>
-        <rule grant="false">
-          <condition>#{esupPublishActions.canNotPublishFromClipBoard}</condition>
-        </rule>
-        <rule grant="true">
-          <type>Section</type>
-        </rule>
-      </filter>
-    </action>
-		
-		
+		<!-- publish from clipboard -->
+	    <action id="WORKLIST_PUBLISH" link="#{publishActions.publishWorkList()}"
+	            label="command.clipboard.publish" icon="/icons/action_publish.gif">
+	      <category>DEFAULT_LIST</category>
+	      <filter id="canPublishWorkList">
+	        <rule grant="false">
+	          <condition>#{clipboardActions.workListEmpty}</condition>
+	        </rule>
+	        <rule grant="false">
+	          <condition>#{esupPublishActions.canNotPublishFromClipBoard}</condition>
+	        </rule>
+	        <rule grant="true">
+	          <type>Section</type>
+	        </rule>
+	      </filter>
+	    </action>
+			
 		<action id="user_manager" link="#{userManagerActions.viewUsers}" enabled="@showUserManager@"
 			label="command.manageMembers" order="20">
 			<category>USER_SERVICES</category>
@@ -80,6 +79,9 @@
 		<action id="TAB_EDIT" link="/incl/tabs/esup_document_edit.xhtml" />
 
 		<action id="TAB_SECTION_CONTENT" link="/incl/tabs/esup_section_content.xhtml" />
+		
+		<!-- theme editor -->
+		<action id="TAB_THEME" enabled="false" />
 
 		<action id="TAB_METADATA_VIEW" enabled="false" />
 		
@@ -128,7 +130,6 @@
 		</action>
 		
     	<action id="TAB_CONTENT_HISTORY" enabled="false" />
-
 
 		<action id="TAB_MANAGE" link="/incl/tabs/document_manage.xhtml"
 			enabled="true" order="240" label="action.view.manage"

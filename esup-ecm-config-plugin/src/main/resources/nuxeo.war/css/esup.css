@@ -1,0 +1,7 @@
+input.button[disabled="disabled"], input.button[disabled="disabled"]:hover {
+color:grey;
+}
+
+esup.test {
+color:grey;
+}

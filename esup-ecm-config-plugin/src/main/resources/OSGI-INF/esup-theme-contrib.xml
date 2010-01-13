@@ -2,66 +2,66 @@
 
 <component name="org.esup.ecm.theme.nuxeo.default">
   <require>org.nuxeo.theme.jsf</require>
-  <!-- views -->
-  
-  <extension target="org.nuxeo.theme.services.ThemeService" point="views">
-  	<!-- logo -->
-    <view name="Nuxeo EP logo (Galaxy Theme)" template-engine="jsf-facelets">
-      <format-type>widget</format-type>
-      <template>incl/esup-logo-etablissement.xhtml</template>
-      <resource>esup.css</resource>
-    </view>    
-    <view name="nuxeo5 logo" template-engine="jsf-facelets">
-      <format-type>widget</format-type>
-      <template>incl/esup-logo-etablissement.xhtml</template>
-      <resource>esup.css</resource>
-    </view>
-    <view name="nuxeo5-2 logo" template-engine="jsf-facelets">
-      <format-type>widget</format-type>
-      <template>incl/esup-logo-etablissement.xhtml</template>
-      <resource>esup.css</resource>
-    </view>
-    <view name="nuxeo5 alternate logo" template-engine="jsf-facelets">
-      <format-type>widget</format-type>
-      <template>incl/esup-logo-etablissement.xhtml</template>
-      <resource>esup.css</resource>
-    </view>
-    <!-- footer -->
-    <view name="nuxeo5 footer" template-engine="jsf-facelets">
-      <format-type>widget</format-type>
-      <template>incl/esup-footer-etablissement.xhtml</template>
-    </view>
-    <view name="nuxeo5-2 footer" tempuser_dashboard.faces?conversationId=0NXMAINlate-engine="jsf-facelets">
-      <format-type>widget</format-type>
-      <template>incl/esup-footer-etablissement.xhtml</template>
-    </view>
-    <view name="Nuxeo EP footer (Galaxy Theme)" template-engine="jsf-facelets">
-      <format-type>widget</format-type>
-      <template>incl/esup-footer-etablissement.xhtml</template>
-    </view>
-  </extension>
 
-<!-- Styles presets -->
-<extension target="org.nuxeo.theme.services.ThemeService" point="presets">
-	<!-- palette -->
-    <palette name="Galaxy backgrounds"
-      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
-    <palette name="Galaxy borders"
-      src="themes/palettes/esup-etablissementborders.properties" category="border" />
-    <palette name="Nuxeo default backgrounds"
-      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
-    <palette name="Nuxeo default borders"
-      src="themes/palettes/esup-etablissementborders.properties" category="border" />
-    <palette name="Courrier default backgrounds"
-      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
-    <palette name="Courrier default borders"
-      src="themes/palettes/esup-etablissementborders.properties" category="border" />
-</extension>
+	<!-- views -->
+	<extension target="org.nuxeo.theme.services.ThemeService" point="views">
+		<!-- logo -->
+		<view name="Nuxeo EP logo (Galaxy Theme)" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-logo-etablissement.xhtml</template>
+		  <resource>esup.css</resource>
+		</view>    
+		<view name="nuxeo5 logo" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-logo-etablissement.xhtml</template>
+		  <resource>esup.css</resource>
+		</view>
+		<view name="nuxeo5-2 logo" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-logo-etablissement.xhtml</template>
+		  <resource>esup.css</resource>
+		</view>
+		<view name="nuxeo5 alternate logo" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-logo-etablissement.xhtml</template>
+		  <resource>esup.css</resource>
+		</view>
+		<!-- footer -->
+		<view name="nuxeo5 footer" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-footer-etablissement.xhtml</template>
+		</view>
+		<view name="nuxeo5-2 footer" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-footer-etablissement.xhtml</template>
+		</view>
+		<view name="Nuxeo EP footer (Galaxy Theme)" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-footer-etablissement.xhtml</template>
+		</view>
+	</extension>
 
-<extension target="org.nuxeo.theme.services.ThemeService" point="resources">
-	<resource name="esup.css">
-	  <path>css/esup.css</path>
-	</resource>
-</extension>
+	<!-- Styles presets -->
+	<extension target="org.nuxeo.theme.services.ThemeService" point="presets">
+		<!-- palette -->
+	    <palette name="Galaxy backgrounds"
+	      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
+	    <palette name="Galaxy borders"
+	      src="themes/palettes/esup-etablissementborders.properties" category="border" />
+	    <palette name="Nuxeo default backgrounds"
+	      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
+	    <palette name="Nuxeo default borders"
+	      src="themes/palettes/esup-etablissementborders.properties" category="border" />
+	    <palette name="Courrier default backgrounds"
+	      src="themes/palettes/esup-etablissementbackgrounds.properties" category="background" />
+	    <palette name="Courrier default borders"
+	      src="themes/palettes/esup-etablissementborders.properties" category="border" />
+	</extension>
+	
+	<extension target="org.nuxeo.theme.services.ThemeService" point="resources">
+		<resource name="esup.css">
+		  <path>css/esup.css</path>
+		</resource>
+	</extension>
 
 </component>

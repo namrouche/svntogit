@@ -7,7 +7,6 @@
   <property name="unused.component.dir" value="unused"/>
   <property name="utils.dir" value="${basedir}/utils" />
   <property name="jboss.log4j.level" value="INFO"/>
-  <property name="jboss.home" value="${nuxeo.dir}"/>  
   <property name="esup-ecm.file" value="${esup-ecm.version}" />
   <condition property="isMysql" value="true">
         <equals arg1="${db.type}" arg2="MySQL"/>
@@ -147,7 +146,7 @@
     <!-- tools -->
     <replace file="build/jboss/jbossctl" >
       <replacefilter token="@jbossUser@" value="${jboss.user}" />
-        <replacefilter token="@jbossHome@" value="${jboss.home}" />
+        <replacefilter token="@jbossHome@" value="${nuxeo.dir}" />
     	<replacefilter token="@jbossBindAdress@" value="${jboss.bind.address}" />
     	<replacefilter token="@jdkHome@" value="${jdk.home}" />
         <replacefilter token="@consoleLog@" value="${jboss.console.log}" />
@@ -264,23 +263,34 @@
       <replacefilter token="@showUserManager@" value="${use.users.manager}" />
       <replacefilter token="@showVocabulariesManager@" value="${use.vocabularies.manager}" />
       <replacefilter token="@showThemesManager@" value="${use.themes.manager}" />
-      <replacefilter token="@showPersonnalWorkspace@" value="${show.personnal.workspace}" />
+      <replacefilter token="@use.personnal.workspace@" value="${use.personnal.workspace}" />
       <replacefilter token="@showUserDashBoard@" value="${show.user.dashboard}" />
       <replacefilter token="@showRepository@" value="${show.repository}" />
       <replacefilter token="@show.tab.theme@" value="${show.tab.theme}" />
+        <replacefilter token="@show.tab.metadata@" value="${show.tab.metadata}" />
+        <replacefilter token="@show.tab.preview@" value="${show.tab.preview}" />
+        <replacefilter token="@show.tab.files.view@" value="${show.tab.files.view}" />
+        <replacefilter token="@show.tab.files.edit@" value="${show.tab.files.edit}" />
+        <replacefilter token="@show.tab.relations@" value="${show.tab.relations}" />
+        <replacefilter token="@show.tab.workflow@" value="${show.tab.workflow}" />
+        <replacefilter token="@show.tab.my.subscriptions@" value="${show.tab.my.subscriptions}" />
+        <replacefilter token="@show.tab.manage.subscriptions@" value="${show.tab.manage.subscriptions}" />
+        <replacefilter token="@show.tab.content.history@" value="${show.tab.content.history}" />
+        <replacefilter token="@show.comments@" value="${show.comments}" />
+        <replacefilter token="@show.document.lock@" value="${show.document.lock}" />
     </replace>
     <if> <!-- needed for userWorkspaceManagerActions evaluation in esup-actions-contrib.xml -->
-	  	<equals arg1="${show.personnal.workspace}" arg2="true"/>
+	  	<equals arg1="${use.personnal.workspace}" arg2="true"/>
     	<then>
     		<replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-actions-contrib.xml">
-				<replacefilter token="@begin.show.personnal.workspace@" value="" />
-				<replacefilter token="@end.show.personnal.workspace@" value="" />
+				<replacefilter token="@begin.use.personnal.workspace@" value="" />
+				<replacefilter token="@end.use.personnal.workspace@" value="" />
 			</replace>
 		</then>
     	<else>
     		<replace file="build/esup-ecm-config-plugin/src/main/resources/OSGI-INF/esup-actions-contrib.xml">
-				<replacefilter token="@begin.show.personnal.workspace@" value="&lt;!-- " />
-				<replacefilter token="@end.show.personnal.workspace@" value=" --&gt;" />
+				<replacefilter token="@begin.use.personnal.workspace@" value="&lt;!-- " />
+				<replacefilter token="@end.use.personnal.workspace@" value=" --&gt;" />
 			</replace>
     	</else>
 	</if>
@@ -510,10 +520,16 @@
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/nuxeo-platform-webapp-core-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-webapp-core-5.3.0-SOURCESUP-6414.jar" overwrite="yes"/>
 	  	<echo message="***** publishing: group notification"/>
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-platform-publisher-jbpm-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-publisher-jbpm-5.3.0-NXP-3764.jar" overwrite="yes"/>
+		<if>
+			<istrue value="${seam.debug}"/>
+			<then>
+			  	<touch file="${config.dir}/seam-debug.properties"/>
+			</then>
+		</if>		
 	</target>
 	
 	  <target name="web" description="Copy web files to a live JBoss">
-	    <copy todir="${jboss.home}/server/default/deploy/nuxeo.ear/nuxeo.war" overwrite="true">
+	    <copy todir="${nuxeo.dir}/server/default/deploy/nuxeo.ear/nuxeo.war" overwrite="true">
 	      <fileset dir="${basedir}/esup-ecm-config-plugin/src/main/resources/nuxeo.war/" />
 	    </copy>
 	  </target>
@@ -521,7 +537,7 @@
 	<target name="seam" depends="copy.src.build" description="Copy seam beans a live JBoss">
 	    <subant target="seam" buildpath="build/esup-ecm-config-plugin">
 	    	<property name="utils.dir" value="${utils.dir}" />
-	    	<property name="seam.hotdeploy.dir" location="${jboss.home}/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/dev/"/>
+	    	<property name="seam.hotdeploy.dir" location="${nuxeo.dir}/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/dev/"/>
 	    </subant>
 	</target>	
 	
@@ -666,7 +682,7 @@
     	<delete dir="${nuxeo.dir}" />
     </target>
 
-	<target name="deploy" depends="deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />
+	<target name="deploy" depends="server,deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />
 
     <target name="buildzip" depends="prepare" description="Construct ${esup-ecm.file}.zip">
 	    <echo message="Construct ${esup-ecm.file}.zip ...."/>

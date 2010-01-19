@@ -416,9 +416,6 @@
 		</then>
 	</if>
 
-    <!-- usual seam-debug.properties -->
-   <copy file="build/config/seam-debug.properties"  tofile="${config.dir}/seam-debug.properties" overwrite="yes"/>
-
     <!-- Repository backend -->
     <antcall target="deploy.sql.storage" />
 
@@ -518,8 +515,9 @@
 		</if>
 	  	<echo message="***** theme"/>
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/nuxeo-platform-webapp-core-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-webapp-core-5.3.0-SOURCESUP-6414.jar" overwrite="yes"/>
-	  	<echo message="***** publishing: group notification"/>
+	  	<echo message="***** group notification"/>
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-platform-publisher-jbpm-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-publisher-jbpm-5.3.0-NXP-3764.jar" overwrite="yes"/>
+		<!-- seam.debug -->
 		<if>
 			<istrue value="${seam.debug}"/>
 			<then>

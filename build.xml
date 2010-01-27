@@ -130,8 +130,10 @@
           token="@databaseType@" value="${db.type}" />
       <replacefilter
           token="@jdbcSchema@" value="${db.schema}" />                   
-      <replacefilter
-          token="@sqlStorageServer@" value="${db.sql.server}" />
+        <replacefilter
+            token="@sqlStorageServer@" value="${db.sql.server}" />
+        <replacefilter
+            token="@db.jdbc.options@" value="${db.jdbc.options}" />
       <replacefilter
           token="@sqlStoragePort@" value="${db.sql.port}" />
       <replacefilter
@@ -543,7 +545,7 @@
 		<property name="system.path" value="server/default/deploy/nuxeo.ear/system" />
 		<!-- personnal Workspace -->
 		<if>
-			<istrue value="${show.personnal.workspace}"/>
+			<istrue value="${use.personnal.workspace}"/>
 			<then>
 				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
 					<fileset dir="${unused.component.dir}">

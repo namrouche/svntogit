@@ -3,7 +3,7 @@
   <xa-datasource>
     <jndi-name>nxtags</jndi-name>
     <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
-    <xa-datasource-property name="URL">jdbc:mysql://@sqlStorageServer@:@sqlStoragePort@/@sqlStorageDb@</xa-datasource-property>
+    <xa-datasource-property name="URL">jdbc:mysql://@sqlStorageServer@:@sqlStoragePort@/@sqlStorageDb@@db.jdbc.options@</xa-datasource-property>
     <xa-datasource-property name="User">@sqlStorageUser@</xa-datasource-property>
     <xa-datasource-property name="Password">@sqlStoragePassword@</xa-datasource-property>
     <track-connection-by-tx/>

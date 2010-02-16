@@ -25,7 +25,7 @@
       <searchFilter>(|(objectClass=groupOfNames)(objectClass=groupOfURLs))</searchFilter>
       <searchScope>subtree</searchScope>
 
-      <readOnly>false</readOnly>
+      <readOnly>true</readOnly>
 
       <!-- comment <cache* /> tags to disable the cache -->
       <!-- cache timeout in seconds -->

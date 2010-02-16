@@ -65,7 +65,7 @@
       <!-- use subtree if the people branch is nested -->
       <searchScope>onelevel</searchScope>
 
-      <readOnly>false</readOnly>
+      <readOnly>true</readOnly>
 
       <!-- comment <cache* /> tags to disable the cache -->
       <!-- cache timeout in seconds -->

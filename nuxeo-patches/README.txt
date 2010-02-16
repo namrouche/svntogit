@@ -14,3 +14,7 @@ Problème de lisibilité des boutons désactivés
 Cf. https://sourcesup.cru.fr/tracker/index.php?func=detail&aid=6414&group_id=430&atid=1800
 Le diff est dans diff/nuxeo-platform-webapp-core.diff
 
+nuxeo-platform-web-common-*.jar :
+Acces SharePoint avec authentification anonyme
+Cf. https://jira.nuxeo.org/browse/SUPNXP-1865
+

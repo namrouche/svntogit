@@ -519,6 +519,10 @@
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/nuxeo-platform-webapp-core-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-webapp-core-5.3.0-SOURCESUP-6414.jar" overwrite="yes"/>
 	  	<echo message="***** group notification"/>
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-platform-publisher-jbpm-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-publisher-jbpm-5.3.0-NXP-3764.jar" overwrite="yes"/>
+	  	<echo message="***** SharePoint access"/>
+		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-platform-web-common-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-web-common-5.3.0-SUPNXP-1865.jar" overwrite="yes"/>
+		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-platform-web-common-sharepoint-access-patch.jar" file="nuxeo-patches/nuxeo-platform-web-common-5.3.1-SNAPSHOT.jar" overwrite="yes"/>
+		<copy file="build/config/wss-auth-config.xml"  tofile="${config.dir}/wss-auth-config.xml" overwrite="yes"/>
 		<!-- seam.debug -->
 		<if>
 			<istrue value="${seam.debug}"/>

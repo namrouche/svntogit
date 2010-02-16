@@ -2,7 +2,11 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:nxh="http://nuxeo.org/nxweb/html"
   xmlns:nxdir="http://nuxeo.org/nxdirectory">
+  
+  <c:set var="hasMainBlob" value="#{!empty currentDocumentAsBlobHolder.blob}" />
+  <c:set var="hasOtherBlobs" value="#{currentDocument.hasSchema('files') and !empty currentDocument.files.files}" />
 
   <table class="floatingLeftTable">
     <tr>
@@ -37,6 +41,20 @@
         <h:outputText value="#{nxu:formatDateUsingBasicFormatter(currentDocument.dublincore.modified)}"/>
       </td>
     </tr>
+    <!-- esupversion link -->
+    <c:if test="#{hasMainBlob || hasOtherBlobs}">  
+	    <tr>
+	      <td class="labelColumnLeftAlign">
+	        <h:outputText value="#{messages['label.version.esupversions']}"/>
+	      </td>
+	      <td>
+	        <nxh:outputLink value="#{esupDocumentVersioning.esupVersionURL}" target="_tab">
+	            <nxh:graphicImage value="/icons/sh.png" style="vertical-align:middle"
+	              title="#{messages['label.version.esupversions']}" />
+	        </nxh:outputLink>        
+	      </td>
+	    </tr>
+    </c:if>
   </table>
 
   <!-- <table class="floatingRightTable">

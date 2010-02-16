@@ -1,17 +1,20 @@
-Fonctionnent avec la version nuxeo-dm-5.2.0
+Les patches présents ici sont destinés à corriger NX sans attendre de version "officielle" de nuxeo. 
 
-Les patches présents ici sont destinés à corriger NX sans attendre de patch "officiel". 
-Les patches sont compilés via mvn install.
-
-nuxeo-core-storage-sql-1.5.0.jar :
-SQL Storage: make MySQL connector useable in MySQL master/slave mode
-cf. http://jira.nuxeo.org/browse/NXP-3691
-cf. http://hg.nuxeo.org/nuxeo/nuxeo-core/rev/250750d56ec4
-MySQL request: pacth access to NX_ACCESS_ALLOWED function
-cf. nuxeo-core-storage-sql_nuxeo-core-storage-sql_src_main_java_org_nuxeo_ecm_core_storage_sql_QueryMaker.java
-
-nuxeo-platform-publishing-workflow-5.2.0.jar :
+nuxeo-platform-publisher-jbpm-5.3.0-NXP-3764.jar :
 [Publication] Action de validation de la publication seulement visible pour les utilisateurs en écriture et pas pour les groupes en écriture
-cf. http://jira.nuxeo.org/browse/SUPNXP-1085
+cf. https://jira.nuxeo.org/browse/SUPNXP-1716 reproduction en 5.3 de https://jira.nuxeo.org/browse/NXP-3764
 
+nuxeo-core-storage-sql-1.6.0-SUPNXP-1790.jar :
+Problème de performance avec MySQL
+Cf.  https://jira.nuxeo.org/browse/SUPNXP-1790
+Le diff (des modifs esup par rapport à une version 5.3.0 de nuxeo) contenu dans le ticket est aussi, pour des questions de sauvegardes ESUP, dans diff/nuxeo-core-storage-sql.diff
+
+nuxeo-platform-webapp-core-5.3.0-SOURCESUP-6414.jar :
+Problème de lisibilité des boutons désactivés
+Cf. https://sourcesup.cru.fr/tracker/index.php?func=detail&aid=6414&group_id=430&atid=1800
+Le diff est dans diff/nuxeo-platform-webapp-core.diff
+
+nuxeo-platform-web-common-*.jar :
+Acces SharePoint avec authentification anonyme
+Cf. https://jira.nuxeo.org/browse/SUPNXP-1865
 

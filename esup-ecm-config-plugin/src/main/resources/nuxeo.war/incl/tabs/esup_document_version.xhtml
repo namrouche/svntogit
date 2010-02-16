@@ -4,6 +4,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:c="http://java.sun.com/jstl/core"
   xmlns:nxl="http://nuxeo.org/nxforms/layout"
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
   xmlns:nxh="http://nuxeo.org/nxweb/html">
 
 <h:form id="esup_document_version" rendered="#{versionedActions.canRestore}">
@@ -89,9 +90,7 @@
         <f:facet name="header">
           <h:outputText value="#{messages['label.action']}" />
         </f:facet>
-
-	<ui:include src="/incl/document_history_buttons.xhtml" />
-
+		<ui:include src="/incl/document_history_buttons.xhtml" />
       </h:column>
     </h:dataTable>
     </h:form>

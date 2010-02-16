@@ -5,13 +5,11 @@
     <xa-transaction/>
     <track-connection-by-tx/>
     <adapter-display-name>Nuxeo SQL Repository DataSource</adapter-display-name>
-    <rar-name>nuxeo.ear#nuxeo-core-storage-sql-ra-1.5.0.rar</rar-name>
+    <rar-name>nuxeo.ear#nuxeo-core-storage-sql-ra-1.6.0.rar</rar-name>
     <connection-definition>org.nuxeo.ecm.core.storage.sql.Repository</connection-definition>
     <config-property name="name">default</config-property>
     <config-property name="xaDataSource" type="java.lang.String">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</config-property>
-    <config-property name="property" type="java.lang.String">ServerName=@sqlStorageServer@</config-property>
-    <config-property name="property" type="java.lang.String">PortNumber/Integer=@sqlStoragePort@</config-property>
-    <config-property name="property" type="java.lang.String">DatabaseName=@sqlStorageDb@</config-property>
+    <config-property name="property" type="java.lang.String">URL=jdbc:mysql://@sqlStorageServer@:@sqlStoragePort@/@sqlStorageDb@@db.jdbc.options@</config-property>
     <config-property name="property" type="java.lang.String">User=@sqlStorageUser@</config-property>
     <config-property name="property" type="java.lang.String">Password=@sqlStoragePassword@</config-property>
 	<max-pool-size>20</max-pool-size>

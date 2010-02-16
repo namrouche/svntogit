@@ -18,6 +18,7 @@ based on document_view.xmtl from nuxeo-platform-webapp
 
   <h:form id="document_view">
     <div>
+        
     <!-- ESUP
       <ui:include src="/incl/summary/locked.xhtml" />
       -->
@@ -45,10 +46,10 @@ based on document_view.xmtl from nuxeo-platform-webapp
         styleClass="button" action="#{deleteActions.restoreCurrentDocument}" />
     </c:if>
 
-    <c:set var="selectedSections" value="#{publishActions.getPublishingInfo().toArray()}" scope="page" />
-    <c:if test="#{!empty selectedSections}">
+	<!-- TODO
+????
+	 -->
       <ui:include src="/incl/summary/esup_publication.xhtml"/>
-    </c:if>
 
     <c:if test="#{currentDocument.hasFacet('Commentable') and (documentThreadedComments.size > 0)}">
       <ui:include src="/incl/summary/comments.xhtml" />

@@ -5,6 +5,39 @@
 
 		<!-- nuxeo-platform: overwrite actions-contrib.xml -->
 		
+		<!-- ************************ rules ************************ -->
+		<!-- publish from clipboard -->
+	    <action id="WORKLIST_PUBLISH" link="#{publishActions.publishWorkList()}"
+	            label="command.clipboard.publish" icon="/icons/action_publish.gif">
+	      <category>DEFAULT_LIST</category>
+	      <filter id="canPublishWorkList">
+	        <rule grant="false">
+	          <condition>#{clipboardActions.workListEmpty}</condition>
+	        </rule>
+	        <rule grant="false">
+	          <condition>#{esupPublishActions.canNotPublishFromClipBoard}</condition>
+	        </rule>
+	        <rule grant="true">
+	          <type>Section</type>
+	        </rule>
+	      </filter>
+	    </action>
+			
+		<!-- used ? -->
+		<action id="TAB_MANAGE" link="/incl/tabs/document_manage.xhtml"
+			enabled="true" order="240" label="action.view.manage"
+			icon="/icons/file.gif">
+			<category>VIEW_ACTION_LIST</category>
+			<filter-id>manage</filter-id>
+			<filter id="folder">
+	        	<rule grant="true">
+	          		<facet>Folderish</facet>
+	        	</rule>
+	      	</filter>
+		</action>
+
+		<!-- ************************ services (main menu) ************************ -->	
+		<!-- user manager -->
 		<action id="user_manager" link="#{userManagerActions.viewUsers}" enabled="@showUserManager@"
 			label="command.manageMembers" order="20">
 			<category>USER_SERVICES</category>
@@ -17,6 +50,7 @@
 			</filter>
 		</action>
 		
+		<!-- user dashboard -->
 		<action id="user_dashboard" link="user_dashboard" enabled="@showUserDashBoard@"
 	      label="command.user_dashboard" order="10">
 	      <category>USER_SERVICES</category>
@@ -27,15 +61,26 @@
 	      </filter>
 	    </action>
 		
-	   	<action id="vocabularies_manager" link="#{vocabularyActions.viewAllVocabularies}" enabled="@showVocabulariesManager@" label="title.vocabularies"
-      	order="30">
-      		<category>USER_SERVICES</category>
-      		<filter-id>only_for_manager</filter-id>
-   	 	</action>
+	    <!-- deprecated: see directories_manager -->
+	    <action id="vocabularies_manager"
+	      link="#{vocabularyActions.viewAllVocabularies}" label="title.vocabularies"
+	      order="30" enabled="false">
+	      <category>USER_SERVICES</category>
+	      <filter-id>only_for_manager</filter-id>
+	    </action>
+	
+		<!-- Vocabularies Manager -->
+	    <action id="directories_manager" link="view_directories" enabled="@showVocabulariesManager@" 
+	      label="title.vocabularies" order="30">
+	      <category>USER_SERVICES</category>
+	      <filter-id>only_for_manager</filter-id>
+	    </action>   	 	
 
+		<!-- personnal workspace -->
+		@begin.use.personnal.workspace@
 	    <action id="SHOW_PERSONAL_WORKSPACE"
 	      link="#{userWorkspaceManagerActions.navigateToCurrentUserPersonalWorkspace}"
-	      enabled="@showPersonnalWorkspace@" label="command.user.personal.workspace" icon="/icons/show_personal_workspace.gif"
+	      enabled="@use.personnal.workspace@" label="command.user.personal.workspace" icon="/icons/show_personal_workspace.gif"
 	      order="11">
 	      <category>USER_SERVICES</category>
 	      <filter-id>not_anonymous</filter-id>
@@ -50,46 +95,32 @@
 	      <filter-id>not_anonymous</filter-id>	
 	      <filter-id>isInsidePersonalWorkspace</filter-id>           
 	    </action>
+	    @end.use.personnal.workspace@
 
+		<!-- Themes Manager -->
 	    <action id="themes_manager" link="#{themeEditorAction.startEditor}" enabled="@showThemesManager@" 
 	      label="command.manageThemes" order="40">
 	      <category>USER_SERVICES</category>
 	      <filter-id>only_for_manager</filter-id>
 	    </action>
 
+		<!-- ************************ overWritten views ************************ -->	
+		<!-- overwrite: TAB_VIEW -->
 		<action id="TAB_VIEW" link="/incl/tabs/esup_document_view.xhtml" />
 
+		<!-- overwrite: TAB_EDIT -->
 		<action id="TAB_EDIT" link="/incl/tabs/esup_document_edit.xhtml" />
 
-		<action id="TAB_METADATA_VIEW" enabled="false" />
-		
-		<action id="TAB_METADATA_EDIT" enabled="false" />
-		
-		<action id="TAB_PREVIEW" enabled="false" />
+		<!-- overwrite: TAB_SECTION_CONTENT -->
+		<action id="TAB_SECTION_CONTENT" link="/incl/tabs/esup_section_content.xhtml" />
 
-		<action id="TAB_FILES_VIEW" enabled="false" />
-
-		<action id="TAB_FILES_EDIT" enabled="false" />
-
+		<!-- overwrite: TAB_PUBLISH -->
 		<action id="TAB_PUBLISH" label="esup.action.publish.content"
 			link="/incl/tabs/esup_document_publish.xhtml">
 			<filter-id>edit</filter-id>			
 		</action>
 
-		<action id="TAB_RELATIONS" enabled="false" />
-
-		<action id="TAB_CONTENT_JBPM" enabled="false" />
-
-		<action id="TAB_MY_SUBSCRIPTIONS" enabled="false" />
-
-		<action id="TAB_MANAGE_SUBSCRIPTIONS" enabled="false" />
-
-		<action id="TAB_CONTENT_ARCHIVE" enabled="false" />
-
-		<action id="view_comments" enabled="false" />
-
-		<action id="DOCUMENT_LOCK" enabled="false" />
-
+		<!-- overwrite: TAB_ESUP_VERSIONS -->
 		<action id="TAB_ESUP_VERSIONS" link="/incl/tabs/esup_document_version.xhtml"
 			enabled="true" label="esup.action.versions.content" icon="/icons/file.gif"
 			order="52">
@@ -98,8 +129,10 @@
 			<filter-id>mutable_document</filter-id>
 		</action>
 
+		<!-- overwrite: TAB_CONTENT_HISTORY -->
 		<action id="TAB_CONTENT_HISTORY" link="/incl/tabs/esup_document_history.xhtml" />
-
+		
+		<!-- overwrite: DOCUMENT_UNPUBLISH (used ?) -->
 		<action id="DOCUMENT_UNPUBLISH" link="#{esupPublishActions.unPublishProxy}"
 			enabled="true" label="command.document.unpublish" icon="">
 			<category>PUBLISHED_DOCUMENT</category>
@@ -107,30 +140,51 @@
 			<filter-id>lock_published_document</filter-id>
 		</action>
 		
-    	<action id="TAB_CONTENT_HISTORY" enabled="false" />
+		<!-- ************************ tabs (content actions) ************************ -->	
+		<action id="TAB_THEME" enabled="@show.tab.theme@" />
 
+		<action id="TAB_METADATA_VIEW" enabled="@show.tab.metadata@" />
+		
+		<action id="TAB_METADATA_EDIT" enabled="@show.tab.metadata@" />
+		
+		<action id="TAB_PREVIEW" enabled="@show.tab.preview@" />
 
-		<action id="TAB_MANAGE" link="/incl/tabs/document_manage.xhtml"
-			enabled="true" order="240" label="action.view.manage"
-			icon="/icons/file.gif">
-			<category>VIEW_ACTION_LIST</category>
-			<filter-id>manage</filter-id>
-			<filter id="folder">
-	        	<rule grant="true">
-	          		<facet>Folderish</facet>
-	        	</rule>
-	      	</filter>
-		</action>
+		<action id="TAB_FILES_VIEW" enabled="@show.tab.files.view@" />
 
+		<action id="TAB_FILES_EDIT" enabled="@show.tab.files.edit@" />
+
+		<action id="TAB_RELATIONS" enabled="@show.tab.relations@" />
+
+		<action id="TAB_CONTENT_JBPM" enabled="@show.tab.workflow@" />
+
+		<action id="TAB_MY_SUBSCRIPTIONS" enabled="@show.tab.my.subscriptions@" />
+
+		<action id="TAB_MANAGE_SUBSCRIPTIONS" enabled="@show.tab.manage.subscriptions@" />
+
+		<!-- false because it is integrated in TAB_ESUP_VERSIONS -->
+		<action id="TAB_CONTENT_ARCHIVE" enabled="false" />
+
+    	<action id="TAB_CONTENT_HISTORY" enabled="show.tab.content.history" />
+
+		<action id="view_comments" enabled="@show.comments@" />
+
+		<action id="DOCUMENT_LOCK" enabled="@show.document.lock@" />
 	</extension>
 	
-	  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
-	    point="filters">
-	    <filter id="isNotInsidePersonalWorkspace">
-	      <rule grant="false">
-	        <condition>#{isInsidePersonalWorkspace}</condition>
-	      </rule>
-	    </filter>
-	  </extension>
+    <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
+	  <filter id="isNotInsidePersonalWorkspace">
+	    <rule grant="false">
+	      <condition>#{isInsidePersonalWorkspace}</condition>
+	    </rule>
+	  </filter>
+	</extension>
+	  
+	<!-- use EsupCoreProxyWithWorkflowFactory to publish existing version of current document (without version creation on current live document) --> 
+	<extension target="org.nuxeo.ecm.platform.publisher.impl.service.PublisherServiceImpl"
+      point="factory">
+      <publishedDocumentFactory name="CoreProxyWithWorkflow"
+        class="org.esupportail.ecm.publishing.EsupCoreProxyWithWorkflowFactory"
+        validatorsRule="CoreValidatorsRule"/>
+    </extension>
 
 </component>

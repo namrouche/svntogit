@@ -3,16 +3,17 @@
 <component name="org.esup.ecm.login">
 
 	<require>org.nuxeo.ecm.platform.ui.web.auth.defaultConfig</require>
+	@begin.use.cas@
 	<require>org.nuxeo.ecm.platform.login.Cas2SSO</require>
+	@end.use.cas@
 
 	<!--  configure your CAS server parameters -->
+	@begin.use.cas@
 	<extension
 		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
 		point="authenticators">
-		
-		<authenticationPlugin name="CAS2_AUTH">
-			<needStartingURLSaving>true</needStartingURLSaving>
-		        <loginModulePlugin>Trusting_LM</loginModulePlugin>
+      	<authenticationPlugin name="CAS2_AUTH">
+        	<loginModulePlugin>Trusting_LM</loginModulePlugin>
 			<parameters>
 				<parameter name="ticketKey">ticket</parameter>
 				<parameter name="appURL">
@@ -28,24 +29,46 @@
 				<parameter name="logoutURL">
 					@sso-cas-url@/logout?service=@nuxeo-url@
 				</parameter>
-			</parameters>
+           	</parameters>
 		</authenticationPlugin>
+		
+	    <authenticationPlugin name="ANONYMOUS_AUTH_FOR_CAS2" enabled="true"
+    	    class="org.nuxeo.ecm.platform.ui.web.auth.cas2.AnonymousAuthenticatorForCAS2">
+      		<loginModulePlugin>Trusting_LM</loginModulePlugin>
+    	</authenticationPlugin>
+		
 	</extension>
+	@end.use.cas@
 
 	<!-- configure authentication chain -->
+	<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
+	@begin.use.cas@
 	<extension
 		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
 		point="chain">
 		<authenticationChain>
 			<plugins>
-				<!--  Keep basic Auth at top of Auth chain to support RSS access via BasicAuth -->
 				<plugin>BASIC_AUTH</plugin>
-				<plugin>ANONYMOUS_AUTH</plugin>
-				<!-- plugin>FORM_AUTH</plugin-->
 				<plugin>CAS2_AUTH</plugin>
+				<plugin>ANONYMOUS_AUTH_FOR_CAS2</plugin>
 			</plugins>
 		</authenticationChain>
 	</extension>
+	@end.use.cas@
+
+	@begin.use.ldap@
+	<extension
+		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+		point="chain">
+		<authenticationChain>
+			<plugins>
+				<plugin>BASIC_AUTH</plugin>
+				<plugin>FORM_AUTH</plugin>
+				<plugin>ANONYMOUS_AUTH</plugin>
+			</plugins>
+		</authenticationChain>
+	</extension>
+	@end.use.ldap@
 
 	<!-- configure anonymousUser -->
 	<extension target="org.nuxeo.ecm.platform.usermanager.UserService"

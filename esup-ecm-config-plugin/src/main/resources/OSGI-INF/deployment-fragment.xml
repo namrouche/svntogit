@@ -2,6 +2,18 @@
 
 <fragment>
 
+  <extension target="web#SERVLET">
+    <servlet>
+      <servlet-name>CasLoginServlet</servlet-name>
+      <servlet-class>org.esupportail.ecm.web.auth.CasLoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+      <servlet-name>CasLoginServlet</servlet-name>
+      <url-pattern>/cas</url-pattern>
+    </servlet-mapping>
+  </extension>
+
   <extension target="application#MODULE">
 
     <module>

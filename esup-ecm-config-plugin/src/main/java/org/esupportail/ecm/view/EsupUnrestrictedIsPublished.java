@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.esupportail.ecm.publishing.EsupJbpmPublisher;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
@@ -63,8 +62,10 @@ public class EsupUnrestrictedIsPublished extends UnrestrictedSessionRunner {
 	                    	
 	                    	if (parentRef.equals(section.getRef())) {
 	                    		log.debug("run :: found section parentRef :: "+parentRef);
-	                    		EsupJbpmPublisher publisher = new EsupJbpmPublisher();
-	                    		boolean isPublished = publisher.isPublished(proxy);
+	                    		//EsupJbpmPublisher publisher = new EsupJbpmPublisher();
+	                    		//boolean isPublished = publisher.isPublished(proxy);
+	                    		boolean isPublished = true;
+	                    		//TODO: find new method!
 	                    		log.debug("run :: isPublished ? "+isPublished);
 	                    		if (isPublished == true) {
 	                    			published = isPublished;

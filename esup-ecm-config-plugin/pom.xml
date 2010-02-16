@@ -3,27 +3,27 @@
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- on se raccroche au nuxeo-platform-publishing comme partent : 
+  <!-- on se raccroche au nuxeo-platform-publisher comme partent : 
        * nous evite notamment de preciser les versions des dependances 
   -->
   <parent>
     <groupId>org.nuxeo.ecm.platform</groupId>
-    <artifactId>nuxeo-platform-publishing</artifactId>
-    <version>5.2.0</version>
+    <artifactId>nuxeo-platform-publisher-parent</artifactId>
+    <version>5.3.0</version>
   </parent>
 
   <groupId>org.esup.ecm</groupId>
   <artifactId>esup-ecm-config</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <name>esup-ecm-config project</name>
   <description>esup-ecm-config project description</description>
 
   <properties>
-    <nuxeo.version>5.2.0</nuxeo.version>
-    <nuxeo.common.version>1.5.0</nuxeo.common.version>
-    <nuxeo.runtime.version>1.5.0</nuxeo.runtime.version>
-    <nuxeo.core.version>1.5.0</nuxeo.core.version>
-    <nuxeo.services.version>5.2.0</nuxeo.services.version>
+    <nuxeo.version>5.3.0</nuxeo.version>
+    <nuxeo.common.version>1.6.0</nuxeo.common.version>
+    <nuxeo.runtime.version>1.6.0</nuxeo.runtime.version>
+    <nuxeo.core.version>1.6.0</nuxeo.core.version>
+    <nuxeo.services.version>5.3.0</nuxeo.services.version>
 
     <jboss.version>4.0.4.GA</jboss.version>
     <jboss.ejb.version>3.0-RC8</jboss.ejb.version>
@@ -46,11 +46,12 @@
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-publishing-api</artifactId>
+      <artifactId>nuxeo-platform-publisher-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-publishing-workflow</artifactId>
+      <!-- <artifactId>nuxeo-platform-publishing-workflow</artifactId> -->
+      <artifactId>nuxeo-platform-publisher-jbpm</artifactId>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
@@ -115,9 +116,13 @@
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-publishing-web</artifactId>
+      <artifactId>nuxeo-platform-publisher-web</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-publisher-core</artifactId>
+    </dependency>    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>

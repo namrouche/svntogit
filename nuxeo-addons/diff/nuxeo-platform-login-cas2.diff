@@ -1,0 +1,18 @@
+diff -r f97ff70ef547 nuxeo-platform-login-cas2/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/cas2/Cas2Authenticator.java
+--- a/nuxeo-platform-login-cas2/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/cas2/Cas2Authenticator.java	Wed Nov 04 11:54:51 2009 +0100
++++ b/nuxeo-platform-login-cas2/src/main/java/org/nuxeo/ecm/platform/ui/web/auth/cas2/Cas2Authenticator.java	Wed Feb 10 16:41:34 2010 +0100
+@@ -256,8 +256,11 @@
+         // Get the service passed by the portlet
+         String service = httpRequest.getParameter(serviceKey);
+         if (service == null) {
+-            log.error("checkProxyCasTicket: no service name in the URL");
+-            return null;
++        	//beginESUP
++        	service = getAppURL(httpRequest); 
++//            log.error("checkProxyCasTicket: no service name in the URL");
++//            return null;
++        	//endESUP
+         }
+ 
+         try {
+

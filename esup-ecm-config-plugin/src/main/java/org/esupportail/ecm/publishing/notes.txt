@@ -1,0 +1,53 @@
+Utilisation de "enableSnapshot" :
+AbstractBasePublishedDocumentFactory
+	.ENABLE_SNAPSHOT = "enableSnapshot"
+	.isSnapshotingEnabled() --> return true si getParameter(ENABLE_SNAPSHOT)==true
+	.init() --> positionne Map<String, String> parameters
+
+PublishActionsBean.publisherService.getPublicationTree(
+                        getCurrentPublicationTreeNameForPublishing(),
+                        documentManager, null,
+                        navigationContext.getCurrentDocument()); --> null est ce parameters
+
+Notes :
+AbstractBasePublishedDocumentFactory
+	.needToVersionDocument(DocumentModel doc) --> teste si on n'est pas déjà sur une version et que le document est versionnable
+	.isSnapshotingEnabled() --> teste si "enableSnapshot" est à true
+
+Quel publisher par défaut :
+org.nuxeo.ecm.platform.publisher.impl.service.PublisherServiceImpl
+	org.nuxeo.ecm.platform.publisher.jbpm.CoreProxyWithWorkflowFactory
+
+Notes :
+	session.publishDocument(docToPublish, sectionToPublishTo, overwriteProxy) --> overwriteProxy dans les parametres ?
+
+Au final on appelle AbstractSession.publishDocument() qui fait une version si le document passé en paramètre n'est pas déjà un proxy.
+
+La pile :
+	PublishActionsBean.doPublish()
+	AbstractBasePublicationTree.publish()
+	AbstractBasePublishedDocumentFactory.publishDocument()
+	CoreProxyWithWorkflowFactory.publishDocument()
+	CoreProxyWithWorkflowFactory.publish()
+	UnrestrictedSessionRunner.runUnrestricted()
+	PublishUnrestricted.run()
+	AbstractSession.publishDocument()
+	
+	
+Particularité ESUP :
+	On créer le proxy d'une version donnée avant de publier
+	ECM 1.0 --> Ce proxy est crée dans le contrôleur EsupPublishActionsBean.doPublish()
+	ECM 1.1 --> créer ce proxy dans CoreProxyWithWorkflowFactory.publishDocument(). Comment ?
+		- On va créer un EsupCoreProxyWithWorkflowFactory qui étant CoreProxyWithWorkflowFactory pour surcharger publishDocument() afin de créer le proxy de la version ici
+		- Il faut pouvoir connaitre la version dans publishDocument() --> voir ci-dessous comment retrouver la version courante à partir d'une version :
+		
+retrouver la version courante à partir d'une version ou d'un proxy: 
+if (currentDocument.isVersion()) {
+    docIdToReplace = currentDocument.getSourceId();
+} else if (currentDocument.isProxy()) {
+    docIdToReplace = new LiveDocumentRefFinder(currentDocument).getLiveDocumentRef();
+}
+DocumentModel liveVersion = documentManager.getDocument(new IdRef(docIdToReplace));
+		
+Comment passer d'un DocumentModel représentant une version à un VersionModel :
+	session.getVersionsForDocument(DocumentRef docRef) --> renvoie les 		

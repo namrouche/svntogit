@@ -12,6 +12,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.VersionModel;
+import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.versioning.api.VersioningActions;
 import org.nuxeo.ecm.webapp.versioning.DocumentVersioningBean;
 
@@ -34,6 +38,12 @@ public class EsupDocumentVersioningBean implements Serializable {
 	@In(create = true)
 	private DocumentVersioningBean documentVersioning;
 
+	@In(create = true)
+	protected transient NavigationContext navigationContext;
+
+	@In(create = true, required = false)
+	protected transient CoreSession documentManager;
+	
 	/**
 	 * @see org.nuxeo.ecm.webapp.versioning.DocumentVersioningBean#getAvailableVersioningOptionsMap()
 	 * remove ACTION_NO_INCREMENT from returned Map
@@ -78,5 +88,33 @@ public class EsupDocumentVersioningBean implements Serializable {
     throws ClientException {
     	documentVersioning.setVersioningOptionInstanceId(optionId);
     }
+    
+	/**
+	 * @return the esupVersionURL from a versionModel
+	 */
+	public String getEsupVersionURL(VersionModel versionModel) throws ClientException {
+		//find uid of version
+		//get current document
+		DocumentModel doc = navigationContext.getCurrentDocument();
+		//get document from version
+		DocumentModel versionDoc = documentManager.getDocumentWithVersion(doc.getRef(), versionModel);
+		String docID = versionDoc.getId();
+		return "site/esupversions/" + docID;
+	}    
+	
+	/**
+	 * @return the esupVersionURL from current document
+	 */
+	public String getEsupVersionURL() throws ClientException {
+		//find uid of current document
+		//get current document
+		DocumentModel doc = navigationContext.getCurrentDocument();
+		if (doc.isProxy()) {
+			doc = documentManager.getSourceDocument(doc.getRef());
+		}
+		//get document from version
+		String docID = doc.getId();
+		return "site/esupversions/" + docID;
+	}    
 	
 }

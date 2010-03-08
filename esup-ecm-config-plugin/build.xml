@@ -35,7 +35,7 @@
 	
 	<!-- <property name="utils.dir" value="utils" /> define if esup-ecm build.xml-->
 	<property name="maven.url" value="http://www.apache.org/dist/maven/binaries" />
-	<property name="maven.version" value="2.2.0" />
+	<property name="maven.version" value="2.2.1" />
 	<property name="maven.zipfile" value="apache-maven-${maven.version}-bin.zip" />
 	<property name="maven.bin" value="${utils.dir}/apache-maven-${maven.version}/bin" />
 

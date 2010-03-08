@@ -380,14 +380,14 @@
     <if>
     	<equals arg1="${server}" arg2="jboss"/>
     	<then>  	
-    	  <copy file="build/datasources/default-repository-config-postgresql.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
+    	  <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
         	  <copy file="build/datasources/nxtags-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
 		</then>
 	</if>
     <if>
     	<equals arg1="${server}" arg2="tomcat"/>
     	<then>  	
-       	  <copy file="build/tomcat/sql-storage-repository-postgresql-ds.xml" tofile="${config.dir}/default-repository-config.xml"  overwrite="yes"/>
+       	  <copy file="build/tomcat/default-repository-config-postgresql.xml" tofile="${config.dir}/default-repository-config.xml"  overwrite="yes"/>
     	  <copy file="build/tomcat/nuxeo.xml" tofile="${nuxeo.dir}/conf/Catalina/localhost/nuxeo.xml"  overwrite="yes"/>
 		</then>
 	</if>

@@ -15,7 +15,7 @@
             </index>
           </fulltext> -->
           <!-- for PostgreSQL (Text Search Configuration): -->
-          <fulltext analyzer="english"/>
+          <fulltext analyzer="french"/>
         </indexing>
 
         <xa-datasource>org.postgresql.xa.PGXADataSource</xa-datasource>

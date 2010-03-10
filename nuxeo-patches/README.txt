@@ -18,3 +18,7 @@ nuxeo-platform-web-common-*.jar :
 Acces SharePoint avec authentification anonyme
 Cf. https://jira.nuxeo.org/browse/SUPNXP-1865
 
+richfaces-impl-3.3.1.GA-NX2-SUPNXP-2028.jar :
+Boucle CPU avec richFaces
+Cf. https://jira.nuxeo.org/browse/SUPNXP-2028
+

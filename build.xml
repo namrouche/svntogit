@@ -523,6 +523,9 @@
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-platform-web-common-5.3.0.jar" file="nuxeo-patches/nuxeo-platform-web-common-5.3.0-SUPNXP-1865.jar" overwrite="yes"/>
 		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-platform-web-common-sharepoint-access-patch.jar" file="nuxeo-patches/nuxeo-platform-web-common-5.3.1-SNAPSHOT.jar" overwrite="yes"/>
 		<copy file="build/config/wss-auth-config.xml"  tofile="${config.dir}/wss-auth-config.xml" overwrite="yes"/>
+		<echo message="***** richFaces"/>
+		<delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/lib/richfaces-impl-3.3.1.GA-NX.jar"/>
+		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/lib/richfaces-impl-3.3.1.GA-NX2.jar" file="nuxeo-patches/richfaces-impl-3.3.1.GA-NX2-SUPNXP-2028.jar" overwrite="yes"/>	
 		<!-- seam.debug -->
 		<if>
 			<istrue value="${seam.debug}"/>

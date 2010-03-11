@@ -690,7 +690,27 @@
 
 	<target name="deploy" depends="server,deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />
 
-    <target name="buildzip" depends="prepare" description="Construct ${esup-ecm.file}.zip">
+	<!-- ==================== download-maven Target =================================== -->
+	<property name="maven.url" value="http://www.apache.org/dist/maven/binaries" />
+	<property name="maven.version" value="2.2.1" />
+	<property name="maven.zipfile" value="apache-maven-${maven.version}-bin.zip" />
+	<property name="maven.bin" value="${utils.dir}/apache-maven-${maven.version}/bin" />
+	<!-- ==================== depends-maven Target =================================== -->
+	<target name="depends-maven">
+		<available property="maven.dir.available" file="${maven.bin}" type="dir"/>
+	</target>
+
+	<target name="download-maven" unless="maven.dir.available" depends="depends-maven">
+		<echo message="${maven.bin} non trouve, je telecharge..."/>
+		<mkdir dir="${utils.dir}"/>
+		<get src="${maven.url}/${maven.zipfile}" dest="${utils.dir}/${maven.zipfile}"/>
+		<unzip src="${utils.dir}/${maven.zipfile}" dest="${utils.dir}"/>
+		<delete file="${utils.dir}/${maven.zipfile}"/>
+		<echo message="maven.bin=${maven.bin}"/>
+		<chmod dir="${maven.bin}" perm="755" includes="**/mvn*"/>
+	</target>
+	
+    <target name="buildzip" depends="prepare, download-maven" description="Construct ${esup-ecm.file}.zip">
 	    <echo message="Construct ${esup-ecm.file}.zip ...."/>
 	    <delete file="packages/${esup-ecm.file}.zip"/>
 	    <zip destfile="packages/${esup-ecm.file}.zip" >

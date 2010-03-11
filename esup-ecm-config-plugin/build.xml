@@ -55,6 +55,11 @@
 		<chmod dir="${maven.bin}" perm="755" includes="**/mvn*"/>
 	</target>
 	
+	<target name="prepare-maven" if="maven.dir.available">
+		<echo message="maven.bin=${maven.bin}"/>
+		<chmod dir="${maven.bin}" perm="755" includes="**/mvn*"/>
+	</target>
+	
 	<target name="seam" depends="install">
 	 <copy todir="${seam.hotdeploy.dir}" flatten="false">
 	   <fileset dir="./target/classes">
@@ -64,7 +69,7 @@
 	 <get dest="./seam_hotdeploy_result.html" src="http://127.0.0.1:8080/nuxeo/restAPI/seamReload" username="Administrator" password="Administrator"/>
 	</target>
 
-	  <target name="install" depends="depends-maven,download-maven,install-unix,install-windows" description="Build" />
+	  <target name="install" depends="depends-maven,prepare-maven,install-unix,install-windows" description="Build" />
 	  <target name="install-unix" if="osfamily-unix">
 	    <echo message="execute ${maven.bin}/mvn"/>
 	    <exec executable="${maven.bin}/mvn" failonerror="false">

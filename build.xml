@@ -699,6 +699,8 @@
             <exclude name="**/.*"/>
             <exclude name="**/build/**"/>
             <exclude name="**/bin/**"/>
+	       	<exclude name="**/unused/**"/>
+	       	<exclude name="**/oldies/**"/>	       	
             <exclude name="packages/${esup-ecm.file}.zip"/>
             <exclude name="packages/${nuxeo-dm.file}"/>
 	       	<exclude name="build.properties"/>

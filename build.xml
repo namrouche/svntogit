@@ -67,6 +67,7 @@
     <available file="packages/${nuxeo-dm.file}" property="nuxeo-dm.file.present" />
     <available file="${nuxeo-dm-unziped.file}" property="nuxeo-dm.unziped.file.present" />
     <antcall target="get.nuxeo-dm.file" />
+  	<antcall target="download-maven"/>
   </target>
   	
   <target name="get.nuxeo-dm.file" unless="nuxeo-dm.file.present">
@@ -710,7 +711,7 @@
 		<chmod dir="${maven.bin}" perm="755" includes="**/mvn*"/>
 	</target>
 	
-    <target name="buildzip" depends="prepare, download-maven" description="Construct ${esup-ecm.file}.zip">
+    <target name="buildzip" depends="prepare" description="Construct ${esup-ecm.file}.zip">
 	    <echo message="Construct ${esup-ecm.file}.zip ...."/>
 	    <delete file="packages/${esup-ecm.file}.zip"/>
 	    <zip destfile="packages/${esup-ecm.file}.zip" >
@@ -718,7 +719,6 @@
 	       	<include name="**/*"/>
             <exclude name="**/.*"/>
             <exclude name="**/build/**"/>
-            <exclude name="**/bin/**"/>
 	       	<exclude name="**/unused/**"/>
 	       	<exclude name="**/oldies/**"/>	       	
             <exclude name="packages/${esup-ecm.file}.zip"/>

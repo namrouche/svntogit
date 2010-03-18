@@ -1,0 +1,5 @@
+﻿ESUP-ECM 1.1
+1.gestion des notes dans esupversions
+2.packaging pour PG
+3.tableau de bord
+4.admin des espaces de publication

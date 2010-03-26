@@ -5,9 +5,11 @@ nuxeo-platform-publisher-jbpm-5.3.0-NXP-3764.jar :
 cf. https://jira.nuxeo.org/browse/SUPNXP-1716 reproduction en 5.3 de https://jira.nuxeo.org/browse/NXP-3764
 
 nuxeo-core-storage-sql-1.6.0-SUPNXP-1790.jar :
-Problème de performance avec MySQL
+1) Problème de performance avec MySQL
 Cf.  https://jira.nuxeo.org/browse/SUPNXP-1790
-Le diff (des modifs esup par rapport à une version 5.3.0 de nuxeo) contenu dans le ticket est aussi, pour des questions de sauvegardes ESUP, dans diff/nuxeo-core-storage-sql.diff
+2) Erreur "Maximum row size" avec une base MySQL UTF8
+Cf. https://jira.nuxeo.org/browse/SUPNXP-2104
+Le diff (des modifs esup par rapport à une version 5.3.0 de nuxeo) contenu dans les tickets est aussi, pour des questions de sauvegardes ESUP, dans diff/nuxeo-core-storage-sql.diff
 
 nuxeo-platform-webapp-core-5.3.0-SOURCESUP-6414.jar :
 Problème de lisibilité des boutons désactivés

@@ -1,6 +1,6 @@
 diff -r ce108e0ce668 nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/NXQLQueryMaker.java
 --- a/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/NXQLQueryMaker.java	Tue Oct 27 14:39:51 2009 +0100
-+++ b/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/NXQLQueryMaker.java	Wed Jan 13 14:34:10 2010 +0100
++++ b/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/NXQLQueryMaker.java	Fri Mar 26 15:08:43 2010 +0100
 @@ -27,6 +27,8 @@
  import java.util.List;
  import java.util.Set;
@@ -87,3 +87,27 @@ diff -r ce108e0ce668 nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java
          q.selectParams = selectParams;
          return q;
      }
+diff -r ce108e0ce668 nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/SQLInfo.java
+--- a/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/SQLInfo.java	Tue Oct 27 14:39:51 2009 +0100
++++ b/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/SQLInfo.java	Fri Mar 26 15:08:43 2010 +0100
+@@ -533,7 +533,7 @@
+         Column column = maker.newColumn(model.HIER_PARENT_KEY,
+                 ColumnType.NODEIDFKNULL);
+         maker.newColumn(model.HIER_CHILD_POS_KEY, ColumnType.INTEGER);
+-        maker.newColumn(model.HIER_CHILD_NAME_KEY, ColumnType.VARCHAR);
++        maker.newColumn(model.HIER_CHILD_NAME_KEY, ColumnType.SYSNAME);
+         maker.newColumn(model.HIER_CHILD_ISPROPERTY_KEY, ColumnType.BOOLEAN); // notnull
+         if (!model.separateMainTable) {
+             maker.newFragmentFields();
+diff -r ce108e0ce668 nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/db/dialect/DialectMySQL.java
+--- a/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/db/dialect/DialectMySQL.java	Tue Oct 27 14:39:51 2009 +0100
++++ b/nuxeo-core-storage-sql/nuxeo-core-storage-sql/src/main/java/org/nuxeo/ecm/core/storage/sql/db/dialect/DialectMySQL.java	Fri Mar 26 15:08:43 2010 +0100
+@@ -93,7 +93,7 @@
+             // don't use the max 65535 because this max is actually for the
+             // total size of all columns of a given table, so allow several
+             // varchar columns in the same table
+-            return jdbcInfo("VARCHAR(4000)", Types.VARCHAR);
++            return jdbcInfo("TEXT", Types.VARCHAR);
+         case CLOB:
+             return jdbcInfo("LONGTEXT", Types.LONGVARCHAR);
+         case BOOLEAN:

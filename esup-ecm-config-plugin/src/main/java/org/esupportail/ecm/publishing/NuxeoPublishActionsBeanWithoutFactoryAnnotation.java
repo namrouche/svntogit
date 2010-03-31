@@ -332,7 +332,7 @@ public class NuxeoPublishActionsBeanWithoutFactoryAnnotation extends AbstractPub
         PublicationTree tree = publisherService.getPublicationTreeFor(
                 currentDocument, documentManager);
         PublishedDocument publishedDocument = tree.wrapToPublishedDocument(currentDocument);
-        tree.validatorPublishDocument(publishedDocument);
+        tree.validatorPublishDocument(publishedDocument, ""); //TODO new second argument
         DocumentModel sourceDocument = documentManager.getDocument(publishedDocument.getSourceDocumentRef());
         FacesContext context = FacesContext.getCurrentInstance();
         String comment = publishingComment != null

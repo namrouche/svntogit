@@ -2,5 +2,3 @@
 1.gestion des notes dans esupversions (mail Agathe partiellement résolu)
 2.packaging pour PG (W en relation avec Vincent Be.)
 3.tableau de bord (pb signalé par Jacques)
-4.admin des espaces de publication (quand pas de user WorkSpace --> signalé par Anne-Claire)
-5.création des tables en mySQL et URF8 (Pb Mickaël)

@@ -14,7 +14,7 @@
 			name="versions">
 			<br />
 			<h:panelGroup id="help_empty" rendered="${empty versions}">
-				<h:graphicImage value="/img/warning.gif" />
+				<h:graphicImage value="/icons/warning.gif" />
 				<h:outputText value=" #{messages['label.noversion.publication']}" />
 				<br />
 			</h:panelGroup>
@@ -37,8 +37,8 @@
 							<rich:tree
 								icon="#{nodeState.isExpanded(rowKey)?publishActions.getCurrentPublicationTreeIconExpanded():publishActions.getCurrentPublicationTreeIconCollapsed()}"
 								iconLeaf="#{publishActions.currentPublicationTreeIconCollapsed}"
-								iconExpanded="/img/toggle_minus.png"
-								iconCollapsed="/img/toggle_plus.png" rowKeyVar="rowKey"
+								iconExpanded="/icons/toggle_minus.png"
+								iconCollapsed="/icons/toggle_plus.png" rowKeyVar="rowKey"
 								stateVar="nodeState" id="publishTree">
 								<rich:recursiveTreeNodesAdaptor
 									roots="#{publishActions.currentPublicationTreeForPublishing}"

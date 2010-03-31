@@ -155,12 +155,10 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
 		DocumentModel versionDocument  = documentManager.getDocumentWithVersion(currentDocument.getRef(), versionModel);
 		//publication section
 		DocumentModel section = documentManager.getDocument(publicationNodeRef);
-		//for all proxies of version 
-		for (DocumentModel proxy : documentManager.getProxies(versionDocument.getRef(), null)) {
-			//if proxy published in section
-			if (isProxyPublishedInSection(proxy, section)) {
-				return -1;
-			}			
+		//is a proxy of version in section 
+		DocumentModelList proxiesInSection = documentManager.getProxies(versionDocument.getRef(), section.getRef());
+		if (!proxiesInSection.isEmpty()) {
+			return -1;
 		}
 		if (canWrite) {
 			return 1;
@@ -255,7 +253,7 @@ public class EsupPublishActionsBean extends NuxeoPublishActionsBeanWithoutFactor
     public String publishDocument() throws ClientException {
     	PublicationTree tree = getCurrentPublicationTreeForPublishing();
     	PublishedDocument publishedDocument = new SimpleCorePublishedDocument(navigationContext.getCurrentDocument());
-    	tree.validatorPublishDocument(publishedDocument);
+    	tree.validatorPublishDocument(publishedDocument, "");//TODO new second argument
     	return null;
     }
 	

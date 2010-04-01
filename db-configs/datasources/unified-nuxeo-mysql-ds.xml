@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!-- DEFAULT UNIFIED DATASOURCE CONFIGURATION -->
+  <!--
+    This is the default unified datasource configuration. All datasources from nuxeo
+    points to this datasource so it will use only 1 database.
+    To use another database than HSQL, comment out the 2 following sections and uncomment
+    your database configuration or add it if not present.
+    You also need to configure the  compass.cfg.xml file, refer to the nuxeo book for more
+    information.
+    If you wish to use a different database for a service, comment out the link in the relevant
+    xxx-ds.xml file and add a datasource configuration.
+  -->
+  <!-- nuxeo datasource -->
+  <local-tx-datasource>
+    <jndi-name>NuxeoDS</jndi-name>
+    <connection-url>
+      jdbc:mysql://@sqlServer@:@sqlPort@/@sqlDb@@db.jdbc.options@
+    </connection-url>
+    <driver-class>@jdbcDriver@</driver-class>
+    <user-name>@sqlUser@</user-name>
+    <password>@sqlPassword@</password>
+    <!-- check-valid-connection-sql>select 1</check-valid-connection-sql-->
+    <check-valid-connection-sql>select 1</check-valid-connection-sql>
+  </local-tx-datasource>
+
+
+</datasources>

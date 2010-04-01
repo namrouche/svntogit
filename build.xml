@@ -24,9 +24,9 @@
     <if>
     	<equals arg1="${server}" arg2="jboss"/>
     	<then>
-    	  <property name="nuxeo-dm.file" value="nuxeo-dm-5.3.0-GA-jboss.zip"/>
-    	  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
-    	  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-distribution-jboss-5.3.0"/>
+    	  <property name="nuxeo-dm.file" value="nuxeo-dm-5.3.1-jboss_02.zip"/>
+    	  <property name="nuxeo-dm-unziped.file" value="${nuxeo.dir.parent}/nuxeo-dm-5.3.1-jboss/server/default/deploy/nuxeo.ear/nuxeo.war/WEB-INF/web.xml"/>
+    	  <property name="nuxeo.dir" value="${nuxeo.dir.parent}/nuxeo-dm-5.3.1-jboss"/>
     	  <property name="plugins.dir" value="${nuxeo.dir}/server/default/deploy/nuxeo.ear/plugins"/>
     	  <property name="config.dir" value="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config"/>
     	</then>
@@ -74,7 +74,7 @@
   <target name="get.nuxeo-dm.file" unless="nuxeo-dm.file.present">
     <echo message="Download ${nuxeo-dm.file} in the packages directory."/>
     <echo message="Ce téléchargement peut prendre plusieurs minutes..."/>
-    <get src="http://www.nuxeo.org/static/releases/nuxeo-dm-5.3.0/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
+    <get src="http://www.nuxeo.org/static/releases/nuxeo-5.3.1/${nuxeo-dm.file}" dest="packages/${nuxeo-dm.file}" verbose="false"/>
   </target>
 
   <target name="deploy.nuxeo" depends="prepare">
@@ -121,29 +121,31 @@
 
     <replace dir="build" includes="config/*.xml,config/sql.properties,datasources/*.xml,tomcat/*.xml">
       <replacefilter
-          token="@jdbcUser@" value="${db.user}" />
-      <replacefilter
-          token="@jdbcPassword@" value="${db.password}" />
+          token="@databaseType@" value="${db.type}" />
       <replacefilter
           token="@jdbcDriver@" value="${db.driver}" />
       <replacefilter
-          token="@jdbcUrl@" value="${db.url}" />
+          token="@db.jdbc.options@" value="${db.jdbc.options}" />
       <replacefilter
-          token="@databaseType@" value="${db.type}" />
+          token="@sqlServer@" value="${db.server}" />
       <replacefilter
-          token="@jdbcSchema@" value="${db.schema}" />                   
-        <replacefilter
-            token="@sqlStorageServer@" value="${db.sql.server}" />
-        <replacefilter
-            token="@db.jdbc.options@" value="${db.jdbc.options}" />
+          token="@sqlPort@" value="${db.port}" />
       <replacefilter
-          token="@sqlStoragePort@" value="${db.sql.port}" />
+          token="@sqlDb@" value="${db.name}" />
       <replacefilter
-          token="@sqlStorageDb@" value="${db.sql.db}" />
+          token="@sqlUser@" value="${db.user}" />
       <replacefilter
-          token="@sqlStorageUser@" value="${db.sql.user}" />
+          token="@sqlPassword@" value="${db.password}" />
       <replacefilter
-          token="@sqlStoragePassword@" value="${db.sql.password}" />
+          token="@sqlStorageServer@" value="${db.storage.server}" />
+      <replacefilter
+          token="@sqlStoragePort@" value="${db.storage.port}" />
+      <replacefilter
+          token="@sqlStorageDb@" value="${db.storage.name}" />
+      <replacefilter
+          token="@sqlStorageUser@" value="${db.storage.user}" />
+      <replacefilter
+          token="@sqlStoragePassword@" value="${db.storage.password}" />
     </replace>
 
     <echo message="Update configuration plugin files" />
@@ -355,6 +357,11 @@
     <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/sql-storage-repository-postgresql-ds.xml"/>
     <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-mysql-ds.xml"/>
     <delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-postgresql-ds.xml"/>
+  	<delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/unified-nuxeo-postgresql-ds.xml"/>
+  	<delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/unified-nuxeo-mysql-ds.xml"/>
+  	<delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-postgresql-mysql.xml"/>
+  	<delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config-mysql.xml"/>
+  	
   </target>
   
   <!-- sqlStorage with mysql -->
@@ -364,7 +371,9 @@
     	<equals arg1="${server}" arg2="jboss"/>
     	<then>  	
       	  <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
-      	  <copy file="build/datasources/nxtags-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
+          <copy file="build/datasources/nxtags-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
+          <copy file="build/datasources/unified-nuxeo-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/unified-nuxeo-ds.xml"  overwrite="yes"/>
+          <copy file="build/config/default-repository-config-mysql.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config"  overwrite="yes"/>    	
 		</then>
 	</if>
     <if>
@@ -382,8 +391,10 @@
     <if>
     	<equals arg1="${server}" arg2="jboss"/>
     	<then>  	
-    	  <copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
-        	  <copy file="build/datasources/nxtags-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
+    		<copy file="build/datasources/sql-storage-repository-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
+        	<copy file="build/datasources/nxtags-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
+            <copy file="build/datasources/unified-nuxeo-postgresql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/unified-nuxeo-ds.xml"  overwrite="yes"/>
+            <copy file="build/config/default-repository-config-postgresql.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml"  overwrite="yes"/>    	
 		</then>
 	</if>
     <if>
@@ -510,6 +521,7 @@
   </target>
 	
 	<target name="patch">
+		<!--
 		<if>
 			<istrue value="${isMysql}"/>
 			<then>
@@ -526,7 +538,8 @@
 		<copy file="build/config/wss-auth-config.xml"  tofile="${config.dir}/wss-auth-config.xml" overwrite="yes"/>
 		<echo message="***** richFaces"/>
 		<delete file="${nuxeo.dir}/server/default/deploy/nuxeo.ear/lib/richfaces-impl-3.3.1.GA-NX.jar"/>
-		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/lib/richfaces-impl-3.3.1.GA-NX2.jar" file="nuxeo-patches/richfaces-impl-3.3.1.GA-NX2-SUPNXP-2028.jar" overwrite="yes"/>	
+		<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/lib/richfaces-impl-3.3.1.GA-NX2.jar" file="nuxeo-patches/richfaces-impl-3.3.1.GA-NX2-SUPNXP-2028.jar" overwrite="yes"/>
+		-->	
 		<!-- seam.debug -->
 		<if>
 			<istrue value="${seam.debug}"/>
@@ -551,6 +564,14 @@
 	
 	<target name="manage.nuxeo.component">
 		<property name="system.path" value="server/default/deploy/nuxeo.ear/system" />
+		<!-- dont use opensocial-->
+		<move todir="${unused.component.dir}" verbose="true"> 
+			<fileset dir="${nuxeo.dir}/${system.path}">
+				<filename name="nuxeo-opensocial*.jar"/>
+				<!-- nuxeo-opensocial-gadgets-core needed by webengine ! -->
+				<exclude name="nuxeo-opensocial-gadgets-core*.jar" />
+			</fileset>
+		</move>					
 		<!-- personnal Workspace -->
 		<if>
 			<istrue value="${use.personnal.workspace}"/>
@@ -560,21 +581,11 @@
 						<filename name="nuxeo-platform-userworkspace*.jar"/>
 					</fileset>
 				</move>
-				<move todir="${nuxeo.dir}/${system.path}" verbose="true"> 
-					<fileset dir="${unused.component.dir}">
-						<filename name="nuxeo-opensocial*.jar"/>
-					</fileset>
-				</move>
 			</then>
 			<else>
 				<move todir="${unused.component.dir}" verbose="true"> 
 					<fileset dir="${nuxeo.dir}/${system.path}">
 						<filename name="nuxeo-platform-userworkspace*.jar"/>
-					</fileset>
-				</move>					
-				<move todir="${unused.component.dir}" verbose="true"> 
-					<fileset dir="${nuxeo.dir}/${system.path}">
-						<filename name="nuxeo-opensocial*.jar"/>
 					</fileset>
 				</move>					
 			</else>
@@ -688,6 +699,7 @@
 
     <target name="undeploy" depends="server" description="Undeploy">
     	<delete dir="${nuxeo.dir}" />
+    	<delete dir="${unused.component.dir}"/>
     </target>
 
 	<target name="deploy" depends="server,deploy.nuxeo,deploy.plugin,manage.nuxeo.component" description="Deploy" />

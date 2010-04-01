@@ -1,4 +1,2 @@
 ﻿ESUP-ECM 1.1
-1.gestion des notes dans esupversions (mail Agathe partiellement résolu)
 2.packaging pour PG (W en relation avec Vincent Be.)
-3.tableau de bord (pb signalé par Jacques)

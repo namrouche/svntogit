@@ -373,7 +373,7 @@
       	  <copy file="build/datasources/sql-storage-repository-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/default-repository-ds.xml"  overwrite="yes"/>
           <copy file="build/datasources/nxtags-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/nxtags-ds.xml"  overwrite="yes"/>
           <copy file="build/datasources/unified-nuxeo-mysql-ds.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/datasources/unified-nuxeo-ds.xml"  overwrite="yes"/>
-          <copy file="build/config/default-repository-config-mysql.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config"  overwrite="yes"/>    	
+          <copy file="build/config/default-repository-config-mysql.xml" tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/config/default-repository-config.xml"  overwrite="yes"/>    	
 		</then>
 	</if>
     <if>

@@ -5,7 +5,12 @@
 
 	<!-- views -->
 	<extension target="org.nuxeo.theme.services.ThemeService" point="views">
-		<!-- logo -->
+		<!-- logo -->			
+		<view name="Nuxeo DM logo (Galaxy Theme)" template-engine="jsf-facelets">
+		  <format-type>widget</format-type>
+		  <template>incl/esup-logo-etablissement.xhtml</template>
+		  <resource>esup.css</resource>
+		</view>    
 		<view name="Nuxeo EP logo (Galaxy Theme)" template-engine="jsf-facelets">
 		  <format-type>widget</format-type>
 		  <template>incl/esup-logo-etablissement.xhtml</template>

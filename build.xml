@@ -521,7 +521,13 @@
   </target>
 	
 	<target name="patch">
-		<!-- no patch for 5.3.1 today :-) -->
+		<if>
+			<istrue value="${isMysql}"/>
+			<then>
+				<echo message="***** mysql"/>
+				<copy tofile="${nuxeo.dir}/server/default/deploy/nuxeo.ear/system/nuxeo-core-storage-sql-1.6.1.jar" file="nuxeo-patches/nuxeo-core-storage-sql-1.6.1-SUPNXP-1790.jar" overwrite="yes"/>
+			</then>
+		</if>
 		<!-- seam.debug -->
 		<if>
 			<istrue value="${seam.debug}"/>

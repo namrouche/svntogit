@@ -17,7 +17,7 @@
 		<config-property name="property" type="java.lang.String">PortNumber/Integer=@sqlStoragePort@</config-property>
 		<config-property name="property" type="java.lang.String">DatabaseName=@sqlStorageDb@</config-property>
 		<config-property name="property" type="java.lang.String">User=@sqlStorageUser@</config-property>
-		<config-property name="property" type="java.lang.String">Password=@sqlStorageUser@</config-property>
+		<config-property name="property" type="java.lang.String">Password=@sqlStoragePassword@</config-property>
 	</tx-connection-factory>
 </connection-factories>
 

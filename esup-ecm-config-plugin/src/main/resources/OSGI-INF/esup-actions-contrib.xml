@@ -164,7 +164,7 @@
 		<!-- false because it is integrated in TAB_ESUP_VERSIONS -->
 		<action id="TAB_CONTENT_ARCHIVE" enabled="false" />
 
-    	<action id="TAB_CONTENT_HISTORY" enabled="show.tab.content.history" />
+    	<action id="TAB_CONTENT_HISTORY" enabled="@show.tab.content.history@" />
 
 		<action id="view_comments" enabled="@show.comments@" />
 

@@ -29,6 +29,10 @@
 				<parameter name="logoutURL">
 					@sso-cas-url@/logout?service=@nuxeo-url@
 				</parameter>
+				<parameter name="proxyKey">ticket</parameter>
+				<parameter name="proxyValidateURL">
+					@sso-cas-url@/proxyValidate
+				</parameter>
            	</parameters>
 		</authenticationPlugin>
 		

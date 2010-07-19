@@ -6,11 +6,11 @@
 	xmlns:nxh="http://nuxeo.org/nxweb/html"
 	xmlns:nxd="http://nuxeo.org/nxweb/document">
 	<div>
-	  <h:panelGroup rendered="#{publishActions.publishedDocument}">
+	  <h:panelGroup rendered="#{esupPublishActions.publishedDocument}">
 		<h3 class="summaryTitle"><h:outputText
 			value="#{messages['label.publishing.title']}" /></h3>
 		<br />
-		<h:panelGroup rendered="#{publishActions.pending}">
+		<h:panelGroup rendered="#{esupPublishActions.pending}">
 			<h:outputFormat
 				value="#{messages['label.document.pendingVersion']}">
 				<f:param value="#{currentDocumentVersionInfo.versionLabel}" />
@@ -18,7 +18,7 @@
 			<br />
 			<br />
 		</h:panelGroup>
-		<h:outputText rendered="#{publishActions.hasValidationTask()}">
+		<h:outputText rendered="#{esupPublishActions.hasValidationTask()}">
 			<table class="dataInput">
 				<tr>
 					<td><h:outputText class="required"
